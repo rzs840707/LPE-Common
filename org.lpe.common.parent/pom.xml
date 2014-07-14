@@ -24,27 +24,9 @@
 
 	<repositories>
 		<repository>
-			<id>LPE Releases</id>
-			<name>LPE-releases</name>
-			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/sopeco-release-local</url>
-		</repository>
-
-		<repository>
-			<id>LPE Snapshots</id>
-			<name>LPE-snapshots</name>
-			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/sopeco-snapshot-local</url>
-		</repository>
-
-		<repository>
 			<id>remote-repos</id>
 			<name>Remote Repositories</name>
-			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/remote-repos</url>
-		</repository>
-
-		<repository>
-			<id>LPE Repository</id>
-			<name>LPE Repository-releases</name>
-			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/ext-release-local</url>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/lpe-repos</url>
 		</repository>
 	</repositories>
 
