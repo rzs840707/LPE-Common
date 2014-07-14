@@ -19,12 +19,12 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lpe.common.aim.api.exceptions.MeasurementException;
-import org.lpe.common.aim.api.instrumentation.description.SamplingConfig;
-import org.lpe.common.aim.api.measurement.collector.AbstractDataSource;
-import org.lpe.common.aim.api.measurement.sampling.AbstractSampler;
-import org.lpe.common.aim.api.measurement.sampling.ResourceSamplerFactory;
-import org.lpe.common.aim.api.measurement.sampling.SamplingExecuter;
+import org.aim.api.exceptions.MeasurementException;
+import org.aim.api.instrumentation.description.SamplingConfig;
+import org.aim.api.measurement.collector.AbstractDataSource;
+import org.aim.api.measurement.sampling.AbstractSampler;
+import org.aim.api.measurement.sampling.ResourceSamplerFactory;
+import org.aim.api.measurement.sampling.SamplingExecuter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

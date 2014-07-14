@@ -20,8 +20,8 @@ import java.io.OutputStream;
 
 import javax.ws.rs.core.MediaType;
 
-import org.lpe.common.aim.api.exceptions.MeasurementException;
-import org.lpe.common.aim.api.measurement.MeasurementData;
+import org.aim.api.exceptions.MeasurementException;
+import org.aim.api.measurement.MeasurementData;
 import org.lpe.common.loadgenerator.config.LGMeasurementConfig;
 import org.lpe.common.loadgenerator.config.LGWorkloadConfig;
 import org.lpe.common.util.LpeStreamUtils;

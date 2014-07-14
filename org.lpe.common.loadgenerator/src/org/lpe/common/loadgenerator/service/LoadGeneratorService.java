@@ -26,7 +26,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.lpe.common.aim.api.measurement.MeasurementData;
+import org.aim.api.measurement.MeasurementData;
 import org.lpe.common.loadgenerator.LoadGeneratorMeasurementController;
 import org.lpe.common.loadgenerator.LoadGeneratorWorkloadController;
 import org.lpe.common.loadgenerator.config.LGMeasurementConfig;

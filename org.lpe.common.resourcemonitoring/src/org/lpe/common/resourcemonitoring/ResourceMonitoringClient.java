@@ -21,10 +21,10 @@ import java.net.HttpURLConnection;
 
 import javax.ws.rs.core.MediaType;
 
-import org.lpe.common.aim.api.exceptions.MeasurementException;
-import org.lpe.common.aim.api.instrumentation.description.InstrumentationDescription;
-import org.lpe.common.aim.api.measurement.MeasurementData;
-import org.lpe.common.aim.artifacts.measurement.collector.StreamReader;
+import org.aim.api.exceptions.MeasurementException;
+import org.aim.api.instrumentation.description.InstrumentationDescription;
+import org.aim.api.measurement.MeasurementData;
+import org.aim.artifacts.measurement.collector.StreamReader;
 import org.lpe.common.util.web.LpeWebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

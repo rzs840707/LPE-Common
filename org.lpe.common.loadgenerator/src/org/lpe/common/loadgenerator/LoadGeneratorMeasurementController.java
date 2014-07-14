@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.aim.api.exceptions.MeasurementException;
+import org.aim.api.measurement.AbstractRecord;
+import org.aim.api.measurement.MeasurementData;
+import org.aim.artifacts.records.ResponseTimeRecord;
 import org.apache.commons.io.IOUtils;
-import org.lpe.common.aim.api.exceptions.MeasurementException;
-import org.lpe.common.aim.api.measurement.AbstractRecord;
-import org.lpe.common.aim.api.measurement.MeasurementData;
-import org.lpe.common.aim.artifacts.records.ResponseTimeRecord;
 import org.lpe.common.loadgenerator.config.LGMeasurementConfig;
 import org.lpe.common.util.LpeFileUtils;
 import org.lpe.common.util.LpeStreamUtils;

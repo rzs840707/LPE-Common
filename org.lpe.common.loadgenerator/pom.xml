@@ -51,8 +51,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.lpe.common</groupId>
-			<artifactId>org.lpe.common.aim.artifacts.core</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<artifactId>org.aim.artifacts.core</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
