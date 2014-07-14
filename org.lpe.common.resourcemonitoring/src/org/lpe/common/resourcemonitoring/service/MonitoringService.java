@@ -26,8 +26,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.lpe.common.aim.api.instrumentation.description.InstrumentationDescription;
-import org.lpe.common.aim.api.instrumentation.description.SamplingConfig;
+import org.aim.api.instrumentation.description.InstrumentationDescription;
+import org.aim.api.instrumentation.description.SamplingConfig;
 import org.lpe.common.resourcemonitoring.SystemMonitor;
 
 import com.sun.jersey.spi.resource.Singleton;

@@ -18,11 +18,11 @@ package org.lpe.common.resourcemonitoring;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.lpe.common.aim.api.exceptions.MeasurementException;
-import org.lpe.common.aim.api.instrumentation.description.InstrumentationDescriptionBuilder;
-import org.lpe.common.aim.api.measurement.MeasurementData;
-import org.lpe.common.aim.artifacts.records.CPUUtilizationRecord;
-import org.lpe.common.aim.artifacts.sampler.CPUSampler;
+import org.aim.api.exceptions.MeasurementException;
+import org.aim.api.instrumentation.description.InstrumentationDescriptionBuilder;
+import org.aim.api.measurement.MeasurementData;
+import org.aim.artifacts.records.CPUUtilizationRecord;
+import org.aim.artifacts.sampler.CPUSampler;
 
 /**
  * Tests the resource monitoring server.

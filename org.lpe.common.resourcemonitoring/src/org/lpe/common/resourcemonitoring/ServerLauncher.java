@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.lpe.common.aim.api.measurement.collector.AbstractDataSource;
-import org.lpe.common.aim.api.measurement.collector.CollectorFactory;
-import org.lpe.common.aim.artifacts.measurement.collector.MemoryDataSource;
+import org.aim.api.measurement.collector.AbstractDataSource;
+import org.aim.api.measurement.collector.CollectorFactory;
+import org.aim.artifacts.measurement.collector.MemoryDataSource;
 import org.lpe.common.util.system.LpeSystemUtils;
 import org.lpe.common.util.web.WebServer;
 import org.slf4j.Logger;
@@ -60,7 +60,7 @@ public final class ServerLauncher {
 			LOGGER.error("1st argument: start / shutdown");
 			LOGGER.error("[opt] port=<PORT>");
 			LOGGER.error("[opt] collector=<COLLECTOR_CLASS_NAME>");
-			LOGGER.error("[opt] org.lpe.common.aim.fileDataSource.sinkDirectory=<DIRECTORY>");
+			LOGGER.error("[opt] org.aim.fileDataSource.sinkDirectory=<DIRECTORY>");
 			System.exit(0);
 		}
 
