@@ -40,6 +40,7 @@ public class ConfigParameterDescription {
 	private LpeSupportedTypes type;
 	private boolean aset;
 	private Set<String> options;
+	private String[] fileExtensions;
 	private String lowerBoundary;
 	private String upperBoundary;
 	private boolean directory;
@@ -137,6 +138,24 @@ public class ConfigParameterDescription {
 			throw new IllegalStateException("Cannot define options if a value range have been defined!");
 		}
 		this.options = options;
+	}
+	
+	/**
+	 * Returns the set file extensions. <code>null</code> possible.
+	 * 
+	 * @return the file extensions, <code>null</code> possible
+	 */
+	public String[] getFileExtensions() {
+		return fileExtensions;
+	}
+
+	/**
+	 * Sets the file extensions. Follow the rules of org.eclipse.swt.widgets.FileDialog.setFilterExtensions(...).
+	 *
+	 * @param fileExtensions	the allowed file extensions
+	 */
+	public void setFileExtensions(String[] fileExtensions) {
+		this.fileExtensions = fileExtensions;
 	}
 
 	/*
