@@ -1,0 +1,12 @@
+/bin
+/target
+/.classpath
+/.settings
+/.project
+.DS_Store
+/.prefs
+/src/META-INF/MANIFEST.MF
+/pom.xml.versionsBackup
+/.checkstyle
+
+/target
