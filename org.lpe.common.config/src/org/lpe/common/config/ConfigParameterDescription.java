@@ -40,6 +40,8 @@ public class ConfigParameterDescription {
 	private LpeSupportedTypes type;
 	private boolean aset;
 	private Set<String> options;
+	private String[] fileExtensions;
+	private String fileDefaultName;
 	private String lowerBoundary;
 	private String upperBoundary;
 	private boolean directory;
@@ -138,6 +140,24 @@ public class ConfigParameterDescription {
 		}
 		this.options = options;
 	}
+	
+	/**
+	 * Returns the set file extensions. <code>null</code> possible.
+	 * 
+	 * @return the file extensions, <code>null</code> possible
+	 */
+	public String[] getFileExtensions() {
+		return fileExtensions;
+	}
+
+	/**
+	 * Sets the file extensions. Follow the rules of org.eclipse.swt.widgets.FileDialog.setFilterExtensions(...).
+	 *
+	 * @param fileExtensions	the allowed file extensions
+	 */
+	public void setFileExtensions(String[] fileExtensions) {
+		this.fileExtensions = fileExtensions;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -209,6 +229,26 @@ public class ConfigParameterDescription {
 		this.defaultValue = defaultValue;
 	}
 
+	/**
+	 * Returns the default file name.
+	 * 
+	 * @return the default file name
+	 */
+	public String getDefaultFileName() {
+		return fileDefaultName;
+	}
+
+	/**
+	 * The default file name value is only relevant for the dialog popping up to
+	 * select a specific file. It is not the default value for the whole parameter!
+	 * 
+	 * @param fileDefaultName
+	 *            the default value for the file
+	 */
+	public void setDefaultFileName(String fileDefaultName) {
+		this.fileDefaultName = fileDefaultName;
+	}
+	
 	/**
 	 * @return true, if value range has been specified
 	 */
