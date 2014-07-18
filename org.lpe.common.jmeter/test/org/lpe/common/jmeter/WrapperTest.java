@@ -35,7 +35,7 @@ public class WrapperTest {
 		conf.setPathToScript("C:\\Users\\D061588\\Desktop\\apache-jmeter-2.9\\scripts\\mediastore\\mediastore_usage_profile.jmx");
 		conf.setCreateLogFlag(true);
 		conf.setNumUsers(10);
-		conf.setDurationSeconds(20);
+		conf.setExperimentDuration(20);
 		conf.setRampUpInterval(2.0);
 		conf.setRampUpNumUsersPerInterval(1.0);
 		conf.setCoolDownInterval(2.0);
