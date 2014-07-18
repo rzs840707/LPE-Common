@@ -189,6 +189,10 @@ public final class JMeterWrapper {
 		cmd.add("-Jp_rampUpSecondsPerUser=" + rampUpSecondsPerUser);
 		cmd.add("-Jp_rampDownSecondsPerUser=" + coolDownSecondsPerUser);
 
+		if (config.getSamplingFileFlag()) {
+			cmd.add("-Jp_resultFile=" + config.getPathToSamplingFile());
+		}
+		
 		// add custom properties
 		Properties additionalProps = config.getAdditionalProperties();
 		for (Entry<Object, Object> property : additionalProps.entrySet()) {

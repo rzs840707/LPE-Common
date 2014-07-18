@@ -84,6 +84,12 @@ public class JMeterWorkloadConfig {
 	private String defaultOutputFile; // [*.out]
 
 	/**
+	 * True, if sampling should be enabled. Then JMeter saves a results file in the file which is defined in
+	 * {@link #pathToSamplingFile}.
+	 */
+	private boolean samplingFileFlag; // [*.csv]
+
+	/**
 	 * The path to the JMeter result file. The result file contains the sampling values JMeter collects during the load
 	 * script run.
 	 */
@@ -350,4 +356,17 @@ public class JMeterWorkloadConfig {
 		this.logFilePrefix = logFilePrefix;
 	}
 
+	/**
+	 * @return the samplingFileFlag
+	 */
+	public boolean getSamplingFileFlag() {
+		return samplingFileFlag;
+	}
+	
+	/**
+	 * @param samplingFileFlag the samplingFileFlag to set
+	 */
+	public void setSamplingFileFlag(boolean samplingFileFlag) {
+		this.samplingFileFlag = samplingFileFlag;
+	}
 }
