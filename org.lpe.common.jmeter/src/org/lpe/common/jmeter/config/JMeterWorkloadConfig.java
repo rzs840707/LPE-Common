@@ -18,47 +18,93 @@ package org.lpe.common.jmeter.config;
 import java.util.Properties;
 
 /**
- * @author D061588
+ * This configuration comprises all the JMeter configuration possiblites.
  * 
- *         configuration Element for JMeter loadrun
+ * @author Peter Merkert
  */
 public class JMeterWorkloadConfig {
 
-	private static final int TEN_SECONDS = 10000;
-
+	/**
+	 * Flag if a log 
+	 */
 	private boolean createLog;
 
-	private int durationSeconds;
-	private double rampUpTimeSecondsPerUser;
-	private double coolDownTimeSecondsPerUser;
+	/**
+	 * The experiment duration in seconds.
+	 */
+	private int experimentDuration; // [sec]
+	
+	/**
+	 * The ramp up interval in seconds.
+	 */
+	private double rampUpInterval; // [sec]
 
+	/**
+	 * The number of users per ramp up interval.
+	 */
+	private double rampUpNumUsersPerInterval;
+
+	/**
+	 * The cool down interval in seconds.
+	 */
+	private double coolDownInterval; // [sec]
+
+	/**
+	 * The number of users per cool down interval.
+	 */
+	private double coolDownNumUsersPerInterval;
+
+	/**
+	 * The maximum number of users during the experiment.
+	 */
 	private int numUsers;
 
-	private int thinkTimeMinimumMS;
-	private int thinkTimeMaximumMS;
+	/**
+	 * The minimum think time in ms.
+	 */
+	private int thinkTimeMinimum; // [ms]
+	
+	/**
+	 * The maximum think time in ms.
+	 */
+	private int thinkTimeMaximum; // [ms]
 
-	private String pathToJMeterBinFolder;
+	/**
+	 * The path to the JMeter root folder. The bin folder must be a sub folder in
+	 * this directory.
+	 */
+	private String pathToJMeterRootFolder;
+	
+	/**
+	 * The path to the .jmx load script.
+	 */
 	private String pathToScript;
 
+	/**
+	 * Custom additional properties can be passed with this {@link Properties}.
+	 */
 	Properties additionalProps;
 
 	/**
-	 * Constructor.
+	 * Initializes all variables with default values.
 	 */
 	public JMeterWorkloadConfig() {
-		createLog = false;
-		durationSeconds = 1;
-		numUsers = 1;
-		rampUpTimeSecondsPerUser = 1;
-
-		thinkTimeMinimumMS = TEN_SECONDS;
-		thinkTimeMaximumMS = TEN_SECONDS;
-
-		additionalProps = new Properties();
+		createLog 					= false;
+		experimentDuration 			= 1;
+		rampUpInterval 				= 1.0;
+		rampUpNumUsersPerInterval 	= 1;
+		coolDownInterval 			= 1;
+		coolDownNumUsersPerInterval = 1;
+		numUsers 					= 1;
+		thinkTimeMinimum 			= 1000;
+		thinkTimeMaximum 			= 1000;
+		pathToJMeterRootFolder 		= "";
+		pathToScript 				= "";
+		additionalProps 			= new Properties();
 	}
 
 	/**
-	 * checks if the JMeter-log should be generated and parsed.
+	 * Checks if the JMeter-log should be generated and parsed.
 	 * 
 	 * @return the flag
 	 */
@@ -70,8 +116,7 @@ public class JMeterWorkloadConfig {
 	 * Sets the flag which determines if the JMeter-log should be generated and
 	 * parsed.
 	 * 
-	 * @param createLog
-	 *            true if log should pe created/parsed
+	 * @param createLog	true if log should pe created/parsed
 	 */
 	public void setCreateLogFlag(boolean createLog) {
 		this.createLog = createLog;
@@ -83,19 +128,18 @@ public class JMeterWorkloadConfig {
 	 * 
 	 * @return the maximum in MS
 	 */
-	public int getThinkTimeMaximumMS() {
-		return thinkTimeMaximumMS;
+	public int getThinkTimeMaximum() {
+		return thinkTimeMaximum;
 	}
 
 	/**
 	 * Sets the upper limit for ThinkTimes in the script (actual think time is a
 	 * random number between minimum and maximum).
 	 * 
-	 * @param thinkTimeMaximumMS
-	 *            the maximum in MS
+	 * @param thinkTimeMaximum	the maximum think time in MS
 	 */
-	public void setThinkTimeMaximumMS(int thinkTimeMaximumMS) {
-		this.thinkTimeMaximumMS = thinkTimeMaximumMS;
+	public void setThinkTimeMaximum(int thinkTimeMaximum) {
+		this.thinkTimeMaximum = thinkTimeMaximum;
 	}
 
 	/**
@@ -104,19 +148,18 @@ public class JMeterWorkloadConfig {
 	 * 
 	 * @return the minimum in MS
 	 */
-	public int getThinkTimeMinimumMS() {
-		return thinkTimeMinimumMS;
+	public int getThinkTimeMinimum() {
+		return thinkTimeMinimum;
 	}
 
 	/**
 	 * Sets the lower limit for ThinkTimes in the script (actual think time is a
 	 * random number between minimum and maximum).
 	 * 
-	 * @param thinkTimeMinimumMS
-	 *            the minimum in MS
+	 * @param thinkTimeMinimum	the minimum think time in MS
 	 */
-	public void setThinkTimeMinimumMS(int thinkTimeMinimumMS) {
-		this.thinkTimeMinimumMS = thinkTimeMinimumMS;
+	public void setThinkTimeMinimum(int thinkTimeMinimum) {
+		this.thinkTimeMinimum = thinkTimeMinimum;
 	}
 
 	/**
@@ -125,7 +168,7 @@ public class JMeterWorkloadConfig {
 	 * @return duration in seconds
 	 */
 	public int getDurationSeconds() {
-		return durationSeconds;
+		return experimentDuration;
 	}
 
 	/**
@@ -135,7 +178,7 @@ public class JMeterWorkloadConfig {
 	 *            duration in seconds
 	 */
 	public void setDurationSeconds(int durationSeconds) {
-		this.durationSeconds = durationSeconds;
+		this.experimentDuration = durationSeconds;
 	}
 
 	/**
@@ -150,30 +193,76 @@ public class JMeterWorkloadConfig {
 	/**
 	 * Gets the number of users to simulate.
 	 * 
-	 * @param numUsers
-	 *            the number of users
+	 * @param numUsers the number of users
 	 */
 	public void setNumUsers(int numUsers) {
 		this.numUsers = numUsers;
 	}
 
 	/**
+	 * @return the rampUpInterval
+	 */
+	public double getRampUpInterval() {
+		return rampUpInterval;
+	}
+
+	/**
+	 * @param rampUpInterval the rampUpInterval to set [seconds]
+	 */
+	public void setRampUpInterval(double rampUpInterval) {
+		this.rampUpInterval = rampUpInterval;
+	}
+
+	/**
+	 * @return the rampUpNumUsersPerInterval
+	 */
+	public double getRampUpNumUsersPerInterval() {
+		return rampUpNumUsersPerInterval;
+	}
+
+	/**
+	 * @param rampUpNumUsersPerInterval the rampUpNumUsersPerInterval to set
+	 */
+	public void setRampUpNumUsersPerInterval(double rampUpNumUsersPerInterval) {
+		this.rampUpNumUsersPerInterval = rampUpNumUsersPerInterval;
+	}
+
+	/**
+	 * @return the coolDownInterval [seconds]
+	 */
+	public double getCoolDownInterval() {
+		return coolDownInterval;
+	}
+
+	/**
+	 * @param coolDownInterval the coolDownInterval to set [seconds]
+	 */
+	public void setCoolDownInterval(double coolDownInterval) {
+		this.coolDownInterval = coolDownInterval;
+	}
+
+	/**
+	 * @return the coolDownNumUsersPerInterval
+	 */
+	public double getCoolDownNumUsersPerInterval() {
+		return coolDownNumUsersPerInterval;
+	}
+
+	/**
+	 * @param coolDownNumUsersPerInterval the coolDownNumUsersPerInterval to set
+	 */
+	public void setCoolDownNumUsersPerInterval(double coolDownNumUsersPerInterval) {
+		this.coolDownNumUsersPerInterval = coolDownNumUsersPerInterval;
+	}
+	
+	/**
 	 * Gets the duration to wait between user starts.
 	 * 
 	 * @return time in seconds per user
 	 */
+	@Deprecated
 	public double getRampUpTimeSecondsPerUser() {
-		return rampUpTimeSecondsPerUser;
-	}
-
-	/**
-	 * Sets the duration to wait between user starts.
-	 * 
-	 * @param rampUpTimeSecondsPerUser
-	 *            time in seconds per user
-	 */
-	public void setRampUpTimeSecondsPerUser(double rampUpTimeSecondsPerUser) {
-		this.rampUpTimeSecondsPerUser = rampUpTimeSecondsPerUser;
+		return rampUpInterval / rampUpNumUsersPerInterval;
 	}
 
 	/**
@@ -181,54 +270,43 @@ public class JMeterWorkloadConfig {
 	 * 
 	 * @return time in seconds per user
 	 */
+	@Deprecated
 	public double getCoolDownTimeSecondsPerUser() {
-		return coolDownTimeSecondsPerUser;
+		return coolDownInterval / coolDownNumUsersPerInterval;
 	}
 
 	/**
-	 * Sets the duration to wait between user shutdowns.
-	 * 
-	 * @param coolDownTimeSecondsPerUser
-	 *            time in seconds per user
-	 */
-	public void setCoolDownTimeSecondsPerUser(double coolDownTimeSecondsPerUser) {
-		this.coolDownTimeSecondsPerUser = coolDownTimeSecondsPerUser;
-	}
-
-	/**
-	 * Gets the file path of the JMeter bin folder.
+	 * Gets the file path of the JMeter root folder.
 	 * 
 	 * @return path to jMeter folder
 	 */
-	public String getPathToJMeterBinFolder() {
-		return pathToJMeterBinFolder;
+	public String getPathToJMeterRootFolder() {
+		return pathToJMeterRootFolder;
 	}
 
 	/**
-	 * Sets the file path of the JMeter bin folder (for example
-	 * "C:\...\apache-jmeter-2.9\bin").
+	 * Sets the file path of the JMeter root folder (for example
+	 * "C:\...\apache-jmeter-2.9").
 	 * 
-	 * @param pathToJMeterBinFolder
-	 *            the path
+	 * @param pathToJMeterRootFolder the path
 	 */
-	public void setPathToJMeterBinFolder(String pathToJMeterBinFolder) {
-		this.pathToJMeterBinFolder = pathToJMeterBinFolder;
+	public void setPathToJMeterBinFolder(String pathToJMeterRootFolder) {
+		this.pathToJMeterRootFolder = pathToJMeterRootFolder;
 	}
 
 	/**
-	 * Gets the Path of the JMeter-script to run.
-	 * 
-	 * @return the path to the file
+	 * Gets the Path of the JMeter load script
+	 *  
+	 * @return the path to the load script
 	 */
 	public String getPathToScript() {
 		return pathToScript;
 	}
 
 	/**
-	 * Sets the Path of the JMeter-script to run.
+	 * Sets the Path of the JMeter load script.
 	 * 
-	 * @param pathToScript
-	 *            The path to the script
+	 * @param pathToScript the path to the script
 	 */
 	public void setPathToScript(String pathToScript) {
 		this.pathToScript = pathToScript;

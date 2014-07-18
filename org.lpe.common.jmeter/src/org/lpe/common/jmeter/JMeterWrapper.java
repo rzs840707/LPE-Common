@@ -97,8 +97,8 @@ public final class JMeterWrapper {
 		List<String> cmd = buildCmdLine(config, logFile);
 
 		ProcessBuilder pb = new ProcessBuilder(cmd);
-		pb.directory(new File(config.getPathToJMeterBinFolder()));
-		pb.redirectOutput(new File(config.getPathToJMeterBinFolder().concat("jmeter_spotter.log")));
+		pb.directory(new File(config.getPathToJMeterRootFolder()));
+		pb.redirectOutput(new File(config.getPathToJMeterRootFolder().concat("jmeter_spotter.log")));
 		pb.redirectErrorStream(true);
 		jmeterProcess = pb.start();
 
@@ -148,7 +148,7 @@ public final class JMeterWrapper {
 		
 		if (config.getCreateLogFlag()) {
 			int logID = getUniqueLogID();
-			String logFilename = config.getPathToJMeterBinFolder() + "\\" + "JMETWRAPPERLOG_" + logID;
+			String logFilename = config.getPathToJMeterRootFolder() + "\\" + "JMETWRAPPERLOG_" + logID;
 			logFile = new File(logFilename);
 			if (logFile.exists()) {
 				logFile.delete();
@@ -189,8 +189,8 @@ public final class JMeterWrapper {
 		cmd.add("-Jp_numUsers=" + config.getNumUsers());
 		cmd.add("-Jp_rampUpSecondsPerUser=" + config.getRampUpTimeSecondsPerUser());
 		cmd.add("-Jp_rampDownSecondsPerUser=" + config.getCoolDownTimeSecondsPerUser());
-		cmd.add("-Jp_thinkTimeMinMS=" + config.getThinkTimeMinimumMS());
-		cmd.add("-Jp_thinkTimeMaxMS=" + config.getThinkTimeMaximumMS());
+		cmd.add("-Jp_thinkTimeMinMS=" + config.getThinkTimeMinimum());
+		cmd.add("-Jp_thinkTimeMaxMS=" + config.getThinkTimeMaximum());
 		
 		// add custom properties
 		Properties additionalProps = config.getAdditionalProperties();
