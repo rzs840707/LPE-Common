@@ -35,11 +35,13 @@ public class WrapperTest {
 		conf.setPathToScript("C:\\Users\\D061588\\Desktop\\apache-jmeter-2.9\\scripts\\mediastore\\mediastore_usage_profile.jmx");
 		conf.setCreateLogFlag(true);
 		conf.setNumUsers(10);
-		conf.setDurationSeconds(20);
-		conf.setRampUpTimeSecondsPerUser(2);
-		conf.setCoolDownTimeSecondsPerUser(2);
-		conf.setThinkTimeMinimumMS(200);
-		conf.setThinkTimeMaximumMS(2000);
+		conf.setExperimentDuration(20);
+		conf.setRampUpInterval(2.0);
+		conf.setRampUpNumUsersPerInterval(1.0);
+		conf.setCoolDownInterval(2.0);
+		conf.setCoolDownNumUsersPerInterval(1.0);
+		conf.setThinkTimeMinimum(200);
+		conf.setThinkTimeMaximum(2000);
 		
 		try {
 			wrap.startLoadTest(conf);
