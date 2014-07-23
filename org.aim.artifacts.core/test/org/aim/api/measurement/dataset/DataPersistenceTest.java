@@ -28,6 +28,7 @@ import org.aim.api.measurement.utils.RecordCSVWriter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.lpe.common.util.LpeFileUtils;
+import org.lpe.common.util.system.LpeSystemUtils;
 
 public class DataPersistenceTest {
 
@@ -65,8 +66,7 @@ public class DataPersistenceTest {
 		final PipedOutputStream outStream = new PipedOutputStream();
 		final PipedInputStream inStream = new PipedInputStream(outStream);
 		final BufferedWriter bWriter = new BufferedWriter(new OutputStreamWriter(outStream));
-
-		new Thread(new Runnable() {
+		LpeSystemUtils.submitTask(new Runnable() {
 
 			@Override
 			public void run() {
@@ -89,7 +89,7 @@ public class DataPersistenceTest {
 				}
 
 			}
-		}).start();
+		});
 
 		RecordCSVWriter.getInstance().pipeDataToDatasetFiles(inStream, dir.getAbsolutePath(),
 				LargeDatasetCollection.additionalParameters);

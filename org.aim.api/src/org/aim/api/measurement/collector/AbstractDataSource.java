@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.aim.api.exceptions.MeasurementException;
 import org.aim.api.measurement.AbstractRecord;
+import org.lpe.common.util.system.LpeSystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,7 +128,7 @@ public abstract class AbstractDataSource implements IDataCollector, IDataReader,
 
 		if (finished) {
 			finished = false;
-			new Thread(this).start();
+			LpeSystemUtils.submitTask(this);
 		}
 
 		LOGGER.debug("Data Collector is running");

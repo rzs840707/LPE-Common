@@ -25,6 +25,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.lpe.common.util.dummy.DummyService;
+import org.lpe.common.util.system.LpeSystemUtils;
 import org.lpe.common.util.web.LpeWebUtils;
 import org.lpe.common.util.web.WebServer;
 
@@ -46,7 +47,7 @@ public class LpeWebUtilsTest {
 		startServer(5);
 
 		for (int i = 0; i < 50; i++) {
-			new Thread(new Runnable() {
+			LpeSystemUtils.submitTask(new Runnable() {
 
 				@Override
 				public void run() {
@@ -54,7 +55,7 @@ public class LpeWebUtilsTest {
 							.accept(MediaType.APPLICATION_JSON).get(String.class);
 					done.incrementAndGet();
 				}
-			}).start();
+			});
 		}
 
 		while (done.get() < 50) {
@@ -80,7 +81,7 @@ public class LpeWebUtilsTest {
 		}
 
 		for (int i = 0; i < 50; i++) {
-			new Thread(new Runnable() {
+			LpeSystemUtils.submitTask(new Runnable() {
 
 				@Override
 				public void run() {
@@ -88,7 +89,7 @@ public class LpeWebUtilsTest {
 							.accept(MediaType.APPLICATION_JSON).get(String.class);
 					done.incrementAndGet();
 				}
-			}).start();
+			});
 		}
 
 		while (done.get() < 50) {

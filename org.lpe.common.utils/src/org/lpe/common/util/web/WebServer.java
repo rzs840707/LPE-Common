@@ -18,6 +18,7 @@ package org.lpe.common.util.web;
 import java.util.Collection;
 
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.lpe.common.util.system.LpeSystemUtils;
 
 import com.sun.jersey.api.client.WebResource;
 
@@ -135,7 +136,7 @@ public final class WebServer {
 		server = LpeWebUtils.startHttpServer(host, port, basePath, servicePackages.toArray(new String[0]),
 				minNumWorker, maxNumWorker);
 		// wait for shutdown thread
-		new Thread(new Runnable() {
+		LpeSystemUtils.submitTask(new Runnable() {
 
 			@Override
 			public void run() {
@@ -159,8 +160,7 @@ public final class WebServer {
 					finishedMonitor.notifyAll();
 				}
 			}
-		}).start();
-
+		});
 	}
 
 	/**

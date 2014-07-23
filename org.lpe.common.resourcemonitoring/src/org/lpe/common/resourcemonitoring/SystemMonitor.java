@@ -25,6 +25,7 @@ import org.aim.api.measurement.collector.AbstractDataSource;
 import org.aim.api.measurement.sampling.AbstractSampler;
 import org.aim.api.measurement.sampling.ResourceSamplerFactory;
 import org.aim.api.measurement.sampling.SamplingExecuter;
+import org.lpe.common.util.system.LpeSystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +108,7 @@ public final class SystemMonitor {
 		}
 
 		for (SamplingExecuter samplingExecuter : monitoringJobs.values()) {
-			new Thread(samplingExecuter).start();
+			LpeSystemUtils.submitTask(samplingExecuter);
 		}
 	}
 
