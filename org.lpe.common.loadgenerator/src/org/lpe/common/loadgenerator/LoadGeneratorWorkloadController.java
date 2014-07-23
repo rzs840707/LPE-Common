@@ -20,6 +20,7 @@ import java.io.IOException;
 import org.lpe.common.loadgenerator.config.LGWorkloadConfig;
 import org.lpe.common.loadgenerator.scenario.ScenarioModifier;
 import org.lpe.common.loadgenerator.scenario.ScenarioRunner;
+import org.lpe.common.util.system.LpeSystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,8 +72,7 @@ public final class LoadGeneratorWorkloadController {
 			scenarioRunner.setNewScenarioPath(newScenarioPath);
 
 			// Execute load generator scenario asynchronously
-			Thread thread = new Thread(scenarioRunner);
-			thread.start();
+			LpeSystemUtils.submitTask(scenarioRunner);
 		} else {
 			LOGGER.debug("load generator is not yet finished - wait for completion!");
 		}

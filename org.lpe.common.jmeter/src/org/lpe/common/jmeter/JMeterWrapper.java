@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.lpe.common.jmeter.IO.DynamicPipedInputStream;
 import org.lpe.common.jmeter.IO.FilePoller;
 import org.lpe.common.jmeter.config.JMeterWorkloadConfig;
+import org.lpe.common.util.system.LpeSystemUtils;
 
 /**
  * Wrapper class which handles the connection to JMeter console process.
@@ -107,7 +108,7 @@ public final class JMeterWrapper {
 
 		// add a Thread that waits for the Process to terminate who then
 		// notifies all other waiting Threads
-		new Thread(new Runnable() {
+		LpeSystemUtils.submitTask(new Runnable() {
 
 			public void run() {
 				try {
@@ -127,8 +128,7 @@ public final class JMeterWrapper {
 					thisWrapper.notifyAll();
 				}
 			}
-		}).start();
-
+		});
 	}
 
 	/**

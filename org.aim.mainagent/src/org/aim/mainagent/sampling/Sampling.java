@@ -26,6 +26,7 @@ import org.aim.api.measurement.sampling.AbstractResourceSampler;
 import org.aim.api.measurement.sampling.AbstractSampler;
 import org.aim.api.measurement.sampling.ResourceSamplerFactory;
 import org.aim.api.measurement.sampling.SamplingExecuter;
+import org.lpe.common.util.system.LpeSystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,7 +119,7 @@ public final class Sampling {
 		LOGGER.info("Started Application Resource Sampling");
 		for (SamplingExecuter samplingExecuter : monitoringJobs.values()) {
 			LOGGER.info("Starting sampling executer with a delay of " + samplingExecuter.getDelay() + " ms");
-			new Thread(samplingExecuter).start();
+			LpeSystemUtils.submitTask(samplingExecuter);
 		}
 	}
 

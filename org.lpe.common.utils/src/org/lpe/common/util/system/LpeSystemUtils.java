@@ -30,6 +30,9 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -53,6 +56,8 @@ public final class LpeSystemUtils {
 	private static final String JAVA_LIBRARY_PATH = "java.library.path";
 
 	private static final String KILLSERVICE_CMD_WINDOWS = "net stop ";
+
+	private static ExecutorService threadPool;
 
 	private static Logger logger = LoggerFactory.getLogger(LpeSystemUtils.class);
 
@@ -87,6 +92,28 @@ public final class LpeSystemUtils {
 	 */
 	public static String getRootFolder() {
 		return getRootFolder(null);
+	}
+
+	/**
+	 * Submits a task for concurrent execution.
+	 * 
+	 * @param command
+	 *            runnable to execute
+	 * @return a future object representing the concurrent task
+	 */
+	public static Future<?> submitTask(Runnable command) {
+		return getThreadPool().submit(command);
+	}
+
+	/**
+	 * retrieves a cached thread pool
+	 * @return thread pool
+	 */
+	private static ExecutorService getThreadPool() {
+		if (threadPool == null) {
+			threadPool = Executors.newCachedThreadPool();
+		}
+		return threadPool;
 	}
 
 	/**
