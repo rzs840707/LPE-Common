@@ -59,7 +59,7 @@ public final class GlobalConfiguration {
 	public static void initialize(String coreConfigFile,
 			String projectConfigFile) {
 		Properties projectProperties = getPropertiesFromFile(projectConfigFile);
-		coreProperties = getPropertiesFromFile(coreConfigFile);
+		Properties coreProperties = getPropertiesFromFile(coreConfigFile);
 		initialize(coreProperties, projectProperties);
 	}
 
@@ -72,7 +72,7 @@ public final class GlobalConfiguration {
 	 *            underlying service
 	 */
 	public static void initialize(String coreConfigFile) {
-		coreProperties = getPropertiesFromFile(coreConfigFile);
+		Properties coreProperties = getPropertiesFromFile(coreConfigFile);
 		initialize(coreProperties);
 	}
 
@@ -102,6 +102,8 @@ public final class GlobalConfiguration {
 	public static void initialize(Properties coreProperties,
 			Properties projectProperties) {
 		if (!initialized) {
+			GlobalConfiguration.coreProperties = new Properties();
+			coreProperties.putAll(coreProperties);
 			instance = new GlobalConfiguration(coreProperties,
 					projectProperties);
 			initialized = true;
