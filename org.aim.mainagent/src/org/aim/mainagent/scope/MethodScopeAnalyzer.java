@@ -17,6 +17,7 @@ package org.aim.mainagent.scope;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.aim.api.instrumentation.AbstractScopeAnalyzer;
@@ -56,12 +57,20 @@ public class MethodScopeAnalyzer extends AbstractScopeAnalyzer {
 			if (!LpeStringUtils.patternPrefixMatches(className, patternToInstrument)) {
 				continue;
 			}
-
+			Set<Method> methods = new HashSet<>();
 			for (Method m : clazz.getMethods()) {
-				checkMethodMatching(scopeEntities, patternToInstrument, m);
+				if (!Modifier.isAbstract(m.getModifiers()) && !Modifier.isNative(m.getModifiers())) {
+					methods.add(m);
+				}
 			}
 
 			for (Method m : clazz.getDeclaredMethods()) {
+				if (!Modifier.isAbstract(m.getModifiers()) && !Modifier.isNative(m.getModifiers())) {
+					methods.add(m);
+				}
+			}
+
+			for (Method m : methods) {
 				checkMethodMatching(scopeEntities, patternToInstrument, m);
 			}
 
@@ -70,9 +79,6 @@ public class MethodScopeAnalyzer extends AbstractScopeAnalyzer {
 	}
 
 	private void checkMethodMatching(Set<FlatScopeEntity> scopeEntities, String patternToMatch, Method m) {
-		if (Modifier.isAbstract(m.getModifiers()) || Modifier.isNative(m.getModifiers())) {
-			return;
-		}
 		if (LpeStringUtils.patternMatches(Utils.getMethodSignature(m, true), patternToMatch)) {
 			if (!restrictions.isModifiersExcluded(m.getModifiers())
 					&& !restrictions.isExcluded(m.getDeclaringClass().getName())) {

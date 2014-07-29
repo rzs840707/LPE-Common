@@ -19,6 +19,8 @@ import java.util.Collection;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.lpe.common.util.system.LpeSystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.WebResource;
 
@@ -29,6 +31,7 @@ import com.sun.jersey.api.client.WebResource;
  * 
  */
 public final class WebServer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebServer.class);
 	private static final String SHUTDOWN_PACKAGE = "org.lpe.common.util.web";
 	private static final int SHUTDOWN_DELAY = 3000;
 	private static final String GENERIC_IP = "0.0.0.0";
@@ -48,8 +51,6 @@ public final class WebServer {
 	private HttpServer server;
 	private final Object shutdownMonitor = new Object();
 	private boolean shutdown = false;
-	private final Object finishedMonitor = new Object();
-	private boolean finished = false;
 
 	/**
 	 * private constructor.
@@ -131,10 +132,10 @@ public final class WebServer {
 			shutdown();
 		}
 		shutdown = false;
-		finished = false;
 		servicePackages.add(SHUTDOWN_PACKAGE);
 		server = LpeWebUtils.startHttpServer(host, port, basePath, servicePackages.toArray(new String[0]),
 				minNumWorker, maxNumWorker);
+		LOGGER.info("Web-Server started on port {}", port);
 		// wait for shutdown thread
 		LpeSystemUtils.submitTask(new Runnable() {
 
@@ -155,10 +156,8 @@ public final class WebServer {
 					throw new RuntimeException(e);
 				}
 				server.shutdown();
-				synchronized (finishedMonitor) {
-					finished = true;
-					finishedMonitor.notifyAll();
-				}
+				LOGGER.info("Web-Server terminated!");
+				System.exit(0);
 			}
 		});
 	}
@@ -201,21 +200,5 @@ public final class WebServer {
 		WebResource server = LpeWebUtils.getWebClient().resource(
 				"http://" + host + ":" + String.valueOf(port) + "/" + basePath);
 		server.path("ShutdownService").path("shutdown").post();
-	}
-
-	/**
-	 * Blocks until server has been shut down.
-	 */
-	public void waitForShutdown() {
-		synchronized (finishedMonitor) {
-			while (!finished) {
-				try {
-					finishedMonitor.wait();
-				} catch (InterruptedException e) {
-					shutdown();
-				}
-			}
-		}
-
 	}
 }

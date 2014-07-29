@@ -46,6 +46,7 @@ public class ServletScope extends AbstractInstAPIScope {
 				"service(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)");
 		addMethod("javax.servlet.http.HttpServlet",
 				"service(javax.servlet.ServletRequest,javax.servlet.ServletResponse)");
+		addMethodAnnotationToMatch("javax.ws.rs.Path");
 	}
 
 }

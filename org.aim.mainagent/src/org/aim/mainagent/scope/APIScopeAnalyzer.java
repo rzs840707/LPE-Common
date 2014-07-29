@@ -15,6 +15,7 @@
  */
 package org.aim.mainagent.scope;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import org.aim.mainagent.utils.Utils;
 public class APIScopeAnalyzer extends AbstractScopeAnalyzer {
 
 	private Map<Class<?>, List<MethodSignature>> methodsToMatch;
+	private Set<Class<Annotation>> methodAnnotationsToMatch;
 	private Restrictions restrictions;
 
 	/**
@@ -64,6 +66,17 @@ public class APIScopeAnalyzer extends AbstractScopeAnalyzer {
 					signatures.add(new MethodSignature(methodName, paramTypes));
 				}
 				methodsToMatch.put(containerClass, signatures);
+			} catch (ClassNotFoundException e) {
+				throw new InstrumentationException("Failed determining scope " + apiScope.getClass().getName(), e);
+			}
+		}
+
+		methodAnnotationsToMatch = new HashSet<>();
+		for (String annotationName : apiScope.getMethodAnnotationsToMatch()) {
+			try {
+				@SuppressWarnings("unchecked")
+				Class<Annotation> annotationClass = (Class<Annotation>) Class.forName(annotationName);
+				methodAnnotationsToMatch.add(annotationClass);
 			} catch (ClassNotFoundException e) {
 				throw new InstrumentationException("Failed determining scope " + apiScope.getClass().getName(), e);
 			}
@@ -100,6 +113,29 @@ public class APIScopeAnalyzer extends AbstractScopeAnalyzer {
 						continue;
 					}
 				}
+			}
+		}
+
+		Set<Method> methods = new HashSet<>();
+		for (Method m : clazz.getMethods()) {
+			if (!Modifier.isAbstract(m.getModifiers()) && !Modifier.isNative(m.getModifiers())) {
+				methods.add(m);
+			}
+		}
+
+		for (Method m : clazz.getDeclaredMethods()) {
+			if (!Modifier.isAbstract(m.getModifiers()) && !Modifier.isNative(m.getModifiers())) {
+				methods.add(m);
+			}
+		}
+
+		for (Method method : methods) {
+			for (Class<Annotation> annotationClass : methodAnnotationsToMatch) {
+				if (method.getAnnotation(annotationClass) != null) {
+					scopeEntities.add(new FlatScopeEntity(clazz, Utils.getMethodSignature(method, true)));
+					break;
+				}
+
 			}
 		}
 	}
