@@ -19,6 +19,7 @@
 		<module>../org.aim.api</module>
 		<module>../org.aim.artifacts.core</module>
 		<module>../org.aim.mainagent</module>
+		<module>../org.aim.cagent</module>
 		<module>../org.lpe.common.resourcemonitoring</module>
 		<module>../org.lpe.common.loadgenerator</module>
 		<module>../org.lpe.common.jmeter</module>
