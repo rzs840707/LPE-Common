@@ -32,6 +32,11 @@ public class CEventAgentAdapter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CEventAgentAdapter.class);
 
+	private static final String PACKAGE_AIM = "org.aim";
+	private static final String PACKAGE_LPE_COMMON = "org.lpe.common";
+	private static final String PACKAGE_JAVA = "java.";
+	private static final String CLASS_NAME = "java.lang.Class";
+
 	private static AIMEventListener synchronizedListener;
 
 	private static boolean initialized = false;
@@ -57,9 +62,10 @@ public class CEventAgentAdapter {
 		if (synchronizedListener == null) {
 			throw new IllegalStateException("No AIMEventListener specified!");
 		}
-		
+
 		String className = monitor.getClass().getName();
-		if (!className.startsWith("org.aim") && !className.startsWith("org.lpe.common") && (!className.startsWith("java.") || className.startsWith("java.lang.Class"))) {
+		if (!className.startsWith(PACKAGE_AIM) && !className.startsWith(PACKAGE_LPE_COMMON)
+				&& (!className.startsWith(PACKAGE_JAVA) || className.startsWith(CLASS_NAME))) {
 			synchronizedListener.onWaitingTimeStart(thread, monitor, enterTime);
 		}
 	}
@@ -86,7 +92,8 @@ public class CEventAgentAdapter {
 		}
 
 		String className = monitor.getClass().getName();
-		if (!className.startsWith("org.aim") && !className.startsWith("org.lpe.common") && (!className.startsWith("java.") || className.equals("java.lang.Class"))) {
+		if (!className.startsWith(PACKAGE_AIM) && !className.startsWith(PACKAGE_LPE_COMMON)
+				&& (!className.startsWith(PACKAGE_JAVA) || className.startsWith(CLASS_NAME))) {
 			synchronizedListener.onWaitingTimeEnd(thread, monitor, enteredTime);
 		}
 	}
@@ -97,7 +104,7 @@ public class CEventAgentAdapter {
 	 * @return {@code false}, if initialization failed, because the C agent
 	 *         could not be found, or {@code true} otherwise.
 	 */
-	public static boolean initialize(AIMEventListener listener) {
+	public static boolean initialize() {
 		if (initialized) {
 			LOGGER.warn("The C agent has alredy been initialized!");
 		} else {
@@ -108,11 +115,19 @@ public class CEventAgentAdapter {
 				return false;
 			}
 
-			synchronizedListener = listener;
 			initialized = true;
 		}
 
 		return true;
+	}
+	
+	/**
+	 * Sets the synchronizedListener
+	 * 
+	 * @param listener synchronized listener to be set
+	 */
+	public static void setSynchronizedListener(AIMEventListener listener) {
+		synchronizedListener = listener;
 	}
 
 	private static native void init();
