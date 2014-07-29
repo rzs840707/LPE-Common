@@ -37,6 +37,8 @@ import org.aim.api.instrumentation.description.MethodsScope;
 import org.aim.api.instrumentation.description.Restrictions;
 import org.aim.api.instrumentation.description.internal.FlatInstrumentationEntity;
 import org.aim.api.instrumentation.description.internal.FlatScopeEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Analyzes tho whole scope.
@@ -45,7 +47,7 @@ import org.aim.api.instrumentation.description.internal.FlatScopeEntity;
  * 
  */
 public class ScopeAnalysisController {
-
+	private static Logger LOGGER = LoggerFactory.getLogger(ScopeAnalysisController.class);
 	private InstrumentationDescription instrumentationDescription;
 
 	/**
@@ -79,7 +81,13 @@ public class ScopeAnalysisController {
 			Set<String> probes = mapEntry.getValue();
 			Set<FlatScopeEntity> scopeEntities = new HashSet<>();
 			for (Class<?> clazz : allLoadedClasses) {
-				sAnalyzer.visitClass(clazz, scopeEntities);
+				try {
+					sAnalyzer.visitClass(clazz, scopeEntities);
+				} catch (Throwable t) {
+					LOGGER.warn("failed to instrument class {}. Ignoring and resuming instrumentation.",
+							clazz.getName());
+				}
+
 			}
 			for (FlatScopeEntity fse : scopeEntities) {
 				for (String probe : probes) {

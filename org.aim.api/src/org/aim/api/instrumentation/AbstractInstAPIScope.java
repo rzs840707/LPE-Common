@@ -17,8 +17,10 @@ package org.aim.api.instrumentation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An instrumentation scope cheks whether a certain entity matches the specific
@@ -30,6 +32,7 @@ import java.util.Map;
 public abstract class AbstractInstAPIScope {
 
 	private Map<String, List<String>> methodsToMatch;
+	private Set<String> methodAnnotationsToMatch;
 
 	/**
 	 * Constructor.
@@ -64,6 +67,26 @@ public abstract class AbstractInstAPIScope {
 			methodsToMatch = new HashMap<String, List<String>>();
 		}
 		return methodsToMatch;
+	}
+
+	/**
+	 * Adds an annotation for a method to match.
+	 * 
+	 * @param annotationName
+	 *            full qualified name of the annotation to match
+	 */
+	protected void addMethodAnnotationToMatch(String annotationName) {
+		getMethodAnnotationsToMatch().add(annotationName);
+	}
+
+	/**
+	 * @return the methodAnnotationsToMatch
+	 */
+	public Set<String> getMethodAnnotationsToMatch() {
+		if (methodAnnotationsToMatch == null) {
+			methodAnnotationsToMatch = new HashSet<>();
+		}
+		return methodAnnotationsToMatch;
 	}
 
 }
