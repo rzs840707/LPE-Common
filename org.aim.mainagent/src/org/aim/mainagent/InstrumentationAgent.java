@@ -105,11 +105,11 @@ public final class InstrumentationAgent {
 	 *            Java instrumentation instance
 	 */
 	public static void agentmain(String agentArgs, Instrumentation inst) {
-		boolean cAgentInitializedSuccessfully = CEventAgentAdapter.initialize();
-		if (!cAgentInitializedSuccessfully) {
-			LOGGER.warn("The C event agent could not be initialized and will not be used therefore.");
-			//TODO: handle this case
-		}
+//		boolean cAgentInitializedSuccessfully = CEventAgentAdapter.initialize();
+//		if (!cAgentInitializedSuccessfully) {
+//			LOGGER.warn("The C event agent could not be initialized and will not be used therefore.");
+//			//TODO: handle this case
+//		}
 		
 		try {
 			if (!inst.isRedefineClassesSupported()) {

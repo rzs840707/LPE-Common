@@ -15,8 +15,6 @@
  */
 package org.aim.mainagent;
 
-import java.io.PrintStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +32,9 @@ public class CEventAgentAdapter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CEventAgentAdapter.class);
 
-	private static boolean initialized = false;
+	private static AIMEventListener synchronizedListener;
 
+	private static boolean initialized = false;
 	private static boolean activated = false;
 
 	/**
@@ -53,16 +52,15 @@ public class CEventAgentAdapter {
 	 * @see CEventAgentAdapter#enableMonitorEvents() enableMonitorEvents()
 	 * @see CEventAgentAdapter#disableMonitorEvents() disableMonitorEvents()
 	 */
-	// TODO: raw implementation
 	public static void onMonitorWait(Thread thread, Object monitor) {
-		if (monitor instanceof PrintStream) {
-			printlnNonBlocking("I (TestAgent) recognized: Just PrintStream monitor!");
-		} else {
-			StackTraceElement[] stackTrace = thread.getStackTrace();
-
-			printlnNonBlocking("I (TestAgent) recognized: Thread " + thread.getId()
-					+ " is waiting to enter a monitor of type " + monitor.getClass().getName()
-					+ stackTrace[2].getMethodName() + " in line " + stackTrace[2].getLineNumber());
+		long enterTime = System.nanoTime();
+		if (synchronizedListener == null) {
+			throw new IllegalStateException("No AIMEventListener specified!");
+		}
+		
+		String className = monitor.getClass().getName();
+		if (!className.startsWith("org.aim") && !className.startsWith("org.lpe.common") && (!className.startsWith("java.") || className.startsWith("java.lang.Class"))) {
+			synchronizedListener.onWaitingTimeStart(thread, monitor, enterTime);
 		}
 	}
 
@@ -81,16 +79,15 @@ public class CEventAgentAdapter {
 	 * @see CEventAgentAdapter#enableMonitorEvents() enableMonitorEvents()
 	 * @see CEventAgentAdapter#disableMonitorEvents() disableMonitorEvents()
 	 */
-	// TODO: raw implementation
 	public static void onMonitorEntered(Thread thread, Object monitor) {
-		if (monitor instanceof PrintStream) {
-			printlnNonBlocking("I (TestAgent) recognized: Just PrintStream monitor!");
-		} else {
-			StackTraceElement[] stackTrace = thread.getStackTrace();
+		long enteredTime = System.nanoTime();
+		if (synchronizedListener == null) {
+			throw new IllegalStateException("No AIMEventListener specified!");
+		}
 
-			printlnNonBlocking("I (TestAgent) recognized: Thread " + thread.getId() + " has entered a monitor of type "
-					+ monitor.getClass().getName() + " in method " + stackTrace[2].getMethodName() + " in line "
-					+ stackTrace[2].getLineNumber());
+		String className = monitor.getClass().getName();
+		if (!className.startsWith("org.aim") && !className.startsWith("org.lpe.common") && (!className.startsWith("java.") || className.equals("java.lang.Class"))) {
+			synchronizedListener.onWaitingTimeEnd(thread, monitor, enteredTime);
 		}
 	}
 
@@ -100,7 +97,7 @@ public class CEventAgentAdapter {
 	 * @return {@code false}, if initialization failed, because the C agent
 	 *         could not be found, or {@code true} otherwise.
 	 */
-	public static boolean initialize() {
+	public static boolean initialize(AIMEventListener listener) {
 		if (initialized) {
 			LOGGER.warn("The C agent has alredy been initialized!");
 		} else {
@@ -111,6 +108,7 @@ public class CEventAgentAdapter {
 				return false;
 			}
 
+			synchronizedListener = listener;
 			initialized = true;
 		}
 
