@@ -54,6 +54,7 @@ public final class AdaptiveInstrumentationFacade {
 
 	private MethodInstrumentor methodInstrumentor;
 	private TraceInstrumentor traceInstrumentor;
+	private EventInstrumentor eventInstrumentor;
 
 	private SupportedExtensions extensions = null;
 
@@ -61,6 +62,8 @@ public final class AdaptiveInstrumentationFacade {
 		methodInstrumentor = new MethodInstrumentor();
 
 		traceInstrumentor = TraceInstrumentor.getInstance();
+		//TODO: uncomment after EventInstrumentor works properly
+//		eventInstrumentor = EventInstrumentor.getInstance();
 	}
 
 	/**
@@ -78,7 +81,7 @@ public final class AdaptiveInstrumentationFacade {
 			throws InstrumentationException {
 		methodInstrumentor.instrument(instrumentationDescription);
 		traceInstrumentor.instrument(instrumentationDescription);
-		// TODO: add Event Instrumentation
+		eventInstrumentor.instrument(instrumentationDescription);
 		// TODO: add Statement Instrumentation
 
 		if (instrumentationDescription.getSamplingDescription() != null) {
