@@ -104,8 +104,14 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.6</version>
 				<configuration>
-					<skip>true</skip>
+					<instrumentation>
+						<excludes>
+							<exclude>org/aim/artifacts/probes/*Probe.class</exclude>
+							<exclude>org/aim/mainagent/probes/*Probe.class</exclude>
+						</excludes>
+					</instrumentation>
 				</configuration>
 			</plugin>
 
