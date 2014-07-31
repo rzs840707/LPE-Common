@@ -142,6 +142,12 @@ public class Restriction {
 		}
 	}
 
+	@JsonIgnore
+	public boolean isEmpty() {
+		return packageExcludes.isEmpty() && packageIncludes.isEmpty() && modifierExcludes.isEmpty()
+				&& modifierIncludes.isEmpty();
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

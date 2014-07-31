@@ -40,7 +40,7 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 	 * @return a {@link RestrictionBuilder}
 	 */
 	public RestrictionBuilder<InstrumentationDescriptionBuilder> newGlobalRestriction() {
-		return new RestrictionBuilder<InstrumentationDescriptionBuilder>(this);
+		return new RestrictionBuilder<InstrumentationDescriptionBuilder>(this, description.getGlobalRestriction());
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 	 *            sampling delay
 	 * @return this builder
 	 */
-	public InstrumentationDescriptionBuilder addSampling(String resource, int delay) {
+	public InstrumentationDescriptionBuilder newSampling(String resource, int delay) {
 		description.addSamplingDescription(new SamplingDescription(resource, delay));
 		return this;
 	}

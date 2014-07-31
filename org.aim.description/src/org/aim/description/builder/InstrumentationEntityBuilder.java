@@ -64,7 +64,7 @@ public class InstrumentationEntityBuilder<S extends Scope> extends AbstractRestr
 	 * @return this builder
 	 */
 	public RestrictionBuilder<InstrumentationEntityBuilder<S>> newLocalRestriction() {
-		return new RestrictionBuilder<InstrumentationEntityBuilder<S>>(this);
+		return new RestrictionBuilder<InstrumentationEntityBuilder<S>>(this, entity.getLocalRestriction());
 	}
 
 	/**

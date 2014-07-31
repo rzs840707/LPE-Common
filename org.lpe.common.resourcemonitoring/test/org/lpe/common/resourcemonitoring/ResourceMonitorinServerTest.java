@@ -82,7 +82,7 @@ public class ResourceMonitorinServerTest {
 	public void testMeasurement() {
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
 
-		idBuilder.addSampling(CPUSampler.class.getName(), 100);
+		idBuilder.newSampling(CPUSampler.class.getName(), 100);
 
 		client.enableMonitoring(idBuilder.build());
 

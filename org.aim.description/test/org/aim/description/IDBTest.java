@@ -23,13 +23,13 @@ public class IDBTest {
 	@Test
 	public void test() {
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		idBuilder.addSampling(CPU_RESOURCE, 0);
+		idBuilder.newSampling(CPU_RESOURCE, 0);
 		
 		InstrumentationDescription id = idBuilder.build();
 		assertEquals(id.getSamplingDescriptions().size(), 1);
 		assertTrue(id.toString().contains("Sampling Descriptions:\n\t\t* CPU +0"));
 		
-		idBuilder.addSampling("CustomResource", 1000);
+		idBuilder.newSampling("CustomResource", 1000);
 		id = idBuilder.build();
 		assertTrue(id.toString().contains("\n\t\t* CustomResource +1000"));
 		

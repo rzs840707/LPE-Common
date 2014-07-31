@@ -75,18 +75,13 @@ public class InstrumentationEntity<S extends Scope> {
 	}
 
 	/**
-	 * Sets the local restriction. Returns, if the restriction is already set.
-	 * The restriction is set to the given one, anyway.
+	 * Sets the local restriction.
 	 * 
 	 * @param restriction
 	 *            local restriction to be set
-	 * @return {@code true}, if the global restriction alredy has been set, or
-	 *         {@code false} otherwise
 	 */
-	public boolean setLocalRestriction(Restriction restriction) {
-		boolean replaced = this.localRestriction == null;
+	public void setLocalRestriction(Restriction restriction) {
 		this.localRestriction = restriction;
-		return replaced;
 	}
 
 	/**
@@ -106,7 +101,7 @@ public class InstrumentationEntity<S extends Scope> {
 
 		builder.append(scope.toString());
 
-		if (getLocalRestriction() != null) {
+		if (!getLocalRestriction().isEmpty()) {
 			builder.append(" (");
 			builder.append(getLocalRestriction().toString());
 			builder.append(")");

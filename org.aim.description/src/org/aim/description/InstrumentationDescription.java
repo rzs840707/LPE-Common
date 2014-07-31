@@ -75,18 +75,13 @@ public class InstrumentationDescription {
 	}
 
 	/**
-	 * Sets the global restriction. Returns, if the restriction is already set.
-	 * The restriction is set to the given one, anyway.
+	 * Sets the global restriction.
 	 * 
 	 * @param restriction
 	 *            global restriction to be set
-	 * @return {@code true}, if the global restriction already has been set, or
-	 *         {@code false} otherwise
 	 */
-	public boolean setGlobalRestriction(Restriction restriction) {
-		boolean replaced = this.globalRestriction == null;
+	public void setGlobalRestriction(Restriction restriction) {
 		this.globalRestriction = restriction;
-		return replaced;
 	}
 
 	/**
@@ -150,7 +145,7 @@ public class InstrumentationDescription {
 			builder.append(entity.toString());
 		}
 
-		if (getGlobalRestriction() != null) {
+		if (!getGlobalRestriction().isEmpty()) {
 			builder.append("\n\tGlobal Restriction:\n\t\t");
 			builder.append(getGlobalRestriction().toString().replace(", ", "\n\t\t").replace("+", "+ ")
 					.replace("-", "- "));

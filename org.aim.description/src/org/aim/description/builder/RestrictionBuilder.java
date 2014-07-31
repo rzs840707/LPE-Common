@@ -21,10 +21,11 @@ public class RestrictionBuilder<B extends AbstractRestrictableBuilder> {
 	 * 
 	 * @param parentBuilder
 	 *            builder which called this constructor.
+	 * @param restriction 
 	 */
-	public RestrictionBuilder(B parentBuilder) {
+	public RestrictionBuilder(B parentBuilder, Restriction restriction) {
 		this.parentBuilder = parentBuilder;
-		this.restriction = new Restriction();
+		this.restriction = restriction;
 	}
 
 	/**
