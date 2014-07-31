@@ -16,7 +16,7 @@
 package org.aim.mainagent;
 
 import org.aim.api.exceptions.InstrumentationException;
-import org.aim.api.instrumentation.description.InstrumentationDescription;
+import org.aim.description.InstrumentationDescription;
 
 /**
  * Common instrumentation interface.

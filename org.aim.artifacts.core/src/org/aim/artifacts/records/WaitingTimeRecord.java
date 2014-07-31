@@ -33,7 +33,7 @@ public class WaitingTimeRecord extends AbstractRecord {
 
 	public static final String PAR_WAITING_TIME = "waitingTime";
 
-	public static final String PAR_MONITOR_CLASS = "monitorClass";
+	public static final String PAR_LOCATION = "monitorClass";
 
 	public static final String PAR_MONITOR_HASH_CODE = "monitorHashCode";
 
@@ -56,18 +56,14 @@ public class WaitingTimeRecord extends AbstractRecord {
 	 * @param waitingTime
 	 *            timespan the thread had to wait
 	 */
-	public WaitingTimeRecord(long timestamp, String monitorClass, int monitorHashCode, long waitingTime) {
+	public WaitingTimeRecord(long timestamp, String location, long waitingTime) {
 		super(timestamp);
-		this.monitorClass = monitorClass;
-		this.monitorHashCode = monitorHashCode;
+		this.location = location;
 		this.waitingTime = waitingTime;
 	}
 
-	@RecordValue(name = PAR_MONITOR_CLASS)
-	String monitorClass;
-
-	@RecordValue(name = PAR_MONITOR_HASH_CODE)
-	int monitorHashCode;
+	@RecordValue(name = PAR_LOCATION)
+	String location;
 
 	@RecordValue(name = PAR_WAITING_TIME)
 	long waitingTime;
@@ -75,31 +71,16 @@ public class WaitingTimeRecord extends AbstractRecord {
 	/**
 	 * @return the monitorClass
 	 */
-	public String getMonitorClass() {
-		return monitorClass;
+	public String getLocation() {
+		return location;
 	}
 
 	/**
-	 * @param monitorClass
+	 * @param location
 	 *            the monitorClass to set
 	 */
-	public void setMonitorClass(String monitorClass) {
-		this.monitorClass = monitorClass;
-	}
-
-	/**
-	 * @return the monitorHashCode
-	 */
-	public int getMonitorHashCode() {
-		return monitorHashCode;
-	}
-
-	/**
-	 * @param monitorHashCode
-	 *            the monitorHashCode to set
-	 */
-	public void setMonitorHashCode(int monitorHashCode) {
-		this.monitorHashCode = monitorHashCode;
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 	/**

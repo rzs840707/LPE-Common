@@ -16,6 +16,7 @@
 package org.aim.artifacts.scopes;
 
 import org.aim.api.instrumentation.AbstractInstAPIScope;
+import org.lpe.common.extension.IExtension;
 
 /**
  * The JDBC scope comprises all java.sql and javax.sql API methods that retrieve
@@ -25,6 +26,10 @@ import org.aim.api.instrumentation.AbstractInstAPIScope;
  * 
  */
 public class JDBCScope extends AbstractInstAPIScope {
+	public JDBCScope(IExtension<?> provider) {
+		super(provider);
+	}
+
 	@Override
 	protected void init() {
 		// java.sql entities

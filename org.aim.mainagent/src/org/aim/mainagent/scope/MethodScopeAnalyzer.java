@@ -21,8 +21,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.aim.api.instrumentation.AbstractScopeAnalyzer;
-import org.aim.api.instrumentation.description.Restrictions;
 import org.aim.api.instrumentation.description.internal.FlatScopeEntity;
+import org.aim.description.restrictions.Restriction;
 import org.aim.mainagent.utils.Utils;
 import org.lpe.common.util.LpeStringUtils;
 
@@ -33,8 +33,8 @@ import org.lpe.common.util.LpeStringUtils;
  * 
  */
 public class MethodScopeAnalyzer extends AbstractScopeAnalyzer {
-	private Restrictions restrictions;
-	private final Set<String> methodPatterns;
+	private Restriction restriction;
+	private final String [] methodPatterns;
 
 	/**
 	 * Constructor.
@@ -42,14 +42,14 @@ public class MethodScopeAnalyzer extends AbstractScopeAnalyzer {
 	 * @param methodNames
 	 *            full qualified signatures of the methods to instrument
 	 */
-	public MethodScopeAnalyzer(Set<String> methodNames) {
+	public MethodScopeAnalyzer(String [] methodNames) {
 		this.methodPatterns = methodNames;
 	}
 
 	@Override
 	public void visitClass(Class<?> clazz, Set<FlatScopeEntity> scopeEntities) {
 		String className = clazz.getName();
-		if (restrictions.isExcluded(className)) {
+		if (restriction.isExcluded(className)) {
 			return;
 		}
 
@@ -80,16 +80,16 @@ public class MethodScopeAnalyzer extends AbstractScopeAnalyzer {
 
 	private void checkMethodMatching(Set<FlatScopeEntity> scopeEntities, String patternToMatch, Method m) {
 		if (LpeStringUtils.patternMatches(Utils.getMethodSignature(m, true), patternToMatch)) {
-			if (!restrictions.isModifiersExcluded(m.getModifiers())
-					&& !restrictions.isExcluded(m.getDeclaringClass().getName())) {
+			if (!restriction.isAtLeastOneOfTheModifiersExcluded(m.getModifiers())
+					&& !restriction.isExcluded(m.getDeclaringClass().getName())) {
 				scopeEntities.add(new FlatScopeEntity(m.getDeclaringClass(), Utils.getMethodSignature(m, true)));
 			}
 		}
 	}
 
 	@Override
-	public void setRestrictions(Restrictions restrictions) {
-		this.restrictions = restrictions;
+	public void setRestriction(Restriction restriction) {
+		this.restriction = restriction;
 
 	}
 }

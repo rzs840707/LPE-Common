@@ -15,6 +15,7 @@
  */
 package org.aim.mainagent;
 
+import org.aim.mainagent.events.SynchronizedEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class CEventAgentAdapter {
 	private static final String PACKAGE_JAVA = "java.";
 	private static final String CLASS_NAME = "java.lang.Class";
 
-	private static AIMEventListener synchronizedListener;
+	private static SynchronizedEventListener synchronizedListener;
 
 	private static boolean initialized = false;
 	private static boolean activated = false;
@@ -66,7 +67,7 @@ public class CEventAgentAdapter {
 		String className = monitor.getClass().getName();
 		if (!className.startsWith(PACKAGE_AIM) && !className.startsWith(PACKAGE_LPE_COMMON)
 				&& (!className.startsWith(PACKAGE_JAVA) || className.startsWith(CLASS_NAME))) {
-			synchronizedListener.onWaitingTimeStart(thread, monitor, enterTime);
+			synchronizedListener.onMonitorWait(thread, monitor, enterTime);
 		}
 	}
 
@@ -94,7 +95,7 @@ public class CEventAgentAdapter {
 		String className = monitor.getClass().getName();
 		if (!className.startsWith(PACKAGE_AIM) && !className.startsWith(PACKAGE_LPE_COMMON)
 				&& (!className.startsWith(PACKAGE_JAVA) || className.startsWith(CLASS_NAME))) {
-			synchronizedListener.onWaitingTimeEnd(thread, monitor, enteredTime);
+			synchronizedListener.onMonitorEntered(thread, monitor, enteredTime);
 		}
 	}
 
@@ -126,7 +127,7 @@ public class CEventAgentAdapter {
 	 * 
 	 * @param listener synchronized listener to be set
 	 */
-	public static void setSynchronizedListener(AIMEventListener listener) {
+	public static void setSynchronizedListener(SynchronizedEventListener listener) {
 		synchronizedListener = listener;
 	}
 

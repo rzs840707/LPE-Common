@@ -17,15 +17,18 @@ package org.aim.mainagent.sampling;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.aim.api.exceptions.MeasurementException;
-import org.aim.api.instrumentation.description.SamplingConfig;
 import org.aim.api.measurement.collector.AbstractDataSource;
 import org.aim.api.measurement.collector.IDataCollector;
 import org.aim.api.measurement.sampling.AbstractResourceSampler;
 import org.aim.api.measurement.sampling.AbstractSampler;
+import org.aim.api.measurement.sampling.AbstractSamplerExtension;
 import org.aim.api.measurement.sampling.ResourceSamplerFactory;
 import org.aim.api.measurement.sampling.SamplingExecuter;
+import org.aim.description.sampling.SamplingDescription;
+import org.lpe.common.extension.ExtensionRegistry;
 import org.lpe.common.util.system.LpeSystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,31 +73,26 @@ public final class Sampling {
 	 * @throws MeasurementException
 	 *             if sampelr class cannot be found
 	 */
-	public void addMonitoringJob(SamplingConfig config) throws MeasurementException {
-		for (String samplerClass : config.getValues()) {
-			Long delay = config.getSamplingDelay(samplerClass);
+	public void addMonitoringJob(Set<SamplingDescription> samplingDescriptions) throws MeasurementException {
+
+		for (SamplingDescription samplingDescr : samplingDescriptions) {
+			String resourceName = samplingDescr.getResourceName();
+			Long delay = samplingDescr.getDelay();
+			AbstractSampler sampler = ExtensionRegistry.getSingleton().getExtensionArtifact(
+					AbstractSamplerExtension.class, resourceName);
+			if (sampler == null) {
+				throw new MeasurementException("Invalid sampling resource identifier!");
+			}
 			SamplingExecuter executer = monitoringJobs.get(delay);
 			if (executer == null) {
 				executer = new SamplingExecuter(delay);
 				monitoringJobs.put(delay, executer);
 			}
 
-			AbstractSampler sampler;
-			try {
-				Class<?> samplerClazz = Class.forName(samplerClass);
-				if (!AbstractSampler.class.isAssignableFrom(samplerClazz)) {
-					throw new MeasurementException("Invalid sampler class!");
-				}
-				if (AbstractResourceSampler.class.isAssignableFrom(samplerClazz)) {
-					sampler = ResourceSamplerFactory.getSampler(samplerClass, dataCollector);
-				} else {
-					sampler = (AbstractSampler) samplerClazz.newInstance();
-					sampler.setDataCollector(dataCollector);
-				}
-
-			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-				throw new MeasurementException("Sampler class " + samplerClass + "not found!", e);
+			if (AbstractResourceSampler.class.isAssignableFrom(sampler.getClass())) {
+				((AbstractResourceSampler) sampler).setSigar(ResourceSamplerFactory.getSigar());
 			}
+			sampler.setDataCollector(dataCollector);
 
 			if (sampler != null) {
 				LOGGER.info("Added application resource sampling job!");

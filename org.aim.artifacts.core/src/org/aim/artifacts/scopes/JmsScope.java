@@ -16,6 +16,7 @@
 package org.aim.artifacts.scopes;
 
 import org.aim.api.instrumentation.AbstractInstAPIScope;
+import org.lpe.common.extension.IExtension;
 
 /**
  * Scope for JMS.
@@ -23,6 +24,10 @@ import org.aim.api.instrumentation.AbstractInstAPIScope;
  *
  */
 public class JmsScope extends AbstractInstAPIScope {
+
+	public JmsScope(IExtension<?> provider) {
+		super(provider);
+	}
 
 	@Override
 	protected void init() {

@@ -21,8 +21,7 @@ import javassist.expr.ExprEditor;
 import javassist.expr.MethodCall;
 
 import org.aim.api.instrumentation.AbstractEnclosingProbe;
-import org.aim.api.instrumentation.description.Restrictions;
-import org.lpe.common.util.LpeStringUtils;
+import org.aim.description.restrictions.Restriction;
 
 /**
  * MEthod visitor for instrumentation, used for full trace instrumentation.
@@ -32,6 +31,7 @@ import org.lpe.common.util.LpeStringUtils;
  */
 public class FullTraceMethodEditor extends ExprEditor {
 	private String incrementalSnippet;
+	private Restriction instrumentationRestriction;
 
 	/**
 	 * Constructor.
@@ -39,20 +39,19 @@ public class FullTraceMethodEditor extends ExprEditor {
 	 * @param incrementalSnippet
 	 *            instrumentation statement snippet to inject.
 	 */
-	public FullTraceMethodEditor(String incrementalSnippet) {
+	public FullTraceMethodEditor(String incrementalSnippet, Restriction instrumentationRestriction) {
 		this.incrementalSnippet = incrementalSnippet;
+		this.instrumentationRestriction = instrumentationRestriction;
 	}
 
 	@Override
 	public void edit(MethodCall m) throws CannotCompileException {
 
 		try {
-			if (LpeStringUtils.patternMatches(m.getClassName(), Restrictions.EXCLUDE_JAVA)
-					|| LpeStringUtils.patternMatches(m.getClassName(), Restrictions.EXCLUDE_LPE_COMMON)) {
-				// prevent cyclic / recursive self instrumentation and
-				// instrumentation of java native classes
+			if (instrumentationRestriction.isExcluded(m.getClassName())) {
 				return;
 			}
+
 			String methodName = "." + m.getMethodName()
 					+ m.getMethod().getLongName().substring(m.getMethod().getLongName().indexOf("("));
 

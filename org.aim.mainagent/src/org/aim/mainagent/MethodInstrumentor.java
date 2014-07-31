@@ -23,13 +23,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.aim.api.exceptions.InstrumentationException;
-import org.aim.api.instrumentation.description.APIScope;
-import org.aim.api.instrumentation.description.ConstructorsScope;
-import org.aim.api.instrumentation.description.CustomScope;
-import org.aim.api.instrumentation.description.InstrumentationDescription;
-import org.aim.api.instrumentation.description.MethodsScope;
 import org.aim.api.instrumentation.description.internal.FlatInstrumentationEntity;
 import org.aim.api.instrumentation.description.internal.InstrumentationSet;
+import org.aim.description.InstrumentationDescription;
+import org.aim.description.restrictions.Restriction;
+import org.aim.description.scopes.MethodsEnclosingScope;
 import org.aim.mainagent.instrumentor.BCInjector;
 import org.aim.mainagent.instrumentor.JAgentSwapper;
 import org.aim.mainagent.instrumentor.JInstrumentation;
@@ -53,7 +51,10 @@ public class MethodInstrumentor implements IInstrumentor {
 		if (!containsValidInstrumentationInstructions(descr)) {
 			return;
 		}
-		ScopeAnalysisController scopeAnalyzer = new ScopeAnalysisController(descr);
+		ScopeAnalysisController scopeAnalyzer = new ScopeAnalysisController(descr); // TODO:
+																					// usage
+																					// with
+																					// IDM
 		Class[] classes = JInstrumentation.getInstance().getjInstrumentation().getAllLoadedClasses();
 
 		// copy all classes to a new list as the array is not allowed to be
@@ -77,21 +78,21 @@ public class MethodInstrumentor implements IInstrumentor {
 			LOGGER.info("{}", fie.getMethodSignature());
 		}
 
-		injectNewInstrumentation(newInstrumentationSet);
+		injectNewInstrumentation(newInstrumentationSet, descr.getGlobalRestriction());
 
 		getCurrentInstrumentationState().addAll(newInstrumentationStatements);
 
 	}
 
 	private boolean containsValidInstrumentationInstructions(InstrumentationDescription descr) {
-		return descr.containsScope(MethodsScope.class) || descr.containsScope(ConstructorsScope.class)
-				|| descr.containsScope(CustomScope.class) || descr.containsScope(APIScope.class);
+		return descr.containsScopeType(MethodsEnclosingScope.class);
 
 	}
 
-	private void injectNewInstrumentation(InstrumentationSet newInstrumentationSet) throws InstrumentationException {
+	private void injectNewInstrumentation(InstrumentationSet newInstrumentationSet,
+			Restriction instrumentationRestriction) throws InstrumentationException {
 		Map<Class<?>, byte[]> classesToRevert = BCInjector.getInstance().injectInstrumentationProbes(
-				newInstrumentationSet);
+				newInstrumentationSet, instrumentationRestriction);
 		JAgentSwapper.getInstance().redefineClasses(classesToRevert);
 	}
 

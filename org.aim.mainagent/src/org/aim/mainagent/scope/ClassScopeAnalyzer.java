@@ -21,8 +21,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.aim.api.instrumentation.AbstractScopeAnalyzer;
-import org.aim.api.instrumentation.description.Restrictions;
 import org.aim.api.instrumentation.description.internal.FlatScopeEntity;
+import org.aim.description.restrictions.Restriction;
 import org.aim.mainagent.utils.Utils;
 import org.lpe.common.util.LpeStringUtils;
 
@@ -34,7 +34,7 @@ import org.lpe.common.util.LpeStringUtils;
  */
 public class ClassScopeAnalyzer extends AbstractScopeAnalyzer {
 
-	private Restrictions restrictions;
+	private Restriction restriction;
 	private final Set<String> classNames;
 
 	/**
@@ -49,7 +49,7 @@ public class ClassScopeAnalyzer extends AbstractScopeAnalyzer {
 
 	@Override
 	public void visitClass(Class<?> clazz, Set<FlatScopeEntity> scopeEntities) {
-		if (restrictions.isExcluded(clazz.getName())) {
+		if (restriction.isExcluded(clazz.getName())) {
 			return;
 		}
 
@@ -66,16 +66,16 @@ public class ClassScopeAnalyzer extends AbstractScopeAnalyzer {
 		}
 
 		Set<Method> methods = new HashSet<>();
-		if (!restrictions.hasModifierRestrictions() || Modifier.isPublic(restrictions.getModifier())) {
+		if (!restriction.hasModifierRestrictions() || !restriction.isAtLeastOneOfTheModifiersExcluded(Modifier.PUBLIC)) {
 			for (Method m : clazz.getMethods()) {
-				if (!restrictions.isExcluded(m.getDeclaringClass().getName())) {
+				if (!restriction.isExcluded(m.getDeclaringClass().getName())) {
 					methods.add(m);
 				}
 
 			}
 		}
 		for (Method m : clazz.getDeclaredMethods()) {
-			if (!restrictions.isModifiersExcluded(m.getModifiers())) {
+			if (!restriction.isAtLeastOneOfTheModifiersExcluded(m.getModifiers())) {
 				methods.add(m);
 			}
 		}
@@ -86,8 +86,8 @@ public class ClassScopeAnalyzer extends AbstractScopeAnalyzer {
 	}
 
 	@Override
-	public void setRestrictions(Restrictions restrictions) {
-		this.restrictions = restrictions;
+	public void setRestriction(Restriction restriction) {
+		this.restriction = restriction;
 
 	}
 }

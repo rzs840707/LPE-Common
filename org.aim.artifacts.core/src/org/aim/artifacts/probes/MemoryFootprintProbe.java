@@ -21,8 +21,19 @@ import org.aim.api.instrumentation.ProbeBeforePart;
 import org.aim.api.instrumentation.ProbeVariable;
 import org.aim.artifacts.probes.utils.MemoryMXBeanCache;
 import org.aim.artifacts.records.MemoryFootprintRecord;
+import org.aim.description.probes.MeasurementProbe;
+import org.aim.description.scopes.MethodsEnclosingScope;
+import org.lpe.common.extension.IExtension;
 
 public class MemoryFootprintProbe extends AbstractEnclosingProbe {
+	
+	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(MemoryFootprintProbe.class.getName());
+
+	
+	public MemoryFootprintProbe(IExtension<?> provider) {
+		super(provider);
+	}
+
 	@ProbeVariable
 	public Long _MemoryFootprintProbe_stopTime;
 

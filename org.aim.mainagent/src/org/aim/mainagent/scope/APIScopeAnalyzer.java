@@ -28,8 +28,8 @@ import java.util.Set;
 import org.aim.api.exceptions.InstrumentationException;
 import org.aim.api.instrumentation.AbstractInstAPIScope;
 import org.aim.api.instrumentation.AbstractScopeAnalyzer;
-import org.aim.api.instrumentation.description.Restrictions;
 import org.aim.api.instrumentation.description.internal.FlatScopeEntity;
+import org.aim.description.restrictions.Restriction;
 import org.aim.mainagent.utils.MethodSignature;
 import org.aim.mainagent.utils.Utils;
 
@@ -43,7 +43,7 @@ public class APIScopeAnalyzer extends AbstractScopeAnalyzer {
 
 	private Map<Class<?>, List<MethodSignature>> methodsToMatch;
 	private Set<Class<Annotation>> methodAnnotationsToMatch;
-	private Restrictions restrictions;
+	private Restriction restriction;
 
 	/**
 	 * Constructor.
@@ -88,10 +88,10 @@ public class APIScopeAnalyzer extends AbstractScopeAnalyzer {
 		if (clazz == null || !Utils.isNormalClass(clazz)) {
 			return;
 		}
-		if (restrictions.hasModifierRestrictions() && !Modifier.isPublic(restrictions.getModifier())) {
+		if (restriction.hasModifierRestrictions() &&  restriction.isAtLeastOneOfTheModifiersExcluded(Modifier.PUBLIC)) {
 			return;
 		}
-		if (restrictions.isExcluded(clazz.getName())) {
+		if (restriction.isExcluded(clazz.getName())) {
 			return;
 		}
 		if (scopeEntities == null) {
@@ -141,8 +141,8 @@ public class APIScopeAnalyzer extends AbstractScopeAnalyzer {
 	}
 
 	@Override
-	public void setRestrictions(Restrictions restrictions) {
-		this.restrictions = restrictions;
+	public void setRestriction(Restriction restriction) {
+		this.restriction = restriction;
 
 	}
 

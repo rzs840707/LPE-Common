@@ -20,6 +20,7 @@ import org.aim.artifacts.records.DiskRecord;
 import org.hyperic.sigar.DiskUsage;
 import org.hyperic.sigar.FileSystem;
 import org.hyperic.sigar.SigarException;
+import org.lpe.common.extension.IExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class DiskIOSampler extends AbstractResourceSampler {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(DiskIOSampler.class);
 	private static final String READS = "reads";
 	private static final String WRITES = "writes";
@@ -38,11 +40,8 @@ public class DiskIOSampler extends AbstractResourceSampler {
 	private long previousReads;
 	private long previousWrites;
 
-	/**
-	 * Constructor.
-	 * 
-	 */
-	public DiskIOSampler() {
+	public DiskIOSampler(IExtension<?> provider) {
+		super(provider);
 		previousReads = getDiskReads();
 		previousWrites = getDiskWrites();
 	}

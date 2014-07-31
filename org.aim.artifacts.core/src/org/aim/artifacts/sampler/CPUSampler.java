@@ -19,6 +19,7 @@ import org.aim.api.measurement.sampling.AbstractResourceSampler;
 import org.aim.artifacts.records.CPUUtilizationRecord;
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.SigarException;
+import org.lpe.common.extension.IExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,12 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class CPUSampler extends AbstractResourceSampler {
+
+	public CPUSampler(IExtension<?> provider) {
+		super(provider);
+	}
+
+
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CPUSampler.class);
 

@@ -31,6 +31,7 @@ import javassist.NotFoundException;
 import org.aim.api.exceptions.InstrumentationException;
 import org.aim.api.instrumentation.AbstractEnclosingProbe;
 import org.aim.api.instrumentation.description.internal.InstrumentationSet;
+import org.aim.description.restrictions.Restriction;
 import org.aim.mainagent.builder.ProbeBuilder;
 import org.aim.mainagent.builder.Snippet;
 import org.aim.mainagent.probes.IncrementalInstrumentationProbe;
@@ -76,7 +77,8 @@ public final class BCInjector {
 	 *            aggregated instrumentation description
 	 * @return mapping from classes to new instrumented bytecodes
 	 */
-	public synchronized Map<Class<?>, byte[]> injectInstrumentationProbes(InstrumentationSet instrumentationSet) {
+	public synchronized Map<Class<?>, byte[]> injectInstrumentationProbes(InstrumentationSet instrumentationSet,
+			Restriction instrumentationRestriction) {
 		Map<Class<?>, byte[]> classesToRedefine = new HashMap<Class<?>, byte[]>();
 		for (Class<?> clazz : instrumentationSet.classesToInstrument()) {
 			try {
@@ -93,7 +95,7 @@ public final class BCInjector {
 				}
 				for (Entry<String, Set<Long>> methodEntry : instrumentationSet.methodsToInstrument(clazz).entrySet()) {
 					instrumentBehaviour(instrumentationSet.probesToInject(methodEntry.getKey()), ctClass,
-							methodEntry.getKey(), methodEntry.getValue());
+							methodEntry.getKey(), methodEntry.getValue(), instrumentationRestriction);
 				}
 				ctClass.freeze();
 				if (!originalByteCodes.containsKey(clazz)) {
@@ -148,8 +150,8 @@ public final class BCInjector {
 	}
 
 	protected void instrumentBehaviour(Set<Class<? extends AbstractEnclosingProbe>> probeTypes, CtClass ctClass,
-			String behaviourSignature, Set<Long> scopeIds) throws InstrumentationException, CannotCompileException,
-			NotFoundException {
+			String behaviourSignature, Set<Long> scopeIds, Restriction instrumentationRestriction)
+			throws InstrumentationException, CannotCompileException, NotFoundException {
 		ProbeBuilder pBuilder = new ProbeBuilder(behaviourSignature);
 		for (Class<? extends AbstractEnclosingProbe> probeType : probeTypes) {
 			pBuilder.inject(probeType);
@@ -167,7 +169,7 @@ public final class BCInjector {
 					tempSnippet = tempSnippet.replace(IncrementalInstrumentationProbe._INST_DESCRIPTION,
 							String.valueOf(scopeId) + "L");
 
-					FullTraceMethodEditor ftmEditor = new FullTraceMethodEditor(tempSnippet);
+					FullTraceMethodEditor ftmEditor = new FullTraceMethodEditor(tempSnippet, instrumentationRestriction);
 					ctBehaviour.instrument(ftmEditor);
 				}
 			}

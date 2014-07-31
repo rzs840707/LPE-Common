@@ -19,6 +19,9 @@ import org.aim.api.instrumentation.AbstractEnclosingProbe;
 import org.aim.api.instrumentation.ProbeAfterPart;
 import org.aim.api.instrumentation.ProbeVariable;
 import org.aim.artifacts.records.ResponseTimeRecord;
+import org.aim.description.probes.MeasurementProbe;
+import org.aim.description.scopes.MethodsEnclosingScope;
+import org.lpe.common.extension.IExtension;
 
 /**
  * Probe for measuring response time in milli-seconds.
@@ -27,6 +30,13 @@ import org.aim.artifacts.records.ResponseTimeRecord;
  * 
  */
 public class ResponsetimeProbe extends AbstractEnclosingProbe {
+	
+	public ResponsetimeProbe(IExtension<?> provider) {
+		super(provider);
+	}
+
+	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(ResponsetimeProbe.class.getName());
+	
 	@ProbeVariable
 	public long _ResponsetimeProbe_stopTime;
 	@ProbeVariable

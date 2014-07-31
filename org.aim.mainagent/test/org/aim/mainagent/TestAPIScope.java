@@ -16,8 +16,13 @@
 package org.aim.mainagent;
 
 import org.aim.api.instrumentation.AbstractInstAPIScope;
+import org.lpe.common.extension.IExtension;
 
 public class TestAPIScope extends AbstractInstAPIScope {
+
+	public TestAPIScope(IExtension<?> provider) {
+		super(provider);
+	}
 
 	@Override
 	protected void init() {

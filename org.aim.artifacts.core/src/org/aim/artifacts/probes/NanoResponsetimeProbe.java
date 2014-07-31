@@ -20,6 +20,9 @@ import org.aim.api.instrumentation.ProbeAfterPart;
 import org.aim.api.instrumentation.ProbeBeforePart;
 import org.aim.api.instrumentation.ProbeVariable;
 import org.aim.artifacts.records.NanoResponseTimeRecord;
+import org.aim.description.probes.MeasurementProbe;
+import org.aim.description.scopes.MethodsEnclosingScope;
+import org.lpe.common.extension.IExtension;
 
 /**
  * Probe for measuring response time in nano-seconds.
@@ -28,6 +31,14 @@ import org.aim.artifacts.records.NanoResponseTimeRecord;
  * 
  */
 public class NanoResponsetimeProbe extends AbstractEnclosingProbe {
+	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(NanoResponsetimeProbe.class.getName());
+	
+	
+	public NanoResponsetimeProbe(IExtension<?> provider) {
+		super(provider);
+	}
+
+	
 	@ProbeVariable
 	public long _NanoResponsetimeProbe_startTime;
 	@ProbeVariable

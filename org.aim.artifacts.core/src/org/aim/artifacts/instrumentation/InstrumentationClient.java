@@ -24,12 +24,12 @@ import javax.ws.rs.core.MediaType;
 import org.aim.api.exceptions.InstrumentationException;
 import org.aim.api.exceptions.MeasurementException;
 import org.aim.api.instrumentation.AbstractEnclosingProbe;
-import org.aim.api.instrumentation.description.InstrumentationDescription;
 import org.aim.api.instrumentation.entities.FlatMethodInstrumentation;
 import org.aim.api.instrumentation.entities.OverheadData;
 import org.aim.api.instrumentation.entities.SupportedExtensions;
 import org.aim.api.measurement.MeasurementData;
 import org.aim.artifacts.measurement.collector.StreamReader;
+import org.aim.description.InstrumentationDescription;
 import org.lpe.common.util.web.LpeWebUtils;
 
 import com.sun.jersey.api.client.WebResource;

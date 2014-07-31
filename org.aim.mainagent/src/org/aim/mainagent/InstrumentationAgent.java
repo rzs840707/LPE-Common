@@ -19,10 +19,6 @@ import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.util.Properties;
 
-import org.glassfish.grizzly.http.server.HttpHandler;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.http.server.Request;
-import org.glassfish.grizzly.http.server.Response;
 import org.aim.api.measurement.collector.AbstractDataSource;
 import org.aim.api.measurement.collector.CollectorFactory;
 import org.aim.artifacts.instrumentation.InstrumentationClient;
@@ -39,6 +35,10 @@ import org.aim.mainagent.service.MeasureOverheadServlet;
 import org.aim.mainagent.service.Service;
 import org.aim.mainagent.service.TestConnectionServlet;
 import org.aim.mainagent.service.UninstrumentServlet;
+import org.glassfish.grizzly.http.server.HttpHandler;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.Request;
+import org.glassfish.grizzly.http.server.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

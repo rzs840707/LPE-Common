@@ -16,6 +16,8 @@
 package org.aim.api.instrumentation;
 
 import org.aim.api.measurement.collector.IDataCollector;
+import org.lpe.common.extension.AbstractExtensionArtifact;
+import org.lpe.common.extension.IExtension;
 
 /**
  * Rules for coding a probe:
@@ -35,7 +37,10 @@ import org.aim.api.measurement.collector.IDataCollector;
  * @author Alexander Wert
  * 
  */
-public abstract class AbstractEnclosingProbe {
+public abstract class AbstractEnclosingProbe extends AbstractExtensionArtifact {
+	public AbstractEnclosingProbe(IExtension<?> provider) {
+		super(provider);
+	}
 	public static final String J_INSTRUMENTATION_KEY = "jinstrumentation";
 	public static final String METHOD_SIGNATURE_PLACE_HOLDER = "__methodSignature";
 

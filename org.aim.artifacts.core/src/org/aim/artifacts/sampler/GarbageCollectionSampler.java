@@ -20,6 +20,7 @@ import java.lang.management.ManagementFactory;
 
 import org.aim.api.measurement.sampling.AbstractSampler;
 import org.aim.artifacts.records.GCSamplingStatsRecord;
+import org.lpe.common.extension.IExtension;
 
 /**
  * Samples garbage collection statistics.
@@ -32,6 +33,11 @@ public class GarbageCollectionSampler extends AbstractSampler {
 	private static final String[] NEW_GEN_GC_NAMES = { "Copy", "PS Scavenge", "ParNew", "G1 Young Generation" };
 	private static final String[] OLD_GEN_GC_NAMES = { "MarkSweepCompact", "PS MarkSweep", "ConcurrentMarkSweep",
 			"G1 Old Generation" };
+
+	public GarbageCollectionSampler(IExtension<?> provider) {
+		super(provider);
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public void sample() {

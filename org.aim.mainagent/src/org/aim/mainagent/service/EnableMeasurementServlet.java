@@ -15,12 +15,12 @@
  */
 package org.aim.mainagent.service;
 
-import org.glassfish.grizzly.http.server.Request;
-import org.glassfish.grizzly.http.server.Response;
 import org.aim.api.exceptions.MeasurementException;
 import org.aim.api.measurement.collector.AbstractDataSource;
 import org.aim.api.measurement.collector.IDataCollector;
 import org.aim.mainagent.sampling.Sampling;
+import org.glassfish.grizzly.http.server.Request;
+import org.glassfish.grizzly.http.server.Response;
 
 /**
  * Enables measurement and data collection.
