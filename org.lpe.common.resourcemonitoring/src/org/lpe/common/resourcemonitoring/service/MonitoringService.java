@@ -16,6 +16,7 @@
 package org.lpe.common.resourcemonitoring.service;
 
 import java.io.OutputStream;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -26,8 +27,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.aim.api.instrumentation.description.InstrumentationDescription;
-import org.aim.api.instrumentation.description.SamplingConfig;
+import org.aim.api.exceptions.MeasurementException;
+import org.aim.description.InstrumentationDescription;
+import org.aim.description.sampling.SamplingDescription;
 import org.lpe.common.resourcemonitoring.SystemMonitor;
 
 import com.sun.jersey.spi.resource.Singleton;
@@ -53,15 +55,16 @@ public class MonitoringService {
 	 * @param instDescription
 	 *            instrumentation description containing a sampling
 	 *            configuration
+	 * @throws MeasurementException
 	 */
 	@POST
 	@Path("startMonitor")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void startMonitor(InstrumentationDescription instDescription) {
+	public void startMonitor(InstrumentationDescription instDescription) throws MeasurementException {
+		Set<SamplingDescription> samplingDescriptions = instDescription.getSamplingDescriptions();
 
-		SamplingConfig configuration = instDescription.getSamplingDescription();
-		if (configuration != null) {
-			SystemMonitor.getInstance().addMonitoringJob(configuration);
+		if (!samplingDescriptions.isEmpty()) {
+			SystemMonitor.getInstance().addMonitoringJob(samplingDescriptions);
 			SystemMonitor.getInstance().start();
 		}
 

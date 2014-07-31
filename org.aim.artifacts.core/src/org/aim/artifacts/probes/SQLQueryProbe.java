@@ -23,8 +23,17 @@ import org.aim.api.instrumentation.ProbeBeforePart;
 import org.aim.api.instrumentation.ProbeVariable;
 import org.aim.artifacts.probes.utils.SQLPreparedStatementCache;
 import org.aim.artifacts.records.SQLQueryRecord;
+import org.aim.description.probes.MeasurementProbe;
+import org.aim.description.scopes.MethodsEnclosingScope;
+import org.lpe.common.extension.IExtension;
 
 public class SQLQueryProbe extends AbstractEnclosingProbe {
+	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(SQLQueryProbe.class.getName());
+	
+	public SQLQueryProbe(IExtension<?> provider) {
+		super(provider);
+	}
+
 	@ProbeVariable
 	public SQLQueryRecord _SQLQueryProbe_record;
 

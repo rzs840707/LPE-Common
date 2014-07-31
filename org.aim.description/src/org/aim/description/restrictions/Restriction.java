@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.lpe.common.util.LpeStringUtils;
 
 /**
  * This class represents a restriction to a given scope.
@@ -33,7 +35,9 @@ public class Restriction {
 
 	/**
 	 * Includes the given package.
-	 * @param packageName package to be included
+	 * 
+	 * @param packageName
+	 *            package to be included
 	 */
 	public void addPackageInclude(String packageName) {
 		packageIncludes.add(packageName);
@@ -48,7 +52,9 @@ public class Restriction {
 
 	/**
 	 * Excludes the given package.
-	 * @param packageName package to be excluded
+	 * 
+	 * @param packageName
+	 *            package to be excluded
 	 */
 	public void addPackageExclude(String packageName) {
 		packageExcludes.add(packageName);
@@ -63,7 +69,9 @@ public class Restriction {
 
 	/**
 	 * Includes all methods having the given modifier.
-	 * @param modifier modifier of the methods to be included
+	 * 
+	 * @param modifier
+	 *            modifier of the methods to be included
 	 */
 	public void addModifierInclude(int modifier) {
 		modifierIncludes.add(modifier);
@@ -78,7 +86,9 @@ public class Restriction {
 
 	/**
 	 * Excludes all methods having the given modifier.
-	 * @param modifier modifier of the methods to be excluded
+	 * 
+	 * @param modifier
+	 *            modifier of the methods to be excluded
 	 */
 	public void addModifierExclude(int modifier) {
 		modifierExcludes.add(modifier);
@@ -89,6 +99,47 @@ public class Restriction {
 	 */
 	public Set<Integer> getModifierExcludes() {
 		return modifierExcludes;
+	}
+
+	/**
+	 * Checks whether given entity is excluded from instrumentation.
+	 * 
+	 * @param entityName
+	 *            full qualified name of the entity (class, package, interface,
+	 *            etc. ) to check
+	 * @return true, if entity shell be excluded from instrumentation
+	 */
+	@JsonIgnore
+	public boolean isExcluded(String entityName) {
+
+		if (getPackageIncludes().isEmpty()) {
+			for (String excl : getPackageExcludes()) {
+				if (LpeStringUtils.patternMatches(entityName, excl)) {
+					return true;
+				}
+			}
+			return false;
+		} else {
+			boolean found = false;
+			for (String incl : getPackageIncludes()) {
+				if (LpeStringUtils.patternMatches(entityName, incl)) {
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				return true;
+			}
+
+			for (String excl : getPackageExcludes()) {
+				if (LpeStringUtils.patternMatches(entityName, excl)) {
+					return true;
+				}
+			}
+			return false;
+
+		}
 	}
 
 	@Override
@@ -130,6 +181,26 @@ public class Restriction {
 		}
 
 		return builder.toString();
+	}
+
+	public boolean isAtLeastOneOfTheModifiersExcluded(int modifiers) {
+		if (!hasModifierRestrictions()) {
+			return false;
+		}
+		int thisModifiers = 0;
+		for (int includedModifier : getModifierIncludes()) {
+			thisModifiers |= includedModifier;
+		}
+
+		for (int excludedModifier : getModifierExcludes()) {
+			thisModifiers &= ~excludedModifier;
+		}
+
+		return (thisModifiers & modifiers) != thisModifiers;
+	}
+
+	public boolean hasModifierRestrictions() {
+		return !getModifierIncludes().isEmpty() || !getModifierExcludes().isEmpty();
 	}
 
 }

@@ -20,8 +20,19 @@ import org.aim.api.instrumentation.ProbeAfterPart;
 import org.aim.api.instrumentation.ProbeBeforePart;
 import org.aim.api.instrumentation.ProbeVariable;
 import org.aim.artifacts.records.ThreadTracingRecord;
+import org.aim.description.probes.MeasurementProbe;
+import org.aim.description.scopes.MethodsEnclosingScope;
+import org.lpe.common.extension.IExtension;
 
 public class ThreadTracingProbe extends AbstractEnclosingProbe {
+
+	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(
+			ThreadTracingProbe.class.getName());
+
+	public ThreadTracingProbe(IExtension<?> provider) {
+		super(provider);
+	}
+
 	@ProbeVariable
 	public Long _ThreadTracingProbe_startNanoTime;
 	@ProbeVariable

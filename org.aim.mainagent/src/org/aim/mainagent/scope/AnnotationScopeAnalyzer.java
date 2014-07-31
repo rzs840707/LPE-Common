@@ -25,14 +25,14 @@ import java.util.Set;
 
 import org.aim.api.instrumentation.AbstractInstAnnotationScope;
 import org.aim.api.instrumentation.AbstractScopeAnalyzer;
-import org.aim.api.instrumentation.description.Restrictions;
 import org.aim.api.instrumentation.description.internal.FlatScopeEntity;
+import org.aim.description.restrictions.Restriction;
 import org.aim.mainagent.utils.Utils;
 import org.lpe.common.util.LpeStringUtils;
 
 public class AnnotationScopeAnalyzer extends AbstractScopeAnalyzer {
 
-	private Restrictions restrictions;
+	private Restriction restriction;
 	private AbstractInstAnnotationScope annotationScope;
 
 	public AnnotationScopeAnalyzer(AbstractInstAnnotationScope annotationScope) {
@@ -44,11 +44,10 @@ public class AnnotationScopeAnalyzer extends AbstractScopeAnalyzer {
 		if (clazz == null || !Utils.isNormalClass(clazz)) {
 			return;
 		}
-		if (restrictions.hasModifierRestrictions()
-				&& !Modifier.isPublic(restrictions.getModifier())) {
+		if (restriction.hasModifierRestrictions() && restriction.isAtLeastOneOfTheModifiersExcluded(Modifier.PUBLIC)) {
 			return;
 		}
-		if (restrictions.isExcluded(clazz.getName())) {
+		if (restriction.isExcluded(clazz.getName())) {
 			return;
 		}
 		if (scopeEntities == null) {
@@ -56,10 +55,8 @@ public class AnnotationScopeAnalyzer extends AbstractScopeAnalyzer {
 		}
 
 		for (Annotation classAnnotation : clazz.getAnnotations()) {
-			for (String classAnnotationName : annotationScope
-					.getAnnotationsMatch().keySet()) {
-				if (!LpeStringUtils.patternMatches(classAnnotation
-						.annotationType().getName(), classAnnotationName)) {
+			for (String classAnnotationName : annotationScope.getAnnotationsMatch().keySet()) {
+				if (!LpeStringUtils.patternMatches(classAnnotation.annotationType().getName(), classAnnotationName)) {
 					continue;
 				}
 
@@ -75,16 +72,14 @@ public class AnnotationScopeAnalyzer extends AbstractScopeAnalyzer {
 				for (Method method : methods) {
 					for (Annotation methodAnnotation : method.getAnnotations()) {
 
-						for (String methodAnnotationName : annotationScope
-								.getAnnotationsMatch().get(classAnnotationName)) {
-							if (!LpeStringUtils.patternMatches(methodAnnotation
-									.annotationType().getName(),
+						for (String methodAnnotationName : annotationScope.getAnnotationsMatch().get(
+								classAnnotationName)) {
+							if (!LpeStringUtils.patternMatches(methodAnnotation.annotationType().getName(),
 									methodAnnotationName)) {
 								continue;
 							}
 
-							scopeEntities.add(new FlatScopeEntity(clazz, Utils
-									.getMethodSignature(method, true)));
+							scopeEntities.add(new FlatScopeEntity(clazz, Utils.getMethodSignature(method, true)));
 						}
 
 					}
@@ -97,8 +92,8 @@ public class AnnotationScopeAnalyzer extends AbstractScopeAnalyzer {
 	}
 
 	@Override
-	public void setRestrictions(Restrictions restrictions) {
-		this.restrictions = restrictions;
+	public void setRestriction(Restriction restriction) {
+		this.restriction = restriction;
 
 	}
 

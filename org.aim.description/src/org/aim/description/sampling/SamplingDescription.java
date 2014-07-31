@@ -7,21 +7,24 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * This class represents a sampling description.
  * 
  * @author Henning Schulz
- *
+ * 
  */
 public class SamplingDescription {
-	
-	private final int delay;
-	
+
+	private final long delay;
+
 	private final String resourceName;
-	
+
 	/**
 	 * Constructor.
-	 * @param resourceName resource to be sampled
-	 * @param delay sampling delay
+	 * 
+	 * @param resourceName
+	 *            resource to be sampled
+	 * @param delay
+	 *            sampling delay
 	 */
 	@JsonCreator
-	public SamplingDescription(@JsonProperty("resourceName") String resourceName, int delay) {
+	public SamplingDescription(@JsonProperty("resourceName") String resourceName, @JsonProperty("delay") long delay) {
 		this.resourceName = resourceName;
 		this.delay = delay;
 	}
@@ -29,7 +32,7 @@ public class SamplingDescription {
 	/**
 	 * @return the delay
 	 */
-	public int getDelay() {
+	public long getDelay() {
 		return delay;
 	}
 
@@ -39,10 +42,10 @@ public class SamplingDescription {
 	public String getResourceName() {
 		return resourceName;
 	}
-	
+
 	@Override
 	public String toString() {
 		return resourceName + " +" + delay;
 	}
-	
+
 }

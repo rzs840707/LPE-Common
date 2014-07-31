@@ -19,6 +19,7 @@ import org.aim.api.measurement.sampling.AbstractResourceSampler;
 import org.aim.artifacts.records.MemoryRecord;
 import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.SigarException;
+import org.lpe.common.extension.IExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +31,12 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class MemoryUsageSampler extends AbstractResourceSampler {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(MemoryUsageSampler.class);
 
-
+	public MemoryUsageSampler(IExtension<?> provider) {
+		super(provider);
+	}
 
 	/**
 	 * Fetches the currently free and used memory of the system. Computes the

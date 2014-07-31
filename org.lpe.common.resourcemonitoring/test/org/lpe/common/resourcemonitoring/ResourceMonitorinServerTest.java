@@ -15,14 +15,18 @@
  */
 package org.lpe.common.resourcemonitoring;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import java.util.Properties;
+
 import org.aim.api.exceptions.MeasurementException;
-import org.aim.api.instrumentation.description.InstrumentationDescriptionBuilder;
 import org.aim.api.measurement.MeasurementData;
 import org.aim.artifacts.records.CPUUtilizationRecord;
 import org.aim.artifacts.sampler.CPUSampler;
+import org.aim.description.builder.InstrumentationDescriptionBuilder;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.lpe.common.config.GlobalConfiguration;
+import org.lpe.common.extension.ExtensionRegistry;
 
 /**
  * Tests the resource monitoring server.
@@ -42,6 +46,12 @@ public class ResourceMonitorinServerTest {
 		String[] args = { "start", "port=" + PORT };
 		ServerLauncher.main(args);
 		client = new ResourceMonitoringClient("localhost", PORT);
+		
+		Properties globalProperties = new Properties();
+		String currentDir = System.getProperty("user.dir");
+		globalProperties.setProperty(ExtensionRegistry.APP_ROOT_DIR_PROPERTY_KEY, currentDir);
+		globalProperties.setProperty(ExtensionRegistry.PLUGINS_FOLDER_PROPERTY_KEY, "plugins");
+		GlobalConfiguration.initialize(globalProperties);
 	}
 
 	/**
@@ -71,7 +81,8 @@ public class ResourceMonitorinServerTest {
 	@Test
 	public void testMeasurement() {
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		idBuilder.addSamplingInstruction(CPUSampler.class, 100);
+
+		idBuilder.addSampling(CPUSampler.class.getName(), 100);
 
 		client.enableMonitoring(idBuilder.build());
 

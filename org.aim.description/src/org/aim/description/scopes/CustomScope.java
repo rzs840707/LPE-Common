@@ -10,7 +10,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author Henning Schulz
  * 
  */
-public class CustomScope implements MethodsEnclosingScope {
+public class CustomScope extends MethodsEnclosingScope {
 
 	private final String scopeName;
 
@@ -21,8 +21,14 @@ public class CustomScope implements MethodsEnclosingScope {
 	 *            name of the custom scope
 	 */
 	@JsonCreator
-	public CustomScope(@JsonProperty("scopeName") String scopeName) {
+	public CustomScope(@JsonProperty("scopeName") String scopeName, long id) {
+		super(id);
 		this.scopeName = scopeName;
+	}
+	
+	@JsonCreator
+	public CustomScope(@JsonProperty("scopeName") String scopeName) {
+		this(scopeName, System.nanoTime());
 	}
 
 	/**

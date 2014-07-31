@@ -20,9 +20,14 @@ import org.aim.api.instrumentation.ProbeAfterPart;
 import org.aim.api.instrumentation.ProbeBeforePart;
 import org.aim.api.instrumentation.ProbeVariable;
 import org.aim.artifacts.records.ResponseTimeRecord;
+import org.lpe.common.extension.IExtension;
 
 
 public class AnotherDummyProbe extends AbstractEnclosingProbe {
+	public AnotherDummyProbe(IExtension<?> provider) {
+		super(provider);
+	}
+
 	@ProbeVariable
 	public int _AnotherDummyProbe_testVariable;
 

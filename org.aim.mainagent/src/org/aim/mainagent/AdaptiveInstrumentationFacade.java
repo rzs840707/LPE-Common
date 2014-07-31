@@ -23,11 +23,12 @@ import org.aim.api.instrumentation.AbstractEnclosingProbe;
 import org.aim.api.instrumentation.AbstractInstAPIScope;
 import org.aim.api.instrumentation.IScopeAnalyzer;
 import org.aim.api.instrumentation.InstrumentationUtilsController;
-import org.aim.api.instrumentation.description.InstrumentationDescription;
 import org.aim.api.instrumentation.description.internal.FlatInstrumentationEntity;
+import org.aim.api.instrumentation.description.internal.InstrumentationConstants;
 import org.aim.api.instrumentation.entities.FlatMethodInstrumentation;
 import org.aim.api.instrumentation.entities.SupportedExtensions;
 import org.aim.api.measurement.sampling.ISampler;
+import org.aim.description.InstrumentationDescription;
 import org.aim.mainagent.instrumentor.JInstrumentation;
 import org.aim.mainagent.sampling.Sampling;
 
@@ -62,8 +63,8 @@ public final class AdaptiveInstrumentationFacade {
 		methodInstrumentor = new MethodInstrumentor();
 
 		traceInstrumentor = TraceInstrumentor.getInstance();
-		//TODO: uncomment after EventInstrumentor works properly
-//		eventInstrumentor = EventInstrumentor.getInstance();
+		// TODO: uncomment after EventInstrumentor works properly
+		// eventInstrumentor = EventInstrumentor.getInstance();
 	}
 
 	/**
@@ -79,14 +80,21 @@ public final class AdaptiveInstrumentationFacade {
 	 */
 	public synchronized void instrument(InstrumentationDescription instrumentationDescription)
 			throws InstrumentationException {
+		instrumentationDescription.getGlobalRestriction().addPackageExclude(InstrumentationConstants.AIM_PACKAGE);
+		instrumentationDescription.getGlobalRestriction().addPackageExclude(InstrumentationConstants.JAVA_PACKAGE);
+		instrumentationDescription.getGlobalRestriction().addPackageExclude(InstrumentationConstants.JAVASSIST_PACKAGE);
+		instrumentationDescription.getGlobalRestriction().addPackageExclude(InstrumentationConstants.JAVAX_PACKAGE);
+		instrumentationDescription.getGlobalRestriction()
+				.addPackageExclude(InstrumentationConstants.LPE_COMMON_PACKAGE);
+
 		methodInstrumentor.instrument(instrumentationDescription);
 		traceInstrumentor.instrument(instrumentationDescription);
-		eventInstrumentor.instrument(instrumentationDescription);
+//		eventInstrumentor.instrument(instrumentationDescription);
 		// TODO: add Statement Instrumentation
 
-		if (instrumentationDescription.getSamplingDescription() != null) {
+		if (!instrumentationDescription.getSamplingDescriptions().isEmpty()) {
 			try {
-				Sampling.getInstance().addMonitoringJob(instrumentationDescription.getSamplingDescription());
+				Sampling.getInstance().addMonitoringJob(instrumentationDescription.getSamplingDescriptions());
 			} catch (MeasurementException e) {
 				throw new InstrumentationException(e);
 			}

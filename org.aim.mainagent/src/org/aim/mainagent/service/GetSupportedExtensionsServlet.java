@@ -15,12 +15,12 @@
  */
 package org.aim.mainagent.service;
 
+import org.aim.api.instrumentation.entities.SupportedExtensions;
+import org.aim.mainagent.AdaptiveInstrumentationFacade;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
-import org.aim.api.instrumentation.entities.SupportedExtensions;
-import org.aim.mainagent.AdaptiveInstrumentationFacade;
 
 public class GetSupportedExtensionsServlet implements Service {
 

@@ -15,10 +15,10 @@
  */
 package org.aim.mainagent.service;
 
-import org.glassfish.grizzly.http.server.Request;
-import org.glassfish.grizzly.http.server.Response;
 import org.aim.mainagent.AdaptiveInstrumentationFacade;
 import org.aim.mainagent.sampling.Sampling;
+import org.glassfish.grizzly.http.server.Request;
+import org.glassfish.grizzly.http.server.Response;
 
 /**
  * Reverts instrumentation.

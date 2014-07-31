@@ -21,8 +21,13 @@ import org.aim.api.instrumentation.ProbeBeforePart;
 import org.aim.api.instrumentation.ProbeVariable;
 import org.aim.artifacts.records.NanoResponseTimeRecord;
 import org.aim.artifacts.records.ResponseTimeRecord;
+import org.lpe.common.extension.IExtension;
 
 public class DummyProbe2 extends AbstractEnclosingProbe {
+	public DummyProbe2(IExtension<?> provider) {
+		super(provider);
+	}
+
 	@ProbeVariable
 	public int _DummyProbe_testVariable;
 

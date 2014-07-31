@@ -17,10 +17,10 @@ package org.aim.mainagent.service;
 
 import java.io.OutputStream;
 
+import org.aim.api.measurement.collector.AbstractDataSource;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.http.util.HttpStatus;
-import org.aim.api.measurement.collector.AbstractDataSource;
 
 /**
  * Retrieves collected measurement data.

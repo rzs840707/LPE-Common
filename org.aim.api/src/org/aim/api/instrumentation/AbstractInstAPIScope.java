@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.lpe.common.extension.AbstractExtensionArtifact;
+import org.lpe.common.extension.IExtension;
+
 /**
  * An instrumentation scope cheks whether a certain entity matches the specific
  * scope.
@@ -29,18 +32,17 @@ import java.util.Set;
  * @author Alexander Wert
  * 
  */
-public abstract class AbstractInstAPIScope {
+public abstract class AbstractInstAPIScope extends AbstractExtensionArtifact {
+
+	public AbstractInstAPIScope(IExtension<?> provider) {
+		super(provider);
+		init();
+	}
 
 	private Map<String, List<String>> methodsToMatch;
 	private Set<String> methodAnnotationsToMatch;
 
-	/**
-	 * Constructor.
-	 * 
-	 */
-	public AbstractInstAPIScope() {
-		init();
-	}
+
 
 	protected abstract void init();
 

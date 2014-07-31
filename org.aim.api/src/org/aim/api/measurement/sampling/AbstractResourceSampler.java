@@ -16,18 +16,24 @@
 package org.aim.api.measurement.sampling;
 
 import org.hyperic.sigar.Sigar;
+import org.lpe.common.extension.IExtension;
 
 /**
- * The {@link AbstractResourceSampler} provides a common constructor for all recorder
- * classes. A recorder class is responsible for sampling a specific system
- * recource.
+ * The {@link AbstractResourceSampler} provides a common constructor for all
+ * recorder classes. A recorder class is responsible for sampling a specific
+ * system recource.
  * 
  * @author Alexander Wert
  * 
  */
 public abstract class AbstractResourceSampler extends AbstractSampler {
+
 	protected static final String RESOURCE_NAME_SEPARATOR = ":";
 	private Sigar sigar;
+
+	public AbstractResourceSampler(IExtension<?> provider) {
+		super(provider);
+	}
 
 	/**
 	 * @return the sigar

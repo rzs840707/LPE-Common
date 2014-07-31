@@ -39,7 +39,7 @@ public class InstrumentationEntity<S extends Scope> {
 	/**
 	 * @return the scope
 	 */
-	public Scope getScope() {
+	public S getScope() {
 		return scope;
 	}
 
@@ -61,6 +61,20 @@ public class InstrumentationEntity<S extends Scope> {
 	}
 
 	/**
+	 * Returns the probes as strings (names of the probes).
+	 * 
+	 * @return the probes as strings
+	 */
+	public Set<String> getProbesAsStrings() {
+		Set<String> stringSet = new HashSet<>();
+		for (MeasurementProbe<?> mProbe : probes) {
+			stringSet.add(mProbe.getName());
+
+		}
+		return stringSet;
+	}
+
+	/**
 	 * Sets the local restriction. Returns, if the restriction is already set.
 	 * The restriction is set to the given one, anyway.
 	 * 
@@ -79,6 +93,9 @@ public class InstrumentationEntity<S extends Scope> {
 	 * @return the local restriction
 	 */
 	public Restriction getLocalRestriction() {
+		if (localRestriction == null) {
+			localRestriction = new Restriction();
+		}
 		return localRestriction;
 	}
 
@@ -89,9 +106,9 @@ public class InstrumentationEntity<S extends Scope> {
 
 		builder.append(scope.toString());
 
-		if (localRestriction != null) {
+		if (getLocalRestriction() != null) {
 			builder.append(" (");
-			builder.append(localRestriction.toString());
+			builder.append(getLocalRestriction().toString());
 			builder.append(")");
 		}
 

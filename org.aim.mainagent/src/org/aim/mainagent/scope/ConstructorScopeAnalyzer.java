@@ -19,8 +19,8 @@ import java.lang.reflect.Constructor;
 import java.util.Set;
 
 import org.aim.api.instrumentation.AbstractScopeAnalyzer;
-import org.aim.api.instrumentation.description.Restrictions;
 import org.aim.api.instrumentation.description.internal.FlatScopeEntity;
+import org.aim.description.restrictions.Restriction;
 import org.aim.mainagent.utils.Utils;
 import org.lpe.common.util.LpeStringUtils;
 
@@ -32,8 +32,8 @@ import org.lpe.common.util.LpeStringUtils;
  */
 public class ConstructorScopeAnalyzer extends AbstractScopeAnalyzer {
 
-	private Restrictions restrictions;
-	private final Set<String> classNames;
+	private Restriction restriction;
+	private final String[] classNames;
 
 	/**
 	 * Constructor.
@@ -41,13 +41,13 @@ public class ConstructorScopeAnalyzer extends AbstractScopeAnalyzer {
 	 * @param classNames
 	 *            a set of classes whose constructors to instrument
 	 */
-	public ConstructorScopeAnalyzer(Set<String> classNames) {
+	public ConstructorScopeAnalyzer(String[] classNames) {
 		this.classNames = classNames;
 	}
 
 	@Override
 	public void visitClass(Class<?> clazz, Set<FlatScopeEntity> scopeEntities) {
-		if (restrictions.isExcluded(clazz.getName())) {
+		if (restriction.isExcluded(clazz.getName())) {
 			return;
 		}
 
@@ -64,7 +64,7 @@ public class ConstructorScopeAnalyzer extends AbstractScopeAnalyzer {
 		}
 
 		for (Constructor<?> con : clazz.getDeclaredConstructors()) {
-			if (!restrictions.isModifiersExcluded(con.getModifiers())) {
+			if (!restriction.isAtLeastOneOfTheModifiersExcluded(con.getModifiers())) {
 				scopeEntities.add(new FlatScopeEntity(clazz, Utils.getMethodSignature(con, true)));
 			}
 		}
@@ -72,8 +72,8 @@ public class ConstructorScopeAnalyzer extends AbstractScopeAnalyzer {
 	}
 
 	@Override
-	public void setRestrictions(Restrictions restrictions) {
-		this.restrictions = restrictions;
+	public void setRestriction(Restriction restriction) {
+		this.restriction = restriction;
 
 	}
 

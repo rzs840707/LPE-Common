@@ -16,7 +16,7 @@ import org.aim.description.scopes.TraceScope;
  * 
  */
 public class TraceEntityBuilder {
-
+	private long scopeId;
 	private final InstrumentationDescriptionBuilder parentBuilder;
 
 	/**
@@ -26,7 +26,12 @@ public class TraceEntityBuilder {
 	 *            builder which called this constructor
 	 */
 	public TraceEntityBuilder(InstrumentationDescriptionBuilder parentBuilder) {
+		this(parentBuilder, System.nanoTime());
+	}
+
+	public TraceEntityBuilder(InstrumentationDescriptionBuilder parentBuilder, long id) {
 		this.parentBuilder = parentBuilder;
+		scopeId = id;
 	}
 
 	/**
@@ -38,7 +43,7 @@ public class TraceEntityBuilder {
 	 * @return an {@code InstrumentationEntityBuilder}
 	 */
 	public InstrumentationEntityBuilder<TraceScope> setMethodSubScope(String... patterns) {
-		return new InstrumentationEntityBuilder<>(new TraceScope(new MethodScope(patterns)), parentBuilder);
+		return new InstrumentationEntityBuilder<>(new TraceScope(new MethodScope(patterns), scopeId), parentBuilder);
 	}
 
 	/**
@@ -50,7 +55,7 @@ public class TraceEntityBuilder {
 	 * @return an {@code InstrumentationEntityBuilder}
 	 */
 	public InstrumentationEntityBuilder<TraceScope> setConstructorSubScope(String... classes) {
-		return new InstrumentationEntityBuilder<>(new TraceScope(new ConstructorScope(classes)), parentBuilder);
+		return new InstrumentationEntityBuilder<>(new TraceScope(new ConstructorScope(classes), scopeId), parentBuilder);
 	}
 
 	/**
@@ -63,7 +68,7 @@ public class TraceEntityBuilder {
 	 * @return an {@code InstrumentationEntityBuilder}
 	 */
 	public InstrumentationEntityBuilder<TraceScope> setAPISubScope(String apiName) {
-		return new InstrumentationEntityBuilder<>(new TraceScope(new APIScope(apiName)), parentBuilder);
+		return new InstrumentationEntityBuilder<>(new TraceScope(new APIScope(apiName), scopeId), parentBuilder);
 	}
 
 	/**
@@ -76,7 +81,7 @@ public class TraceEntityBuilder {
 	 * @return an {@code InstrumentationEntityBuilder}
 	 */
 	public InstrumentationEntityBuilder<TraceScope> setCustomSubScope(String scopeName) {
-		return new InstrumentationEntityBuilder<>(new TraceScope(new CustomScope(scopeName)), parentBuilder);
+		return new InstrumentationEntityBuilder<>(new TraceScope(new CustomScope(scopeName), scopeId), parentBuilder);
 	}
 
 }

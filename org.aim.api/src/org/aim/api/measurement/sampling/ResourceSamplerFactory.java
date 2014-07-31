@@ -15,8 +15,10 @@
  */
 package org.aim.api.measurement.sampling;
 
-import org.hyperic.sigar.Sigar;
+import org.aim.api.exceptions.MeasurementException;
 import org.aim.api.measurement.collector.IDataCollector;
+import org.hyperic.sigar.Sigar;
+import org.lpe.common.extension.ExtensionRegistry;
 
 /**
  * Creates recorder for different sampling types.
@@ -28,10 +30,9 @@ public final class ResourceSamplerFactory {
 	private ResourceSamplerFactory() {
 	}
 
-
 	private static Sigar sigar;
 
-	private static Sigar getSigar() {
+	public static Sigar getSigar() {
 		if (sigar == null) {
 			sigar = new Sigar();
 		}
@@ -43,20 +44,21 @@ public final class ResourceSamplerFactory {
 	 * @param sType
 	 *            sampling type
 	 * @param dataCollector
-	 *            data colelctor to use
+	 *            data collector to use
 	 * @return sampler for the type
+	 * @throws MeasurementException
 	 */
-	public static AbstractSampler getSampler(String sType, IDataCollector dataCollector) {
-		AbstractResourceSampler recorder;
-		try {
-			recorder = (AbstractResourceSampler) Class.forName(sType).newInstance();
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			throw new RuntimeException("Failed loading sampler of type: " + sType, e);
+	public static AbstractSampler getSampler(String sType, IDataCollector dataCollector) throws MeasurementException {
+
+		AbstractSampler sampler = ExtensionRegistry.getSingleton().getExtensionArtifact(AbstractSamplerExtension.class,
+				sType);
+		if (sampler == null) {
+			throw new MeasurementException("Invalid sampling resource identifier "+sType+"!");
 		}
 
-		recorder.setDataCollector(dataCollector);
-		recorder.setSigar(getSigar());
-		return recorder;
+		sampler.setDataCollector(dataCollector);
+		((AbstractResourceSampler) sampler).setSigar(getSigar());
+		return sampler;
 
 	}
 

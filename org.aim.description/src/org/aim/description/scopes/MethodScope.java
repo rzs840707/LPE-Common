@@ -10,7 +10,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author Henning Schulz
  * 
  */
-public class MethodScope implements MethodsEnclosingScope {
+public class MethodScope extends MethodsEnclosingScope {
 
 	private final String[] methods;
 
@@ -21,8 +21,14 @@ public class MethodScope implements MethodsEnclosingScope {
 	 *            methods which are to be instrumented
 	 */
 	@JsonCreator
-	public MethodScope(@JsonProperty("methods") String[] methods) {
+	public MethodScope(@JsonProperty("methods") String[] methods, long id) {
+		super(id);
 		this.methods = methods;
+	}
+	
+	@JsonCreator
+	public MethodScope(@JsonProperty("methods") String[] methods) {
+		this(methods, System.nanoTime());
 	}
 
 	/**

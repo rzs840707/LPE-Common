@@ -15,11 +15,11 @@
  */
 package org.aim.mainagent.service;
 
+import org.aim.description.InstrumentationDescription;
+import org.aim.mainagent.AdaptiveInstrumentationFacade;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
-import org.aim.api.instrumentation.description.InstrumentationDescription;
-import org.aim.mainagent.AdaptiveInstrumentationFacade;
 
 /**
  * Instruments the java byte code according to the passed Instrumentation

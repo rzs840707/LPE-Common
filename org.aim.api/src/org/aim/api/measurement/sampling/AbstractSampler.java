@@ -16,8 +16,8 @@
 package org.aim.api.measurement.sampling;
 
 import org.aim.api.measurement.collector.IDataCollector;
-
-
+import org.lpe.common.extension.IExtension;
+import org.lpe.common.extension.IExtensionArtifact;
 
 /**
  * The {@link AbstractSampler} provides a common constructor for all recorder
@@ -27,10 +27,23 @@ import org.aim.api.measurement.collector.IDataCollector;
  * @author Alexander Wert
  * 
  */
-public abstract class AbstractSampler implements ISampler {
+public abstract class AbstractSampler implements ISampler, IExtensionArtifact {
 	private IDataCollector dataCollector;
 
+	/**
+	 * Extension provider.
+	 */
+	private final IExtension<?> provider;
 
+	/**
+	 * Creates a new extension artifact with the given extension provider.
+	 * 
+	 * @param provider
+	 *            the provider of this artifact
+	 */
+	public AbstractSampler(IExtension<?> provider) {
+		this.provider = provider;
+	}
 
 	/**
 	 * Samples the underlying resource.
@@ -50,6 +63,13 @@ public abstract class AbstractSampler implements ISampler {
 	 */
 	public void setDataCollector(IDataCollector dataCollector) {
 		this.dataCollector = dataCollector;
+	}
+
+	/**
+	 * @return returns the provider of this extension.
+	 */
+	public IExtension<?> getProvider() {
+		return this.provider;
 	}
 
 }

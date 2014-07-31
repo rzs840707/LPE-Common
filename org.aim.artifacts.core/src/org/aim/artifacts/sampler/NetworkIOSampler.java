@@ -20,6 +20,7 @@ import org.aim.artifacts.records.NetworkInterfaceInfoRecord;
 import org.aim.artifacts.records.NetworkRecord;
 import org.hyperic.sigar.NetInterfaceStat;
 import org.hyperic.sigar.SigarException;
+import org.lpe.common.extension.IExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,10 @@ public class NetworkIOSampler extends AbstractResourceSampler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetworkIOSampler.class);
 
 	private static String[] networkInterfaces = null;
+
+	public NetworkIOSampler(IExtension<?> provider) {
+		super(provider);
+	}
 
 	/**
 	 * Samples the network status and writes the result into a

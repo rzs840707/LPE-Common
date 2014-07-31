@@ -16,13 +16,12 @@
 package org.aim.mainagent;
 
 import java.lang.reflect.Modifier;
+import java.util.Properties;
 
 import junit.framework.Assert;
 
 import org.aim.api.exceptions.InstrumentationException;
 import org.aim.api.exceptions.MeasurementException;
-import org.aim.api.instrumentation.description.InstrumentationDescription;
-import org.aim.api.instrumentation.description.InstrumentationDescriptionBuilder;
 import org.aim.api.measurement.MeasurementData;
 import org.aim.api.measurement.collector.AbstractDataSource;
 import org.aim.api.measurement.collector.CollectorFactory;
@@ -31,11 +30,15 @@ import org.aim.artifacts.probes.NanoResponsetimeProbe;
 import org.aim.artifacts.probes.ResponsetimeProbe;
 import org.aim.artifacts.records.NanoResponseTimeRecord;
 import org.aim.artifacts.records.ResponseTimeRecord;
+import org.aim.description.InstrumentationDescription;
+import org.aim.description.builder.InstrumentationDescriptionBuilder;
 import org.aim.mainagent.instrumentor.JInstrumentation;
 import org.junit.After;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lpe.common.config.GlobalConfiguration;
+import org.lpe.common.extension.ExtensionRegistry;
 import org.test.sut.ClassA;
 import org.test.sut.ClassB;
 import org.test.sut.ClassC;
@@ -77,6 +80,12 @@ public class MethodInstrumentationTest {
 		ClassG g = new ClassG();
 		AbstractDataSource dataSource = CollectorFactory.createDataSource(MemoryDataSource.class.getName(), null);
 		AbstractDataSource.setDefaultDataSource(dataSource);
+		
+		Properties globalProperties = new Properties();
+		String currentDir = System.getProperty("user.dir");
+		globalProperties.setProperty(ExtensionRegistry.APP_ROOT_DIR_PROPERTY_KEY, currentDir);
+		globalProperties.setProperty(ExtensionRegistry.PLUGINS_FOLDER_PROPERTY_KEY, "plugins");
+		GlobalConfiguration.initialize(globalProperties);
 	}
 
 	@After
@@ -89,11 +98,12 @@ public class MethodInstrumentationTest {
 	public void testMethodScopeInstrumentation() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addMethodInstrumentation()
-				.addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)").addProbe(ResponsetimeProbe.class)
-				.addProbe(NanoResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE).addProbe(NanoResponsetimeProbe.MODEL_PROBE).entityDone()
+				.build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -113,8 +123,8 @@ public class MethodInstrumentationTest {
 			MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addMethodInstrumentation().addMethod(ClassH.class.getName() + "*")
-				.addProbe(ResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder.newMethodScopeEntity(ClassH.class.getName() + "*")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE).entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -131,10 +141,9 @@ public class MethodInstrumentationTest {
 	public void testConstructorScopeInstrumentation() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addConstructorInstrumentation()
-				.addConstructor(ClassA.class.getName()).addProbe(ResponsetimeProbe.class).entityDone()
-				.addConstructorInstrumentation().addConstructor(ClassC.class.getName())
-				.addProbe(NanoResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder.newConstructorScopeEntity(ClassA.class.getName())
+				.addProbe(ResponsetimeProbe.MODEL_PROBE).entityDone().newConstructorScopeEntity(ClassC.class.getName())
+				.addProbe(NanoResponsetimeProbe.MODEL_PROBE).entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -151,8 +160,8 @@ public class MethodInstrumentationTest {
 	public void testAPIScopeInstrumentation() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addAPIInstrumentation(TestAPIScope.class.getName())
-				.addProbe(ResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder.newAPIScopeEntity(TestAPIScope.class.getName())
+				.addProbe(ResponsetimeProbe.MODEL_PROBE).entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -175,9 +184,9 @@ public class MethodInstrumentationTest {
 	public void testFullTraceScopeInstrumentation() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addFullTraceInstrumentation()
-				.addRootMethod(ClassF.class.getName() + ".methodF1()").addProbe(ResponsetimeProbe.class).entityDone()
-				.build();
+		InstrumentationDescription descr = idBuilder.newTraceScopeEntity()
+				.setMethodSubScope(ClassF.class.getName() + ".methodF1()").addProbe(ResponsetimeProbe.MODEL_PROBE)
+				.entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 
@@ -210,19 +219,19 @@ public class MethodInstrumentationTest {
 	@Test
 	public void testIntersectingFullTraceInstrumentationAtOnce() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
-	
+
 		ClassF f = new ClassF();
 		ClassG g = new ClassG();
 		g.methodG1();
 		f.methodF1();
-	
+
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addFullTraceInstrumentation().addRootMethod(ClassG.class.getName() + ".methodG1()")
-				.addProbe(NanoResponsetimeProbe.class).entityDone().addFullTraceInstrumentation()
-				.addRootMethod(ClassF.class.getName() + ".methodF1()").addProbe(ResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder.newTraceScopeEntity()
+				.setMethodSubScope(ClassG.class.getName() + ".methodG1()").addProbe(NanoResponsetimeProbe.MODEL_PROBE)
+				.entityDone().newTraceScopeEntity().setMethodSubScope(ClassF.class.getName() + ".methodF1()")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE).entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
-
 
 		f.methodF1();
 		g.methodG1();
@@ -244,14 +253,15 @@ public class MethodInstrumentationTest {
 		data = getData();
 		Assert.assertTrue(data.getRecords().isEmpty());
 	}
-	
+
 	@Test
-	public void testIntersectingFullTraceInstrumentationStepwise() throws InstrumentationException, MeasurementException {
+	public void testIntersectingFullTraceInstrumentationStepwise() throws InstrumentationException,
+			MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addFullTraceInstrumentation()
-				.addRootMethod(ClassF.class.getName() + ".methodF1()").addProbe(ResponsetimeProbe.class).entityDone()
-				.build();
+		InstrumentationDescription descr = idBuilder.newTraceScopeEntity()
+				.setMethodSubScope(ClassF.class.getName() + ".methodF1()").addProbe(ResponsetimeProbe.MODEL_PROBE)
+				.entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 
@@ -268,11 +278,10 @@ public class MethodInstrumentationTest {
 		Assert.assertFalse(data.getRecords().isEmpty());
 		Assert.assertEquals(9, data.getRecords(ResponseTimeRecord.class).size());
 		idBuilder = new InstrumentationDescriptionBuilder();
-		descr = idBuilder.addFullTraceInstrumentation().addRootMethod(ClassG.class.getName() + ".methodG1()")
-				.addProbe(NanoResponsetimeProbe.class).entityDone().build();
+		descr = idBuilder.newTraceScopeEntity().setMethodSubScope(ClassG.class.getName() + ".methodG1()")
+				.addProbe(NanoResponsetimeProbe.MODEL_PROBE).entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
-
 
 		f.methodF1();
 		g.methodG1();
@@ -299,9 +308,8 @@ public class MethodInstrumentationTest {
 	public void testFullTraceWithMethodScopeInstrumentation() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addMethodInstrumentation()
-				.addMethod(ClassD.class.getName() + ".ifMethodB()").addProbe(NanoResponsetimeProbe.class).entityDone()
-				.build();
+		InstrumentationDescription descr = idBuilder.newMethodScopeEntity(ClassD.class.getName() + ".ifMethodB()")
+				.addProbe(NanoResponsetimeProbe.MODEL_PROBE).entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -314,8 +322,8 @@ public class MethodInstrumentationTest {
 		Assert.assertEquals(1, data.getRecords(NanoResponseTimeRecord.class).size());
 
 		idBuilder = new InstrumentationDescriptionBuilder();
-		descr = idBuilder.addFullTraceInstrumentation().addRootMethod(ClassF.class.getName() + ".methodF1()")
-				.addProbe(ResponsetimeProbe.class).entityDone().build();
+		descr = idBuilder.newTraceScopeEntity().setMethodSubScope(ClassF.class.getName() + ".methodF1()")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE).entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 
@@ -337,11 +345,12 @@ public class MethodInstrumentationTest {
 	public void testUndoInstrumentation() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addMethodInstrumentation()
-				.addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)").addProbe(ResponsetimeProbe.class)
-				.addProbe(NanoResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE).addProbe(NanoResponsetimeProbe.MODEL_PROBE).entityDone()
+				.build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -369,14 +378,18 @@ public class MethodInstrumentationTest {
 	public void testGlobalExclusions() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addExclusion(ClassA.class.getName() + "")
-				.addMethodInstrumentation().addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB1()")
-				.addMethod(ClassB.class.getName() + ".methodB2(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB3(java.lang.Integer)").addProbe(ResponsetimeProbe.class)
-				.addProbe(NanoResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder
+				.newGlobalRestriction()
+				.excludePackage(ClassA.class.getName() + "")
+				.restrictionDone()
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB1()",
+						ClassB.class.getName() + ".methodB2(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB3(java.lang.Integer)")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE).addProbe(NanoResponsetimeProbe.MODEL_PROBE).entityDone()
+				.build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -398,14 +411,18 @@ public class MethodInstrumentationTest {
 	public void testGlobalInclusions() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addInclusion(ClassA.class.getName() + "")
-				.addMethodInstrumentation().addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB1()")
-				.addMethod(ClassB.class.getName() + ".methodB2(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB3(java.lang.Integer)").addProbe(ResponsetimeProbe.class)
-				.addProbe(NanoResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder
+				.newGlobalRestriction()
+				.includePackage(ClassA.class.getName() + "")
+				.restrictionDone()
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB1()",
+						ClassB.class.getName() + ".methodB2(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB3(java.lang.Integer)")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE).addProbe(NanoResponsetimeProbe.MODEL_PROBE).entityDone()
+				.build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -427,14 +444,18 @@ public class MethodInstrumentationTest {
 	public void testGlobalModifierInclusion() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addModifier(Modifier.PRIVATE).addMethodInstrumentation()
-				.addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB1()")
-				.addMethod(ClassB.class.getName() + ".methodB2(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB3(java.lang.Integer)").addProbe(ResponsetimeProbe.class)
-				.addProbe(NanoResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder
+				.newGlobalRestriction()
+				.includeModifier(Modifier.PRIVATE)
+				.restrictionDone()
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB1()",
+						ClassB.class.getName() + ".methodB2(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB3(java.lang.Integer)")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE).addProbe(NanoResponsetimeProbe.MODEL_PROBE).entityDone()
+				.build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -456,21 +477,28 @@ public class MethodInstrumentationTest {
 	public void testLocalExclusions() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addMethodInstrumentation()
-				.addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB1()")
-				.addMethod(ClassB.class.getName() + ".methodB2(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB3(java.lang.Integer)")
-				.addExclusion(ClassA.class.getName() + "").addProbe(ResponsetimeProbe.class).entityDone()
-				.addMethodInstrumentation().addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB1()")
-				.addMethod(ClassB.class.getName() + ".methodB2(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB3(java.lang.Integer)")
-				.addProbe(NanoResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB1()",
+						ClassB.class.getName() + ".methodB2(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB3(java.lang.Integer)")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE)
+				.addProbe(NanoResponsetimeProbe.MODEL_PROBE)
+				.newLocalRestriction()
+
+				.excludePackage(ClassA.class.getName() + "")
+				.restrictionDone()
+				.addProbe(ResponsetimeProbe.MODEL_PROBE)
+				.entityDone()
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB1()",
+						ClassB.class.getName() + ".methodB2(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB3(java.lang.Integer)")
+				.addProbe(NanoResponsetimeProbe.MODEL_PROBE).entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -492,21 +520,28 @@ public class MethodInstrumentationTest {
 	public void testLocalInclusions() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addMethodInstrumentation()
-				.addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB1()")
-				.addMethod(ClassB.class.getName() + ".methodB2(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB3(java.lang.Integer)")
-				.addInclusion(ClassA.class.getName() + "").addProbe(ResponsetimeProbe.class).entityDone()
-				.addMethodInstrumentation().addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB1()")
-				.addMethod(ClassB.class.getName() + ".methodB2(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB3(java.lang.Integer)")
-				.addProbe(NanoResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB1()",
+						ClassB.class.getName() + ".methodB2(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB3(java.lang.Integer)")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE)
+				.addProbe(NanoResponsetimeProbe.MODEL_PROBE)
+				.newLocalRestriction()
+
+				.includePackage(ClassA.class.getName() + "")
+				.restrictionDone()
+				.addProbe(ResponsetimeProbe.MODEL_PROBE)
+				.entityDone()
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB1()",
+						ClassB.class.getName() + ".methodB2(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB3(java.lang.Integer)")
+				.addProbe(NanoResponsetimeProbe.MODEL_PROBE).entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -528,21 +563,30 @@ public class MethodInstrumentationTest {
 	public void testLocalModifierInclusions() throws InstrumentationException, MeasurementException {
 		Assume.assumeNotNull(System.getProperties().get(JInstrumentation.J_INSTRUMENTATION_KEY));
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		InstrumentationDescription descr = idBuilder.addMethodInstrumentation()
-				.addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB1()")
-				.addMethod(ClassB.class.getName() + ".methodB2(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB3(java.lang.Integer)").addModifier(Modifier.PUBLIC)
-				.addProbe(ResponsetimeProbe.class).entityDone().addMethodInstrumentation()
-				.addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB1()")
-				.addMethod(ClassB.class.getName() + ".methodB2(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB3(java.lang.Integer)").addModifier(Modifier.PRIVATE)
-				.addProbe(NanoResponsetimeProbe.class).entityDone().build();
+		InstrumentationDescription descr = idBuilder
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB1()",
+						ClassB.class.getName() + ".methodB2(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB3(java.lang.Integer)")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE)
+				.newLocalRestriction()
+				.includeModifier(Modifier.PUBLIC)
+				.restrictionDone()
+				
+				.entityDone()
+				
+				
+				
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB1()",
+						ClassB.class.getName() + ".methodB2(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB3(java.lang.Integer)").newLocalRestriction()
+				.includeModifier(Modifier.PRIVATE).restrictionDone().addProbe(NanoResponsetimeProbe.MODEL_PROBE)
+				.entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();
@@ -561,20 +605,29 @@ public class MethodInstrumentationTest {
 		AdaptiveInstrumentationFacade.getInstance().undoInstrumentation();
 
 		idBuilder = new InstrumentationDescriptionBuilder();
-		descr = idBuilder.addMethodInstrumentation().addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB1()")
-				.addMethod(ClassB.class.getName() + ".methodB2(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB3(java.lang.Integer)")
-				.addModifier(Modifier.PUBLIC | Modifier.SYNCHRONIZED).addProbe(ResponsetimeProbe.class).entityDone()
-				.addMethodInstrumentation().addMethod(ClassA.class.getName() + ".methodA1()")
-				.addMethod(ClassA.class.getName() + ".methodA2(java.lang.Integer)")
-				.addMethod(ClassA.class.getName() + ".methodA3(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB1()")
-				.addMethod(ClassB.class.getName() + ".methodB2(java.lang.Integer)")
-				.addMethod(ClassB.class.getName() + ".methodB3(java.lang.Integer)").addModifier(Modifier.PRIVATE)
-				.addProbe(NanoResponsetimeProbe.class).entityDone().build();
+		descr = idBuilder
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB1()",
+						ClassB.class.getName() + ".methodB2(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB3(java.lang.Integer)")
+				.addProbe(ResponsetimeProbe.MODEL_PROBE)
+				.newLocalRestriction()
+
+				.includeModifier(Modifier.PUBLIC)
+				.includeModifier(Modifier.SYNCHRONIZED)
+				.restrictionDone()
+				.addProbe(ResponsetimeProbe.MODEL_PROBE)
+				.entityDone()
+				.newMethodScopeEntity(ClassA.class.getName() + ".methodA1()",
+						ClassA.class.getName() + ".methodA2(java.lang.Integer)",
+						ClassA.class.getName() + ".methodA3(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB1()",
+						ClassB.class.getName() + ".methodB2(java.lang.Integer)",
+						ClassB.class.getName() + ".methodB3(java.lang.Integer)").newLocalRestriction()
+				.includeModifier(Modifier.PRIVATE).restrictionDone().addProbe(NanoResponsetimeProbe.MODEL_PROBE)
+				.entityDone().build();
 
 		AdaptiveInstrumentationFacade.getInstance().instrument(descr);
 		enableMeasurement();

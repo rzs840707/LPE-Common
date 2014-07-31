@@ -24,24 +24,29 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.aim.api.exceptions.InstrumentationException;
+import org.aim.api.instrumentation.AbstractCustomScopeExtension;
 import org.aim.api.instrumentation.AbstractEnclosingProbe;
+import org.aim.api.instrumentation.AbstractEnclosingProbeExtension;
 import org.aim.api.instrumentation.AbstractInstAPIScope;
+import org.aim.api.instrumentation.AbstractInstApiScopeExtension;
 import org.aim.api.instrumentation.IScopeAnalyzer;
-import org.aim.api.instrumentation.description.APIScope;
-import org.aim.api.instrumentation.description.AbstractInstrumentationEntity;
-import org.aim.api.instrumentation.description.ConstructorsScope;
-import org.aim.api.instrumentation.description.CustomScope;
-import org.aim.api.instrumentation.description.EnclosingInstrumentationEntity;
-import org.aim.api.instrumentation.description.InstrumentationDescription;
-import org.aim.api.instrumentation.description.MethodsScope;
-import org.aim.api.instrumentation.description.Restrictions;
 import org.aim.api.instrumentation.description.internal.FlatInstrumentationEntity;
 import org.aim.api.instrumentation.description.internal.FlatScopeEntity;
+import org.aim.description.InstrumentationDescription;
+import org.aim.description.InstrumentationEntity;
+import org.aim.description.restrictions.Restriction;
+import org.aim.description.scopes.APIScope;
+import org.aim.description.scopes.ConstructorScope;
+import org.aim.description.scopes.CustomScope;
+import org.aim.description.scopes.MethodScope;
+import org.aim.description.scopes.MethodsEnclosingScope;
+import org.lpe.common.extension.ExtensionRegistry;
+import org.lpe.common.extension.IExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Analyzes tho whole scope.
+ * Analyzes the whole scope.
  * 
  * @author Alexander Wert
  * 
@@ -89,15 +94,18 @@ public class ScopeAnalysisController {
 				}
 
 			}
+
 			for (FlatScopeEntity fse : scopeEntities) {
 				for (String probe : probes) {
+
 					Class<? extends AbstractEnclosingProbe> probeClass = null;
 					if (!probeClasses.containsKey(probe)) {
-						try {
-							probeClass = (Class<? extends AbstractEnclosingProbe>) Class.forName(probe);
-						} catch (ClassNotFoundException e) {
-							throw new InstrumentationException("Failed loading Probe class " + probe, e);
+						IExtension<?> ext = ExtensionRegistry.getSingleton().getExtension(probe);
+						if (ext == null) {
+							throw new InstrumentationException("Failed loading Probe class " + probe);
 						}
+						AbstractEnclosingProbeExtension probeExtension = (AbstractEnclosingProbeExtension) ext;
+						probeClass = probeExtension.getProbeClass();
 						probeClasses.put(probe, probeClass);
 					} else {
 						probeClass = probeClasses.get(probe);
@@ -121,7 +129,9 @@ public class ScopeAnalysisController {
 		for (Class clazz : allLoadedClasses) {
 			String className = clazz.getName();
 			boolean invalidClass = false;
-			if (instrumentationDescription.getGlobalRestrictions().isExcluded(className)) {
+			if (instrumentationDescription.getGlobalRestriction().isExcluded(className)) { // TODO:
+																							// use
+																							// IDM
 				invalidClass = true;
 			} else if (clazz.getClassLoader() == null) {
 				invalidClass = true;
@@ -147,52 +157,57 @@ public class ScopeAnalysisController {
 
 	private Map<IScopeAnalyzer, Set<String>> createScopeAnalyzerToProbesMapping() throws InstrumentationException {
 		Map<IScopeAnalyzer, Set<String>> mapping = new HashMap<>();
-		for (AbstractInstrumentationEntity abstractEntity : instrumentationDescription.getEntities()) {
-			if (abstractEntity instanceof EnclosingInstrumentationEntity) {
-				EnclosingInstrumentationEntity eiEntity = (EnclosingInstrumentationEntity) abstractEntity;
-
-				IScopeAnalyzer scopeAnalyzer = null;
-				if (eiEntity.getScope() instanceof MethodsScope) {
-					scopeAnalyzer = new MethodScopeAnalyzer(((MethodsScope) eiEntity.getScope()).getMethodNames());
-				} else if (eiEntity.getScope() instanceof ConstructorsScope) {
-					scopeAnalyzer = new ConstructorScopeAnalyzer(
-							((ConstructorsScope) eiEntity.getScope()).getClassNames());
-				} else if (eiEntity.getScope() instanceof CustomScope) {
-					String scopeClass = ((CustomScope) eiEntity.getScope()).getScopeClass();
-					try {
-						scopeAnalyzer = (IScopeAnalyzer) Class.forName(scopeClass).newInstance();
-					} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-						// TODO: show warning
-						throw new InstrumentationException("Unable to instantiate scope analyzer for scopeClass "
-								+ scopeClass, e);
-					}
-				} else if (eiEntity.getScope() instanceof APIScope) {
-					String scopeClass = ((APIScope) eiEntity.getScope()).getApiScopeClass();
-					try {
-						AbstractInstAPIScope apiScopeInstance = (AbstractInstAPIScope) Class.forName(scopeClass)
-								.newInstance();
-						scopeAnalyzer = new APIScopeAnalyzer(apiScopeInstance);
-					} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-						// TODO: show warning
-						throw new RuntimeException("Unable to instantiate API scope for scopeClass " + scopeClass, e);
-					}
-				} else {
-					continue;
+		for (InstrumentationEntity<MethodsEnclosingScope> mScopeEntity : instrumentationDescription
+				.getInstrumentationEntities(MethodsEnclosingScope.class)) {
+			IScopeAnalyzer scopeAnalyzer = null;
+			if (mScopeEntity.getScope() instanceof MethodScope) {
+				scopeAnalyzer = new MethodScopeAnalyzer(((MethodScope) mScopeEntity.getScope()).getMethods());
+			} else if (mScopeEntity.getScope() instanceof ConstructorScope) {
+				scopeAnalyzer = new ConstructorScopeAnalyzer(
+						((ConstructorScope) mScopeEntity.getScope()).getTargetClasses());
+			} else if (mScopeEntity.getScope() instanceof CustomScope) {
+				String scopeName = ((CustomScope) mScopeEntity.getScope()).getScopeName();
+				scopeAnalyzer = ExtensionRegistry.getSingleton().getExtensionArtifact(
+						AbstractCustomScopeExtension.class, scopeName);
+				if (scopeAnalyzer == null) {
+					throw new InstrumentationException("Unable to instantiate scope analyzer for custom scope type "
+							+ scopeName);
 				}
-				Restrictions combinedRestriction = new Restrictions();
-				combinedRestriction.addModifier(eiEntity.getRestrictions().getModifier());
-				combinedRestriction.addModifier(instrumentationDescription.getGlobalRestrictions().getModifier());
-				combinedRestriction.getInclusions().addAll(eiEntity.getRestrictions().getInclusions());
-				combinedRestriction.getInclusions().addAll(
-						instrumentationDescription.getGlobalRestrictions().getInclusions());
-				combinedRestriction.getExclusions().addAll(eiEntity.getRestrictions().getExclusions());
-				combinedRestriction.getExclusions().addAll(
-						instrumentationDescription.getGlobalRestrictions().getExclusions());
+			} else if (mScopeEntity.getScope() instanceof APIScope) {
+				String apiName = ((APIScope) mScopeEntity.getScope()).getAPIName();
 
-				scopeAnalyzer.setRestrictions(combinedRestriction);
-				scopeAnalyzer.setScopeId(eiEntity.getScope().getId());
-				mapping.put(scopeAnalyzer, eiEntity.getProbes());
+				AbstractInstAPIScope apiScopeInstance = ExtensionRegistry.getSingleton().getExtensionArtifact(
+						AbstractInstApiScopeExtension.class, apiName);
+
+				if (apiScopeInstance == null) {
+					throw new InstrumentationException("Unable to instantiate scope analyzer for API scope type "
+							+ apiName);
+				}
+
+				scopeAnalyzer = new APIScopeAnalyzer(apiScopeInstance);
+			} else {
+				continue;
 			}
+
+			Restriction combinedRestriction = new Restriction();
+
+			combinedRestriction.getModifierIncludes().addAll(mScopeEntity.getLocalRestriction().getModifierIncludes());
+			combinedRestriction.getModifierIncludes().addAll(
+					instrumentationDescription.getGlobalRestriction().getModifierIncludes());
+			combinedRestriction.getModifierExcludes().addAll(mScopeEntity.getLocalRestriction().getModifierExcludes());
+			combinedRestriction.getModifierExcludes().addAll(
+					instrumentationDescription.getGlobalRestriction().getModifierExcludes());
+
+			combinedRestriction.getPackageIncludes().addAll(mScopeEntity.getLocalRestriction().getPackageIncludes());
+			combinedRestriction.getPackageIncludes().addAll(
+					instrumentationDescription.getGlobalRestriction().getPackageIncludes());
+			combinedRestriction.getPackageExcludes().addAll(mScopeEntity.getLocalRestriction().getPackageExcludes());
+			combinedRestriction.getPackageExcludes().addAll(
+					instrumentationDescription.getGlobalRestriction().getPackageExcludes());
+
+			scopeAnalyzer.setRestriction(combinedRestriction);
+			scopeAnalyzer.setScopeId(mScopeEntity.getScope().getId());
+			mapping.put(scopeAnalyzer, mScopeEntity.getProbesAsStrings());
 
 		}
 		return mapping;

@@ -18,13 +18,14 @@ package org.lpe.common.resourcemonitoring;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.aim.api.exceptions.MeasurementException;
-import org.aim.api.instrumentation.description.SamplingConfig;
 import org.aim.api.measurement.collector.AbstractDataSource;
 import org.aim.api.measurement.sampling.AbstractSampler;
 import org.aim.api.measurement.sampling.ResourceSamplerFactory;
 import org.aim.api.measurement.sampling.SamplingExecuter;
+import org.aim.description.sampling.SamplingDescription;
 import org.lpe.common.util.system.LpeSystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,22 +70,23 @@ public final class SystemMonitor {
 	 * 
 	 * @param config
 	 *            the configuration object which should be used
+	 * @throws MeasurementException 
 	 */
-	public void addMonitoringJob(SamplingConfig config) {
-		for (String samplingType : config.getValues()) {
-			Long delay = config.getSamplingDelay(samplingType);
+	public void addMonitoringJob(Set<SamplingDescription> samplingDescriptions) throws MeasurementException {
+
+		for (SamplingDescription sampDescr : samplingDescriptions) {
+			Long delay = sampDescr.getDelay();
 			SamplingExecuter executer = monitoringJobs.get(delay);
 			if (executer == null) {
 				executer = new SamplingExecuter(delay);
 				monitoringJobs.put(delay, executer);
 			}
 
-			AbstractSampler sampler = ResourceSamplerFactory.getSampler(samplingType,
+			AbstractSampler sampler = ResourceSamplerFactory.getSampler(sampDescr.getResourceName(),
 					AbstractDataSource.getDefaultDataSource());
 			if (sampler != null) {
 				executer.addSampler(sampler);
 			}
-
 		}
 
 	}

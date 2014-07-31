@@ -9,7 +9,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author Henning Schulz
  * 
  */
-public class ConstructorScope implements MethodsEnclosingScope {
+public class ConstructorScope extends MethodsEnclosingScope {
 
 	private final String[] targetClasses;
 
@@ -20,8 +20,14 @@ public class ConstructorScope implements MethodsEnclosingScope {
 	 *            classes which constructors are to be instrumented
 	 */
 	@JsonCreator
-	public ConstructorScope(@JsonProperty("targetClasses") String[] targetClasses) {
+	public ConstructorScope(@JsonProperty("targetClasses") String[] targetClasses, long id) {
+		super(id);
 		this.targetClasses = targetClasses;
+	}
+	
+	@JsonCreator
+	public ConstructorScope(@JsonProperty("targetClasses") String[] targetClasses) {
+		this(targetClasses, System.nanoTime());
 	}
 
 	/**

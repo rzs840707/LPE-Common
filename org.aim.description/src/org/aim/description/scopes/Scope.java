@@ -8,4 +8,7 @@ package org.aim.description.scopes;
  * 
  */
 public interface Scope {
+	
+	public long getId();
+	
 }

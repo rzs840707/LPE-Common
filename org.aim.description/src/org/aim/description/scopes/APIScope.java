@@ -10,7 +10,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author Henning Schulz
  * 
  */
-public class APIScope implements MethodsEnclosingScope {
+public class APIScope extends MethodsEnclosingScope {
 
 	private final String aPIName;
 
@@ -19,8 +19,14 @@ public class APIScope implements MethodsEnclosingScope {
 	 * @param aPIName name of the represented API
 	 */
 	@JsonCreator
-	public APIScope(@JsonProperty("aPIName") String aPIName) {
+	public APIScope(@JsonProperty("aPIName") String aPIName, long id) {
+		super(id);
 		this.aPIName = aPIName;
+	}
+	
+	@JsonCreator
+	public APIScope(@JsonProperty("aPIName") String aPIName) {
+		this(aPIName, System.nanoTime());
 	}
 
 	/**

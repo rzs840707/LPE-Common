@@ -19,27 +19,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aim.api.exceptions.InstrumentationException;
-import org.aim.api.instrumentation.AbstractEnclosingProbe;
-import org.aim.api.instrumentation.description.InstrumentationDescription;
-import org.aim.api.instrumentation.description.InstrumentationDescriptionBuilder;
 import org.aim.api.instrumentation.entities.OverheadData;
 import org.aim.api.instrumentation.entities.OverheadRecord;
+import org.aim.description.InstrumentationDescription;
+import org.aim.description.builder.InstrumentationDescriptionBuilder;
 import org.aim.mainagent.AdaptiveInstrumentationFacade;
 
 public class OverheadEstimator {
 
 	@SuppressWarnings("unchecked")
 	public static List<OverheadRecord> measureOverhead(String probeTypeName) throws InstrumentationException {
-		Class<? extends AbstractEnclosingProbe> probeType = null;
-		try {
-			probeType = (Class<? extends AbstractEnclosingProbe>) Class.forName(probeTypeName);
-		} catch (ClassNotFoundException e) {
-			throw new InstrumentationException("Where not able to measure overhead. {}", e);
-		}
 
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
-		idBuilder.addMethodInstrumentation().addMethod(OverheadTargetClass.class.getName() + ".called()")
-				.addProbe(probeType).entityDone();
+		idBuilder.newMethodScopeEntity(OverheadTargetClass.class.getName() + ".called()").addProbe(probeTypeName)
+				.entityDone();
 
 		List<OverheadRecord> records = new ArrayList<>();
 

@@ -7,5 +7,15 @@ package org.aim.description.scopes;
  * @author Henning Schulz
  * 
  */
-public interface MethodsEnclosingScope extends Scope {
+public abstract class MethodsEnclosingScope implements Scope {
+	private final long id;
+
+	public MethodsEnclosingScope(long id) {
+		this.id = id;
+	}
+
+	@Override
+	public long getId() {
+		return id;
+	}
 }

@@ -7,7 +7,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.aim.description.restrictions.Restriction;
 import org.aim.description.sampling.SamplingDescription;
+import org.aim.description.scopes.Scope;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * This class is a wrapper class for instrumentation descriptions.
@@ -54,6 +56,25 @@ public class InstrumentationDescription {
 	}
 
 	/**
+	 * Returns all instrumentation entities.
+	 * 
+	 * @return the instrumentation entities
+	 */
+	@SuppressWarnings("unchecked")
+	@JsonIgnore
+	public <S extends Scope> Set<InstrumentationEntity<S>> getInstrumentationEntities(Class<S> type) {
+		Set<InstrumentationEntity<S>> sEntities = new HashSet<>();
+
+		for (InstrumentationEntity<?> ie : instrumentationEntities) {
+			if (type.isAssignableFrom(ie.getScope().getClass())) {
+				sEntities.add((InstrumentationEntity<S>) ie);
+			}
+		}
+
+		return sEntities;
+	}
+
+	/**
 	 * Sets the global restriction. Returns, if the restriction is already set.
 	 * The restriction is set to the given one, anyway.
 	 * 
@@ -74,13 +95,17 @@ public class InstrumentationDescription {
 	 * @return the global restriction
 	 */
 	public Restriction getGlobalRestriction() {
+		if (globalRestriction == null) {
+			globalRestriction = new Restriction();
+		}
 		return globalRestriction;
 	}
 
 	/**
 	 * Adds a sampling description.
 	 * 
-	 * @param description sampling description to be added.
+	 * @param description
+	 *            sampling description to be added.
 	 */
 	public void addSamplingDescription(SamplingDescription description) {
 		samplingDescriptions.add(description);
@@ -95,6 +120,25 @@ public class InstrumentationDescription {
 		return samplingDescriptions;
 	}
 
+	/**
+	 * Returns, if this instrumentation description contains an entity of the
+	 * given scope type.
+	 * 
+	 * @param scopeClass
+	 *            scope class which is to be searched for
+	 * @return {@code true}, if there is an entity of the {@code scopeClass}
+	 *         type, of {@code false} otherwise
+	 */
+	public boolean containsScopeType(Class<? extends Scope> scopeClass) {
+		for (InstrumentationEntity<?> entity : instrumentationEntities) {
+			if (scopeClass.isAssignableFrom(entity.getScope().getClass())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -106,9 +150,10 @@ public class InstrumentationDescription {
 			builder.append(entity.toString());
 		}
 
-		if (globalRestriction != null) {
+		if (getGlobalRestriction() != null) {
 			builder.append("\n\tGlobal Restriction:\n\t\t");
-			builder.append(globalRestriction.toString().replace(", ", "\n\t\t").replace("+", "+ ").replace("-", "- "));
+			builder.append(getGlobalRestriction().toString().replace(", ", "\n\t\t").replace("+", "+ ")
+					.replace("-", "- "));
 		}
 
 		builder.append("\n\tSampling Descriptions:");

@@ -89,5 +89,12 @@ public interface IExtensionRegistry {
 	 * @return extension for the given name
 	 */
 	IExtension<?> getExtension(String name);
+	
+	/**
+	 * 
+	 * @param name name of the extension
+	 * @return extension for the given name
+	 */
+	<T extends IExtensionArtifact> IExtension<T> getExtension(String name, Class<T> type);
 
 }

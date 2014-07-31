@@ -16,6 +16,7 @@
 		<module>../org.lpe.common.utils</module>
 		<module>../org.lpe.common.config</module>
 		<module>../org.lpe.common.extension</module>
+		<module>../org.aim.description</module>
 		<module>../org.aim.api</module>
 		<module>../org.aim.artifacts.core</module>
 		<module>../org.aim.mainagent</module>
@@ -90,7 +91,7 @@
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>rsc</directory>
+				<directory>test-rsc</directory>
 			</testResource>
 		</testResources>
 

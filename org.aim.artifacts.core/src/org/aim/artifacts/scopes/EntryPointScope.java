@@ -16,15 +16,20 @@
 package org.aim.artifacts.scopes;
 
 import org.aim.api.instrumentation.AbstractInstAPIScope;
+import org.lpe.common.extension.IExtension;
 
 /**
- * The {@link ServletScope} comprises all doXXX methods of classes derived from
- * javax.servlet.http.HttpServlet.
+ * The {@link EntryPointScope} comprises all doXXX methods of classes derived
+ * from javax.servlet.http.HttpServlet.
  * 
  * @author Alexander Wert
  * 
  */
-public class ServletScope extends AbstractInstAPIScope {
+public class EntryPointScope extends AbstractInstAPIScope {
+
+	public EntryPointScope(IExtension<?> provider) {
+		super(provider);
+	}
 
 	@Override
 	protected void init() {

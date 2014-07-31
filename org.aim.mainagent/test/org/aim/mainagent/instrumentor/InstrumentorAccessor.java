@@ -24,11 +24,12 @@ import javassist.NotFoundException;
 
 import org.aim.api.exceptions.InstrumentationException;
 import org.aim.api.instrumentation.AbstractEnclosingProbe;
-import org.aim.mainagent.instrumentor.BCInjector;
+import org.aim.description.restrictions.Restriction;
 
 public class InstrumentorAccessor {
 	public static void instrumentBehaviour(Set<Class<? extends AbstractEnclosingProbe>> probeTypes, CtClass ctClass,
 			String behaviourSignature) throws InstrumentationException, CannotCompileException, NotFoundException {
-		BCInjector.getInstance().instrumentBehaviour(probeTypes, ctClass, behaviourSignature, Collections.EMPTY_SET);
+		BCInjector.getInstance().instrumentBehaviour(probeTypes, ctClass, behaviourSignature, Collections.EMPTY_SET,
+				new Restriction());
 	}
 }

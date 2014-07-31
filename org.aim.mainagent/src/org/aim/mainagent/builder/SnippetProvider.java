@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tools.ant.filters.StringInputStream;
 import org.aim.api.exceptions.InstrumentationException;
 import org.aim.api.instrumentation.AbstractEnclosingProbe;
 import org.aim.api.instrumentation.ProbeAfterPart;
@@ -42,6 +41,7 @@ import org.aim.api.instrumentation.ProbeBeforePart;
 import org.aim.api.instrumentation.ProbeIncrementalInstrumentation;
 import org.aim.api.instrumentation.ProbeVariable;
 import org.aim.mainagent.probes.GenericProbe;
+import org.apache.tools.ant.filters.StringInputStream;
 
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.DecompilerSettings;

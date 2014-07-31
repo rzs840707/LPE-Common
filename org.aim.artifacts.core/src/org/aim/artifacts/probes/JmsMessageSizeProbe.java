@@ -24,8 +24,17 @@ import org.aim.api.instrumentation.ProbeAfterPart;
 import org.aim.api.instrumentation.ProbeBeforePart;
 import org.aim.api.instrumentation.ProbeVariable;
 import org.aim.artifacts.records.JmsMessageSizeRecord;
+import org.aim.description.probes.MeasurementProbe;
+import org.aim.description.scopes.MethodsEnclosingScope;
+import org.lpe.common.extension.IExtension;
 
 public class JmsMessageSizeProbe extends AbstractEnclosingProbe {
+	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(JmsMessageSizeProbe.class.getName());
+	
+	public JmsMessageSizeProbe(IExtension<?> provider) {
+		super(provider);
+	}
+	
 	@ProbeVariable
 	public JmsMessageSizeRecord _JmsMessageSizeProbe_record;
 

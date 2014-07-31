@@ -8,6 +8,20 @@ package org.aim.description.scopes;
  * 
  */
 public class SynchronizedScope implements Scope {
+	private final long id;
+
+	@Override
+	public long getId() {
+		return id;
+	}
+
+	public SynchronizedScope(long id) {
+		this.id = id;
+	}
+
+	public SynchronizedScope() {
+		this(System.nanoTime());
+	}
 
 	@Override
 	public String toString() {

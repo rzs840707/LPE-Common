@@ -162,4 +162,95 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 		return new InstrumentationEntityBuilder<>(new CustomScope(scopeName), this);
 	}
 
+	/**
+	 * Starts definition of an {@link InstrumentationEntity} with a
+	 * {@link MethodScope}.
+	 * 
+	 * @param patterns
+	 *            methods in the method scope
+	 * @return an {@link InstrumentationEntityBuilder}
+	 */
+	public InstrumentationEntityBuilder<MethodScope> newMethodScopeEntityWithId(long id, String... patterns) {
+		return new InstrumentationEntityBuilder<>(new MethodScope(patterns, id), this);
+	}
+
+	/**
+	 * Starts definition of an {@link InstrumentationEntity} with a
+	 * {@link TraceScope}. In a first step, the sub-scope of the trace scope has
+	 * to be specified.
+	 * 
+	 * @return an {@link TraceEntityBuilder}
+	 */
+	public TraceEntityBuilder newTraceScopeEntityWithId(long id) {
+		return new TraceEntityBuilder(this, id);
+	}
+
+	/**
+	 * Starts definition of an {@link InstrumentationEntity} with a
+	 * {@link MemoryScope}.
+	 * 
+	 * @return an {@link InstrumentationEntityBuilder}
+	 */
+	public InstrumentationEntityBuilder<MemoryScope> newMemoryScopeEntityWithId(long id) {
+		return new InstrumentationEntityBuilder<>(new MemoryScope(id), this);
+	}
+
+	/**
+	 * Starts definition of an {@link InstrumentationEntity} with an
+	 * {@link AllocationScope}.
+	 * 
+	 * @param classes
+	 *            classes of the allocation scope
+	 * @return an {@link InstrumentationEntityBuilder}
+	 */
+	public InstrumentationEntityBuilder<AllocationScope> newAllocationScopeEntityWithId(long id, String... classes) {
+		return new InstrumentationEntityBuilder<>(new AllocationScope(classes, id), this);
+	}
+
+	/**
+	 * Starts definition of an {@link InstrumentationEntity} with a
+	 * {@link ConstructorScope}.
+	 * 
+	 * @param classes
+	 *            classes of the constructor scope
+	 * @return an {@link InstrumentationEntityBuilder}
+	 */
+	public InstrumentationEntityBuilder<ConstructorScope> newConstructorScopeEntityWithId(long id, String... classes) {
+		return new InstrumentationEntityBuilder<>(new ConstructorScope(classes, id), this);
+	}
+
+	/**
+	 * Starts definition of an {@link InstrumentationEntity} with a
+	 * {@link SynchronizedScope}.
+	 * 
+	 * @return an {@link InstrumentationEntityBuilder}
+	 */
+	public InstrumentationEntityBuilder<SynchronizedScope> newSynchronizedScopeEntityWithId(long id) {
+		return new InstrumentationEntityBuilder<>(new SynchronizedScope(id), this);
+	}
+
+	/**
+	 * Starts definition of an {@link InstrumentationEntity} with an
+	 * {@link APIScope}.
+	 * 
+	 * @param apiName
+	 *            name of the API
+	 * @return an {@link InstrumentationEntityBuilder}
+	 */
+	public InstrumentationEntityBuilder<APIScope> newAPIScopeEntityWithId(long id, String apiName) {
+		return new InstrumentationEntityBuilder<>(new APIScope(apiName, id), this);
+	}
+
+	/**
+	 * Starts definition of an {@link InstrumentationEntity} with a
+	 * {@link CustomScope}.
+	 * 
+	 * @param scopeName
+	 *            name of the scope
+	 * @return an {@link InstrumentationEntityBuilder}
+	 */
+	public InstrumentationEntityBuilder<CustomScope> newCustomScopeEntityWithId(long id, String scopeName) {
+		return new InstrumentationEntityBuilder<>(new CustomScope(scopeName, id), this);
+	}
+
 }

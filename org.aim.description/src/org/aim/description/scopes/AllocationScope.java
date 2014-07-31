@@ -13,6 +13,13 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class AllocationScope implements Scope {
 
 	private final String[] targetClasses;
+	
+	private final long id;
+
+	@Override
+	public long getId() {
+		return id;
+	}
 
 	/**
 	 * Constructor.
@@ -21,8 +28,14 @@ public class AllocationScope implements Scope {
 	 *            classes to be considered
 	 */
 	@JsonCreator
-	public AllocationScope(@JsonProperty("targetClasses") String[] targetClasses) {
+	public AllocationScope(@JsonProperty("targetClasses") String[] targetClasses, long id) {
+		this.id = id;
 		this.targetClasses = targetClasses;
+	}
+
+	@JsonCreator
+	public AllocationScope(@JsonProperty("targetClasses") String[] targetClasses) {
+		this(targetClasses, System.nanoTime());
 	}
 
 	/**

@@ -19,8 +19,13 @@ import org.aim.api.instrumentation.AbstractEnclosingProbe;
 import org.aim.api.instrumentation.ProbeAfterPart;
 import org.aim.api.instrumentation.ProbeBeforePart;
 import org.aim.api.instrumentation.ProbeVariable;
+import org.lpe.common.extension.IExtension;
 
 public class InvalidDummyProbe extends AbstractEnclosingProbe {
+	public InvalidDummyProbe(IExtension<?> provider) {
+		super(provider);
+	}
+
 	@ProbeVariable
 	public String testVariable;
 

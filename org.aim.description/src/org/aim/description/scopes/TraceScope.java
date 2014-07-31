@@ -10,7 +10,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author Henning Schulz
  * 
  */
-public class TraceScope implements MethodsEnclosingScope {
+public class TraceScope extends MethodsEnclosingScope {
 
 	private final MethodsEnclosingScope subScope;
 
@@ -21,13 +21,23 @@ public class TraceScope implements MethodsEnclosingScope {
 	 *            scope of root methods
 	 */
 	@JsonCreator
-	public TraceScope(@JsonProperty("subScope") MethodsEnclosingScope subScope) {
+	public TraceScope(@JsonProperty("subScope") MethodsEnclosingScope subScope, long id) {
+		super(id);
 		this.subScope = subScope;
+	}
+	
+	@JsonCreator
+	public TraceScope(@JsonProperty("subScope") MethodsEnclosingScope subScope) {
+		this(subScope, System.nanoTime());
 	}
 
 	@Override
 	public String toString() {
-		return "Trace Scope [" + subScope.toString() + "]";
+		return "Trace Scope [" + getSubScope().toString() + "]";
+	}
+
+	public MethodsEnclosingScope getSubScope() {
+		return subScope;
 	}
 
 }
