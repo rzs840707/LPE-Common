@@ -21,8 +21,15 @@ import org.aim.description.probes.MeasurementProbe;
 import org.aim.description.scopes.SynchronizedScope;
 import org.aim.mainagent.probes.GenericProbe;
 
+/**
+ * Event probe for generating the waiting time of threads while they are waiting
+ * to enter a {@code synchronized} block.
+ * 
+ * @author Henning Schulz
+ * 
+ */
 public class SynchronizedBlocksWaitingTimeProbe implements ISynchronizedEventProbe {
-	
+
 	public static final MeasurementProbe<SynchronizedScope> MODEL_PROBE = new MeasurementProbe<>("SynchronizedProbe");
 
 	private Object monitor;
