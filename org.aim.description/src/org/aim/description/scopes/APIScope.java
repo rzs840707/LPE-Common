@@ -32,7 +32,7 @@ public class APIScope extends MethodsEnclosingScope {
 	/**
 	 * Constructor.
 	 * 
-	 * @param aPIName
+	 * @param apiName
 	 *            name of the represented API
 	 * @param id
 	 *            scope id

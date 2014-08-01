@@ -28,7 +28,7 @@ import org.codehaus.jackson.annotate.JsonTypeInfo;
  */
 public class TraceScope extends MethodsEnclosingScope {
 
-	@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
+	@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 	private final MethodsEnclosingScope subScope;
 
 	/**

@@ -35,6 +35,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 @XmlRootElement
 public class InstrumentationDescription {
+	
+	private static final int HASH_PRIME = 31;
 
 	private final Set<InstrumentationEntity<?>> instrumentationEntities;
 
@@ -76,6 +78,7 @@ public class InstrumentationDescription {
 	 * @param type
 	 *            class object of the scope
 	 * @return the instrumentation entities of scope type {@code type}
+	 * @param <S> scope type
 	 */
 	@SuppressWarnings("unchecked")
 	@JsonIgnore
@@ -180,6 +183,10 @@ public class InstrumentationDescription {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
 		if (!obj.getClass().equals(this.getClass())) {
 			return false;
 		}
@@ -193,9 +200,9 @@ public class InstrumentationDescription {
 	@Override
 	public int hashCode() {
 		int hash = 1;
-		hash = hash * 31 + getInstrumentationEntities().hashCode();
-		hash = hash * 31 + getSamplingDescriptions().hashCode();
-		hash = hash * 31 + getGlobalRestriction().hashCode();
+		hash = hash * HASH_PRIME + getInstrumentationEntities().hashCode();
+		hash = hash * HASH_PRIME + getSamplingDescriptions().hashCode();
+		hash = hash * HASH_PRIME + getGlobalRestriction().hashCode();
 		return hash;
 	}
 
