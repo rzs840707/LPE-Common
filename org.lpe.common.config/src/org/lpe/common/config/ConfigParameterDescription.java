@@ -38,14 +38,14 @@ public class ConfigParameterDescription {
 	private String description;
 	private String defaultValue;
 	private LpeSupportedTypes type;
-	private boolean aset;
+	private boolean isASet = false;
 	private Set<String> options;
 	private String[] fileExtensions;
 	private String fileDefaultName;
 	private String lowerBoundary;
 	private String upperBoundary;
-	private boolean directory;
-	private boolean file;
+	private boolean isADirectory = false;
+	private boolean isAFile = false;
 	private boolean mandatory = false;
 	private boolean editable = true;
 
@@ -67,7 +67,7 @@ public class ConfigParameterDescription {
 	public ConfigParameterDescription(String name, LpeSupportedTypes type) {
 		this.name = name;
 		this.type = type;
-		setIsASet(false);
+		isASet = false;
 	}
 
 	/**
@@ -346,60 +346,48 @@ public class ConfigParameterDescription {
 	}
 
 	/**
-	 * @return the isDirectory
-	 */
-	public boolean isDirectory() {
-		if (type != null && !type.equals(LpeSupportedTypes.String)) {
-			return false;
-		}
-		return directory;
-	}
-
-	/**
-	 * @param isDirectory
-	 *            the isDirectory to set
-	 */
-	public void setDirectory(boolean isDirectory) {
-		if (type != null && !type.equals(LpeSupportedTypes.String) && isDirectory) {
-			throw new IllegalStateException("A non String parameter cannot be a directory!");
-		}
-		this.directory = isDirectory;
-	}
-
-	/**
-	 * 
-	 * @return true, if the parameter is a file parameter
-	 */
-	public boolean isAFile() {
-		return file;
-	}
-
-	/**
-	 * Indicates whether the parameter should be a file parameter.
-	 * 
-	 * @param file
-	 *            boolean to set
-	 */
-	public void setIsAFile(boolean file) {
-		this.file = file;
-	}
-
-	/**
-	 * 
-	 * @return true, if the parameter is a set parameter
+	 * @return the isASet
 	 */
 	public boolean isASet() {
-		return aset;
+		return isASet;
 	}
 
 	/**
-	 * Indicates whether the parameter should be a set parameter.
-	 * 
-	 * @param aset
-	 *            boolean to set
+	 * @param isASet
+	 *            the isASet to set
 	 */
-	public void setIsASet(boolean aset) {
-		this.aset = aset;
+	public void setASet(boolean isASet) {
+		this.isASet = isASet;
+	}
+
+	/**
+	 * @return the isADirectory
+	 */
+	public boolean isADirectory() {
+		return isADirectory;
+	}
+
+	/**
+	 * @param isADirectory
+	 *            the isADirectory to set
+	 */
+	public void setADirectory(boolean isADirectory) {
+		this.isADirectory = isADirectory;
+	}
+
+	/**
+	 * @return the isAFile
+	 */
+	public boolean isAFile() {
+		return isAFile;
+	}
+
+	/**
+	 * @param isAFile
+	 *            the isAFile to set
+	 */
+	public void setAFile(boolean isAFile) {
+		this.isAFile = isAFile;
 	}
 
 }
