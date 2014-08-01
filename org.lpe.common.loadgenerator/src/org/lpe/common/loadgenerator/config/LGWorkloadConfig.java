@@ -29,6 +29,7 @@ import org.lpe.common.util.LpeStringUtils;
  */
 @XmlRootElement
 public class LGWorkloadConfig {
+	private static final int DEFAULT_EXPERIMENT_DURATION = 10;
 	private int numUsers;
 	private String loadGeneratorPath = "NA";
 	private String scenarioPath = "NA";
@@ -43,7 +44,7 @@ public class LGWorkloadConfig {
 	private int coolDownUsersPerInterval = 1;
 	private int coolDownIntervalLength = 1;
 
-	private int experimentDuration = 10;
+	private int experimentDuration = DEFAULT_EXPERIMENT_DURATION;
 
 	/**
 	 * @return the numUsers

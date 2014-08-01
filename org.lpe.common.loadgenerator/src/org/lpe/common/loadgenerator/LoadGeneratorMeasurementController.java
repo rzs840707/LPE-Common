@@ -211,13 +211,17 @@ public final class LoadGeneratorMeasurementController {
 	 *            stream where to pipe to
 	 * @throws MeasurementException
 	 *             thrown if streaming fails
-	 * @throws IOException
 	 */
 	public void pipeReportToOutputStream(LGMeasurementConfig lrmConfig, OutputStream oStream)
-			throws MeasurementException, IOException {
-		FileInputStream fileInputStream = getMeasurementReport(lrmConfig);
-		LpeStreamUtils.pipe(fileInputStream, oStream);
-		fileInputStream.close();
+			throws MeasurementException {
+		try {
+			FileInputStream fileInputStream = getMeasurementReport(lrmConfig);
+			LpeStreamUtils.pipe(fileInputStream, oStream);
+
+			fileInputStream.close();
+		} catch (IOException e) {
+			throw new MeasurementException(e);
+		}
 	}
 
 	/**

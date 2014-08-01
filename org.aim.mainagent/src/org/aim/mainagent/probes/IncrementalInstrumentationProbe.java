@@ -30,6 +30,12 @@ import org.lpe.common.extension.IExtension;
  */
 public class IncrementalInstrumentationProbe extends AbstractEnclosingProbe {
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider
+	 */
 	public IncrementalInstrumentationProbe(IExtension<?> provider) {
 		super(provider);
 		// TODO Auto-generated constructor stub
@@ -39,8 +45,8 @@ public class IncrementalInstrumentationProbe extends AbstractEnclosingProbe {
 			IncrementalInstrumentationProbe.class.getName());
 
 	public String __clazz = "__clazz";
-	public static final String _CLAZZ = "__clazz";
-	public static final String _INST_DESCRIPTION = "__instDescription";
+	public static final String CLAZZ = "__clazz";
+	public static final String INST_DESCRIPTION = "__instDescription";
 	public Long __instDescription = 0L;
 
 	/**

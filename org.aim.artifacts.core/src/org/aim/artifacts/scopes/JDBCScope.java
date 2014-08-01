@@ -26,6 +26,12 @@ import org.lpe.common.extension.IExtension;
  * 
  */
 public class JDBCScope extends AbstractInstAPIScope {
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider
+	 */
 	public JDBCScope(IExtension<?> provider) {
 		super(provider);
 	}
@@ -33,7 +39,7 @@ public class JDBCScope extends AbstractInstAPIScope {
 	@Override
 	protected void init() {
 		// java.sql entities
-		
+
 		addMethod("java.sql.Statement", "execute(java.lang.String)");
 		addMethod("java.sql.Statement", "execute(java.lang.String,int)");
 		addMethod("java.sql.Statement", "execute(java.lang.String,int[])");
@@ -46,7 +52,7 @@ public class JDBCScope extends AbstractInstAPIScope {
 		addMethod("java.sql.Statement", "executeUpdate(java.lang.String,java.lang.String[])");
 		addMethod("java.sql.Statement", "getResultSet()");
 		addMethod("java.sql.Statement", "getGeneratedKeys()");
-		
+
 		addMethod("java.sql.PreparedStatement", "execute()");
 		addMethod("java.sql.PreparedStatement", "executeQuery()");
 		addMethod("java.sql.PreparedStatement", "executeUpdate()");
@@ -55,19 +61,17 @@ public class JDBCScope extends AbstractInstAPIScope {
 
 		addMethod("java.sql.DriverManager", "getConnection(java.lang.String)");
 		addMethod("java.sql.DriverManager", "getConnection(java.lang.String,java.util.Properties)");
-		addMethod("java.sql.DriverManager",
-				"getConnection(java.lang.String,java.lang.String,java.lang.String)");
+		addMethod("java.sql.DriverManager", "getConnection(java.lang.String,java.lang.String,java.lang.String)");
 		addMethod("java.sql.DriverManager", "getDriver(java.lang.String)");
 		addMethod("java.sql.DriverManager", "getDrivers()");
 
 		addMethod("java.sql.Connection", "commit()");
 		addMethod("java.sql.Connection", "close()");
 		addMethod("java.sql.Connection", "prepareStatement(java.lang.String)");
-		
+
 		// javax.sql entities
 		addMethod("javax.sql.ConnectionPoolDataSource", "getPooledConnection()");
-		addMethod("javax.sql.ConnectionPoolDataSource",
-				"getPooledConnection(java.lang.String,java.lang.String)");
+		addMethod("javax.sql.ConnectionPoolDataSource", "getPooledConnection(java.lang.String,java.lang.String)");
 
 		addMethod("javax.sql.DataSource", "getConnection()");
 		addMethod("javax.sql.DataSource", "getConnection(java.lang.String,java.lang.String)");

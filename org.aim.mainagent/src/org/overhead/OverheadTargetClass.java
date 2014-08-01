@@ -17,12 +17,23 @@ package org.overhead;
 
 import org.aim.api.instrumentation.entities.OverheadRecord;
 
+/**
+ * Target class on which overhead is measured.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class OverheadTargetClass {
 
 	long start = 0L;
 	long intermediate = 0L;
 	long end = 0L;
 
+	/**
+	 * Emulates a method call.
+	 * 
+	 * @return overhead record
+	 */
 	public synchronized OverheadRecord caller() {
 
 		start = System.nanoTime();

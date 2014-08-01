@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ScopeAnalysisController {
-	private static Logger LOGGER = LoggerFactory.getLogger(ScopeAnalysisController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScopeAnalysisController.class);
 	private InstrumentationDescription instrumentationDescription;
 
 	/**
@@ -74,7 +74,7 @@ public class ScopeAnalysisController {
 	 * @throws InstrumentationException
 	 *             if scope cannot be resolved
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
 	public Set<FlatInstrumentationEntity> resolveScopes(List<Class> allLoadedClasses) throws InstrumentationException {
 		removeGlobalyExcludedClasses(allLoadedClasses);
 

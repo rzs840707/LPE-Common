@@ -43,8 +43,8 @@ public interface IScopeAnalyzer {
 	/**
 	 * Sets instrumentation restriction.
 	 * 
-	 * @param restrictions
-	 *            restrictions instance
+	 * @param restriction
+	 *            restriction instance
 	 */
 	void setRestriction(Restriction restriction);
 

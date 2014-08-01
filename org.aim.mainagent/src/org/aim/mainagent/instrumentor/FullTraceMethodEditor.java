@@ -38,6 +38,8 @@ public class FullTraceMethodEditor extends ExprEditor {
 	 * 
 	 * @param incrementalSnippet
 	 *            instrumentation statement snippet to inject.
+	 * @param instrumentationRestriction
+	 *            instrumentation restriction
 	 */
 	public FullTraceMethodEditor(String incrementalSnippet, Restriction instrumentationRestriction) {
 		this.incrementalSnippet = incrementalSnippet;

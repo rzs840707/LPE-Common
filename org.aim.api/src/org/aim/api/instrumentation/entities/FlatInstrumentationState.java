@@ -21,8 +21,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+/**
+ * Flat entity representing the instrumentation state.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 @XmlRootElement
-public class FlatMethodInstrumentation {
+public class FlatInstrumentationState {
 	private List<InstrumentationEntity> iEntities;
 
 	/**
@@ -33,13 +39,21 @@ public class FlatMethodInstrumentation {
 	}
 
 	/**
-	 * @param iEntity
-	 *            the iEntity to set
+	 * @param iEntities
+	 *            the entities to set
 	 */
 	public void setiEntities(List<InstrumentationEntity> iEntities) {
 		this.iEntities = iEntities;
 	}
 
+	/**
+	 * Adds an instrumentation entity tot the state.
+	 * 
+	 * @param method
+	 *            instrumented method
+	 * @param probe
+	 *            injected probe
+	 */
 	@JsonIgnore
 	public void addEntity(String method, String probe) {
 		InstrumentationEntity ie = new InstrumentationEntity();

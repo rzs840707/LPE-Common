@@ -15,15 +15,16 @@
  */
 package org.aim.api.instrumentation.entities;
 
+/**
+ * Record containing the overhead data.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class OverheadRecord {
 	private long overallNanoTimeSpan;
 	private long beforeNanoTimeSpan;
 	private long afterNanoTimeSpan;
-
-	public OverheadRecord() {
-		// TODO Auto-generated constructor stub
-	}
-
 
 	/**
 	 * @return the overallNanoTimeSpan
@@ -69,7 +70,7 @@ public class OverheadRecord {
 	public void setAfterNanoTimeSpan(long afterNanoTimeSpan) {
 		this.afterNanoTimeSpan = afterNanoTimeSpan;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getOverallNanoTimeSpan() + " \t|  " + getBeforeNanoTimeSpan() + " \t|  " + getAfterNanoTimeSpan();

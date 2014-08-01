@@ -45,7 +45,7 @@ import com.sun.jersey.spi.resource.Singleton;
 @Path("loadgenerator")
 @Singleton
 public class LoadGeneratorService {
-	private static Logger LOGGER = LoggerFactory.getLogger(LoadGeneratorService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LoadGeneratorService.class);
 
 	/**
 	 * Starts a load generator experiment.

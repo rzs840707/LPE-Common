@@ -30,13 +30,19 @@ import org.lpe.common.extension.IExtension;
  * 
  */
 public class ResponsetimeProbe extends AbstractEnclosingProbe {
-	
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider.
+	 */
 	public ResponsetimeProbe(IExtension<?> provider) {
 		super(provider);
 	}
 
-	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(ResponsetimeProbe.class.getName());
-	
+	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(
+			ResponsetimeProbe.class.getName());
+
 	@ProbeVariable
 	public long _ResponsetimeProbe_stopTime;
 	@ProbeVariable

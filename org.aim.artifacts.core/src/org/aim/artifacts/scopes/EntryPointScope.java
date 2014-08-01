@@ -26,7 +26,12 @@ import org.lpe.common.extension.IExtension;
  * 
  */
 public class EntryPointScope extends AbstractInstAPIScope {
-
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider
+	 */
 	public EntryPointScope(IExtension<?> provider) {
 		super(provider);
 	}

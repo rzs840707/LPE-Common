@@ -20,11 +20,17 @@ import org.lpe.common.extension.IExtension;
 
 /**
  * Scope for JMS.
+ * 
  * @author Alexander Wert
- *
+ * 
  */
 public class JmsScope extends AbstractInstAPIScope {
-
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider
+	 */
 	public JmsScope(IExtension<?> provider) {
 		super(provider);
 	}

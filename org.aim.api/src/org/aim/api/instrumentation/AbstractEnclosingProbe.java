@@ -38,9 +38,17 @@ import org.lpe.common.extension.IExtension;
  * 
  */
 public abstract class AbstractEnclosingProbe extends AbstractExtensionArtifact {
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider
+	 */
 	public AbstractEnclosingProbe(IExtension<?> provider) {
 		super(provider);
 	}
+
 	public static final String J_INSTRUMENTATION_KEY = "jinstrumentation";
 	public static final String METHOD_SIGNATURE_PLACE_HOLDER = "__methodSignature";
 

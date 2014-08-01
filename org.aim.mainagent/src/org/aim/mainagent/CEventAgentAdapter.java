@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Henning Schulz
  * 
  */
-public class CEventAgentAdapter {
+public final class CEventAgentAdapter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CEventAgentAdapter.class);
 
@@ -42,6 +42,9 @@ public class CEventAgentAdapter {
 
 	private static boolean initialized = false;
 	private static boolean activated = false;
+
+	private CEventAgentAdapter() {
+	}
 
 	/**
 	 * This method is called if a thread has to wait on a monitor and monitor
@@ -121,11 +124,12 @@ public class CEventAgentAdapter {
 
 		return true;
 	}
-	
+
 	/**
-	 * Sets the synchronizedListener
+	 * Sets the synchronizedListener.
 	 * 
-	 * @param listener synchronized listener to be set
+	 * @param listener
+	 *            synchronized listener to be set
 	 */
 	public static void setSynchronizedListener(SynchronizedEventListener listener) {
 		synchronizedListener = listener;

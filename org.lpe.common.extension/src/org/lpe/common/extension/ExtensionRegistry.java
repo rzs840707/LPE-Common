@@ -106,17 +106,6 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 		return extensions.get(name);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends IExtensionArtifact> IExtension<T> getExtension(String name, Class<T> type) {
-		IExtension<?> ext = extensions.get(name);
-		if (type.isAssignableFrom(ext.getClass().getTypeParameters()[0].getGenericDeclaration())) {
-			return (IExtension<T>) ext;
-		} else {
-			return null;
-		}
-	}
-
 	@Override
 	public <E extends IExtension<?>> Extensions<E> getExtensions(Class<E> c) {
 		@SuppressWarnings("unchecked")

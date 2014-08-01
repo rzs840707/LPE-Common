@@ -45,14 +45,12 @@ public class WaitingTimeRecord extends AbstractRecord {
 	}
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param timestamp
 	 *            timestamp of record
-	 * @param monitorClass
-	 *            classname of the monitor
-	 * @param monitorHashCode
-	 *            hash code of the monitor
+	 * @param location
+	 *            location of the monitor
 	 * @param waitingTime
 	 *            timespan the thread had to wait
 	 */

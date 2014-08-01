@@ -68,10 +68,10 @@ public final class Sampling {
 	 * When no delay is specified in the configuration a default delay of 100ms
 	 * is chosen.
 	 * 
-	 * @param config
-	 *            the configuration object which should be used
+	 * @param samplingDescriptions
+	 *            a set of descriptions of the sampling jobs
 	 * @throws MeasurementException
-	 *             if sampelr class cannot be found
+	 *             if sampler class cannot be found
 	 */
 	public void addMonitoringJob(Set<SamplingDescription> samplingDescriptions) throws MeasurementException {
 

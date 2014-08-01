@@ -20,6 +20,12 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Container for the information about supported extensions.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 @XmlRootElement
 public class SupportedExtensions {
 	private List<String> samplerExtensions;

@@ -26,7 +26,6 @@ import java.util.Set;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.CtClass;
-import javassist.NotFoundException;
 
 import org.aim.api.exceptions.InstrumentationException;
 import org.aim.api.instrumentation.AbstractEnclosingProbe;
@@ -76,6 +75,8 @@ public final class BCInjector {
 	 * @param instrumentationSet
 	 *            aggregated instrumentation description
 	 * @return mapping from classes to new instrumented bytecodes
+	 * @param instrumentationRestriction
+	 *            restriction for the instrumentation
 	 */
 	public synchronized Map<Class<?>, byte[]> injectInstrumentationProbes(InstrumentationSet instrumentationSet,
 			Restriction instrumentationRestriction) {
@@ -149,35 +150,58 @@ public final class BCInjector {
 		return partlyRevertInstrumentation(classes);
 	}
 
+	/**
+	 * Instruments the behaviour.
+	 * 
+	 * @param probeTypes
+	 *            probe types to inject
+	 * @param ctClass
+	 *            class of the behaviour
+	 * @param behaviourSignature
+	 *            signature of the behaviour
+	 * @param scopeIds
+	 *            ids of the scopes (required for incremental instrumentation)
+	 * @param instrumentationRestriction
+	 *            restriction
+	 * @throws InstrumentationException
+	 *             thrown if instrumentation fails
+	 */
 	protected void instrumentBehaviour(Set<Class<? extends AbstractEnclosingProbe>> probeTypes, CtClass ctClass,
 			String behaviourSignature, Set<Long> scopeIds, Restriction instrumentationRestriction)
-			throws InstrumentationException, CannotCompileException, NotFoundException {
-		ProbeBuilder pBuilder = new ProbeBuilder(behaviourSignature);
-		for (Class<? extends AbstractEnclosingProbe> probeType : probeTypes) {
-			pBuilder.inject(probeType);
-		}
-
-		CtBehavior ctBehaviour = Utils.getCtBehaviour(ctClass, behaviourSignature);
-
-		if (ctBehaviour != null) {
-			Snippet snippet = pBuilder.build();
-
-			if (!snippet.getIncrementalPart().isEmpty() && !scopeIds.isEmpty()) {
-				for (Long scopeId : scopeIds) {
-					String tempSnippet = snippet.getIncrementalPart().replace(IncrementalInstrumentationProbe._CLAZZ,
-							"$0");
-					tempSnippet = tempSnippet.replace(IncrementalInstrumentationProbe._INST_DESCRIPTION,
-							String.valueOf(scopeId) + "L");
-
-					FullTraceMethodEditor ftmEditor = new FullTraceMethodEditor(tempSnippet, instrumentationRestriction);
-					ctBehaviour.instrument(ftmEditor);
-				}
+			throws InstrumentationException {
+		try {
+			ProbeBuilder pBuilder = new ProbeBuilder(behaviourSignature);
+			for (Class<? extends AbstractEnclosingProbe> probeType : probeTypes) {
+				pBuilder.inject(probeType);
 			}
 
-			Utils.insertMethodLocalVariables(ctBehaviour, snippet.getVariables());
-			ctBehaviour.insertBefore(snippet.getBeforePart());
-			ctBehaviour.insertAfter(snippet.getAfterPart());
+			CtBehavior ctBehaviour = Utils.getCtBehaviour(ctClass, behaviourSignature);
 
+			if (ctBehaviour != null) {
+				Snippet snippet = pBuilder.build();
+
+				if (!snippet.getIncrementalPart().isEmpty() && !scopeIds.isEmpty()) {
+					for (Long scopeId : scopeIds) {
+						String tempSnippet = snippet.getIncrementalPart().replace(
+								IncrementalInstrumentationProbe.CLAZZ, "$0");
+						tempSnippet = tempSnippet.replace(IncrementalInstrumentationProbe.INST_DESCRIPTION,
+								String.valueOf(scopeId) + "L");
+
+						FullTraceMethodEditor ftmEditor = new FullTraceMethodEditor(tempSnippet,
+								instrumentationRestriction);
+						ctBehaviour.instrument(ftmEditor);
+					}
+				}
+
+				Utils.insertMethodLocalVariables(ctBehaviour, snippet.getVariables());
+				ctBehaviour.insertBefore(snippet.getBeforePart());
+
+				ctBehaviour.insertAfter(snippet.getAfterPart());
+
+			}
+		} catch (CannotCompileException e) {
+			throw new InstrumentationException("Failed instrumenting behaviour: " + behaviourSignature, e);
 		}
+
 	}
 }

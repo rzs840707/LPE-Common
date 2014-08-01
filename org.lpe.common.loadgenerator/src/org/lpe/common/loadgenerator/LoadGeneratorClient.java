@@ -124,6 +124,15 @@ public class LoadGeneratorClient {
 		return testConnection(host, port);
 	}
 
+	/**
+	 * Test connection to the load generator satellite.
+	 * 
+	 * @param host
+	 *            host name of the satellite
+	 * @param port
+	 *            port of the satellite
+	 * @return true if connection could be established
+	 */
 	public static boolean testConnection(String host, String port) {
 		String path = REST + "/" + TEST_CONNECTION;
 		return LpeWebUtils.testConnection(host, port, path);
@@ -133,6 +142,8 @@ public class LoadGeneratorClient {
 	 * 
 	 * @param oStream
 	 *            stream where to pipe to
+	 * @param lrmConfig
+	 *            configuration
 	 * @throws MeasurementException
 	 *             thrown if streaming fails
 	 */

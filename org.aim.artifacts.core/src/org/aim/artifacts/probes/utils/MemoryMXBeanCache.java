@@ -21,9 +21,19 @@ import java.lang.management.MemoryPoolMXBean;
 import org.aim.api.instrumentation.IInstrumentationUtil;
 import org.aim.api.instrumentation.InstrumentationUtilsController;
 
-public class MemoryMXBeanCache implements IInstrumentationUtil {
+/**
+ * Cache for memory management beans.
+ * 
+ * @author Alexander Wert
+ * 
+ */
+public final class MemoryMXBeanCache implements IInstrumentationUtil {
 	private static MemoryMXBeanCache instance;
 
+	/**
+	 * 
+	 * @return singleton instance of the cache
+	 */
 	public static MemoryMXBeanCache getInstance() {
 		if (instance == null) {
 			instance = new MemoryMXBeanCache();
@@ -90,6 +100,6 @@ public class MemoryMXBeanCache implements IInstrumentationUtil {
 
 	@Override
 	public void clear() {
-		//nothing to do
+		// nothing to do
 	}
 }

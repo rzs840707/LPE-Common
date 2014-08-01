@@ -25,9 +25,30 @@ import org.aim.description.InstrumentationDescription;
 import org.aim.description.builder.InstrumentationDescriptionBuilder;
 import org.aim.mainagent.AdaptiveInstrumentationFacade;
 
-public class OverheadEstimator {
+/**
+ * Estimates the measurement overhead of probes.
+ * 
+ * @author Alexander Wert
+ * 
+ */
+public final class OverheadEstimator {
 
-	@SuppressWarnings("unchecked")
+	private static final int NUM_CALLS_FOR_WARM_UP = 10;
+	private static final int NUM_CALLS = 1010;
+	private static final int REPETITIONS = 100;
+
+	private OverheadEstimator() {
+	}
+
+	/**
+	 * Measures the overhead of the probe specified by its name.
+	 * 
+	 * @param probeTypeName
+	 *            probe to check
+	 * @return a list of overhead records.
+	 * @throws InstrumentationException
+	 *             if instrumentation cannot be done
+	 */
 	public static List<OverheadRecord> measureOverhead(String probeTypeName) throws InstrumentationException {
 
 		InstrumentationDescriptionBuilder idBuilder = new InstrumentationDescriptionBuilder();
@@ -36,21 +57,30 @@ public class OverheadEstimator {
 
 		List<OverheadRecord> records = new ArrayList<>();
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < REPETITIONS; i++) {
 			records.add(runExperiment(idBuilder.build()));
 		}
 
 		return records;
 	}
 
+	/**
+	 * Executes one experiment.
+	 * 
+	 * @param instDescr
+	 *            instrumentaiton description
+	 * @return an overhead record
+	 * @throws InstrumentationException
+	 *             if instrumentation fails
+	 */
 	public static OverheadRecord runExperiment(InstrumentationDescription instDescr) throws InstrumentationException {
 		List<OverheadRecord> records = new ArrayList<>();
 		AdaptiveInstrumentationFacade.getInstance().instrument(instDescr);
 
 		OverheadTargetClass target = new OverheadTargetClass();
-		for (int i = 0; i < 1010; i++) {
+		for (int i = 0; i < NUM_CALLS; i++) {
 			OverheadRecord rec = target.caller();
-			if (i > 10) {
+			if (i > NUM_CALLS_FOR_WARM_UP) {
 				records.add(rec);
 			}
 
