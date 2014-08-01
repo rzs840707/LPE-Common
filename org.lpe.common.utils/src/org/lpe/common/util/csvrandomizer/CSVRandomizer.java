@@ -47,7 +47,7 @@ public final class CSVRandomizer {
 	 * Main.
 	 * 
 	 * @param args
-	 *            programm arguments
+	 *            program arguments
 	 */
 	public static void main(String[] args) {
 		if (args.length != ARGS_LANGTH) {

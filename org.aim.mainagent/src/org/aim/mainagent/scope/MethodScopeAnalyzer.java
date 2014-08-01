@@ -80,7 +80,7 @@ public class MethodScopeAnalyzer extends AbstractScopeAnalyzer {
 
 	private void checkMethodMatching(Set<FlatScopeEntity> scopeEntities, String patternToMatch, Method m) {
 		if (LpeStringUtils.patternMatches(Utils.getMethodSignature(m, true), patternToMatch)) {
-			if (!restriction.isAtLeastOneOfTheModifiersExcluded(m.getModifiers())
+			if (!restriction.modifierSetExcluded(m.getModifiers())
 					&& !restriction.isExcluded(m.getDeclaringClass().getName())) {
 				scopeEntities.add(new FlatScopeEntity(m.getDeclaringClass(), Utils.getMethodSignature(m, true)));
 			}

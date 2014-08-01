@@ -34,13 +34,21 @@ public class MethodScope extends MethodsEnclosingScope {
 	 * 
 	 * @param methods
 	 *            methods which are to be instrumented
+	 * @param id
+	 *            scope id
 	 */
 	@JsonCreator
 	public MethodScope(@JsonProperty("methods") String[] methods, long id) {
 		super(id);
 		this.methods = methods;
 	}
-	
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param methods
+	 *            methods which are to be instrumented
+	 */
 	@JsonCreator
 	public MethodScope(@JsonProperty("methods") String[] methods) {
 		this(methods, System.nanoTime());

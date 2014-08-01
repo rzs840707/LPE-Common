@@ -157,6 +157,11 @@ public class Restriction {
 		}
 	}
 
+	/**
+	 * Checks whether restriction is empty.
+	 * 
+	 * @return true if no restrictions have been defined
+	 */
 	@JsonIgnore
 	public boolean isEmpty() {
 		return packageExcludes.isEmpty() && packageIncludes.isEmpty() && modifierExcludes.isEmpty()
@@ -204,7 +209,16 @@ public class Restriction {
 		return builder.toString();
 	}
 
-	public boolean isAtLeastOneOfTheModifiersExcluded(int modifiers) {
+	/**
+	 * Checks whether the given set of modifiers is excluded. THis method checks
+	 * whether the passed set of modifiers covers all modifiers included in the
+	 * restrictions.
+	 * 
+	 * @param modifiers
+	 *            binary representation of a set of modifiers
+	 * @return true, if given set is excluded by the restrictions
+	 */
+	public boolean modifierSetExcluded(int modifiers) {
 		if (!hasModifierRestrictions()) {
 			return false;
 		}
@@ -220,6 +234,11 @@ public class Restriction {
 		return (thisModifiers & modifiers) != thisModifiers;
 	}
 
+	/**
+	 * Checks whether this restriction object has modifier restrictions.
+	 * 
+	 * @return true, if any modifier restrictions have been defined
+	 */
 	public boolean hasModifierRestrictions() {
 		return !getModifierIncludes().isEmpty() || !getModifierExcludes().isEmpty();
 	}

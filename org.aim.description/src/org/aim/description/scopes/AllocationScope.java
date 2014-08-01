@@ -28,7 +28,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class AllocationScope implements Scope {
 
 	private final String[] targetClasses;
-	
+
 	private final long id;
 
 	@Override
@@ -41,6 +41,8 @@ public class AllocationScope implements Scope {
 	 * 
 	 * @param targetClasses
 	 *            classes to be considered
+	 * @param id
+	 *            scope id
 	 */
 	@JsonCreator
 	public AllocationScope(@JsonProperty("targetClasses") String[] targetClasses, long id) {
@@ -48,6 +50,12 @@ public class AllocationScope implements Scope {
 		this.targetClasses = targetClasses;
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param targetClasses
+	 *            classes to be considered
+	 */
 	@JsonCreator
 	public AllocationScope(@JsonProperty("targetClasses") String[] targetClasses) {
 		this(targetClasses, System.nanoTime());

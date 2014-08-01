@@ -30,10 +30,19 @@ public class SynchronizedScope implements Scope {
 		return id;
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param id
+	 *            scope id
+	 */
 	public SynchronizedScope(long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Constructor.
+	 */
 	public SynchronizedScope() {
 		this(System.nanoTime());
 	}

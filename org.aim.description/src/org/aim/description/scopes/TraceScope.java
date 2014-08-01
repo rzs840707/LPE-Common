@@ -34,13 +34,22 @@ public class TraceScope extends MethodsEnclosingScope {
 	 * 
 	 * @param subScope
 	 *            scope of root methods
+	 * 
+	 * @param id
+	 *            scope id
 	 */
 	@JsonCreator
 	public TraceScope(@JsonProperty("subScope") MethodsEnclosingScope subScope, long id) {
 		super(id);
 		this.subScope = subScope;
 	}
-	
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param subScope
+	 *            scope of root methods
+	 */
 	@JsonCreator
 	public TraceScope(@JsonProperty("subScope") MethodsEnclosingScope subScope) {
 		this(subScope, System.nanoTime());
@@ -51,6 +60,10 @@ public class TraceScope extends MethodsEnclosingScope {
 		return "Trace Scope [" + getSubScope().toString() + "]";
 	}
 
+	/**
+	 * 
+	 * @return the sub scope
+	 */
 	public MethodsEnclosingScope getSubScope() {
 		return subScope;
 	}

@@ -88,7 +88,7 @@ public class APIScopeAnalyzer extends AbstractScopeAnalyzer {
 		if (clazz == null || !Utils.isNormalClass(clazz)) {
 			return;
 		}
-		if (restriction.hasModifierRestrictions() &&  restriction.isAtLeastOneOfTheModifiersExcluded(Modifier.PUBLIC)) {
+		if (restriction.hasModifierRestrictions() &&  restriction.modifierSetExcluded(Modifier.PUBLIC)) {
 			return;
 		}
 		if (restriction.isExcluded(clazz.getName())) {

@@ -33,13 +33,21 @@ public class ConstructorScope extends MethodsEnclosingScope {
 	 * 
 	 * @param targetClasses
 	 *            classes which constructors are to be instrumented
+	 * @param id
+	 *            scope id
 	 */
 	@JsonCreator
 	public ConstructorScope(@JsonProperty("targetClasses") String[] targetClasses, long id) {
 		super(id);
 		this.targetClasses = targetClasses;
 	}
-	
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param targetClasses
+	 *            classes which constructors are to be instrumented
+	 */
 	@JsonCreator
 	public ConstructorScope(@JsonProperty("targetClasses") String[] targetClasses) {
 		this(targetClasses, System.nanoTime());

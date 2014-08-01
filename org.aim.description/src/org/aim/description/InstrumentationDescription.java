@@ -73,6 +73,10 @@ public class InstrumentationDescription {
 	/**
 	 * Returns all instrumentation entities.
 	 * 
+	 * @param type
+	 *            entity type class
+	 * @param <S>
+	 *            instrumentation type 
 	 * @return the instrumentation entities
 	 */
 	@SuppressWarnings("unchecked")

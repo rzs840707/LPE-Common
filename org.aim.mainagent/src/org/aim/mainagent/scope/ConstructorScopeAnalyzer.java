@@ -64,7 +64,7 @@ public class ConstructorScopeAnalyzer extends AbstractScopeAnalyzer {
 		}
 
 		for (Constructor<?> con : clazz.getDeclaredConstructors()) {
-			if (!restriction.isAtLeastOneOfTheModifiersExcluded(con.getModifiers())) {
+			if (!restriction.modifierSetExcluded(con.getModifiers())) {
 				scopeEntities.add(new FlatScopeEntity(clazz, Utils.getMethodSignature(con, true)));
 			}
 		}
