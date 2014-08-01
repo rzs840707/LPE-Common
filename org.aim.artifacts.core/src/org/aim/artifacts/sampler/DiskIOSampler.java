@@ -40,6 +40,12 @@ public class DiskIOSampler extends AbstractResourceSampler {
 	private long previousReads;
 	private long previousWrites;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider
+	 */
 	public DiskIOSampler(IExtension<?> provider) {
 		super(provider);
 		previousReads = getDiskReads();

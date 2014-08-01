@@ -67,7 +67,7 @@ public class ConfigParameterDescription {
 	public ConfigParameterDescription(String name, LpeSupportedTypes type) {
 		this.name = name;
 		this.type = type;
-		setAset(false);
+		setIsASet(false);
 	}
 
 	/**
@@ -79,8 +79,8 @@ public class ConfigParameterDescription {
 	 * @return the created extension description
 	 */
 	public static ConfigParameterDescription createExtensionDescription(String descriptionText) {
-		ConfigParameterDescription extensionDescription = new ConfigParameterDescription(
-				EXT_DESCRIPTION_KEY, LpeSupportedTypes.String);
+		ConfigParameterDescription extensionDescription = new ConfigParameterDescription(EXT_DESCRIPTION_KEY,
+				LpeSupportedTypes.String);
 		extensionDescription.setDefaultValue(descriptionText);
 		extensionDescription.setEditable(false);
 		return extensionDescription;
@@ -140,7 +140,7 @@ public class ConfigParameterDescription {
 		}
 		this.options = options;
 	}
-	
+
 	/**
 	 * Returns the set file extensions. <code>null</code> possible.
 	 * 
@@ -151,9 +151,11 @@ public class ConfigParameterDescription {
 	}
 
 	/**
-	 * Sets the file extensions. Follow the rules of org.eclipse.swt.widgets.FileDialog.setFilterExtensions(...).
-	 *
-	 * @param fileExtensions	the allowed file extensions
+	 * Sets the file extensions. Follow the rules of
+	 * org.eclipse.swt.widgets.FileDialog.setFilterExtensions(...).
+	 * 
+	 * @param fileExtensions
+	 *            the allowed file extensions
 	 */
 	public void setFileExtensions(String[] fileExtensions) {
 		this.fileExtensions = fileExtensions;
@@ -240,7 +242,8 @@ public class ConfigParameterDescription {
 
 	/**
 	 * The default file name value is only relevant for the dialog popping up to
-	 * select a specific file. It is not the default value for the whole parameter!
+	 * select a specific file. It is not the default value for the whole
+	 * parameter!
 	 * 
 	 * @param fileDefaultName
 	 *            the default value for the file
@@ -248,7 +251,7 @@ public class ConfigParameterDescription {
 	public void setDefaultFileName(String fileDefaultName) {
 		this.fileDefaultName = fileDefaultName;
 	}
-	
+
 	/**
 	 * @return true, if value range has been specified
 	 */
@@ -363,19 +366,39 @@ public class ConfigParameterDescription {
 		this.directory = isDirectory;
 	}
 
-	public boolean isFile() {
+	/**
+	 * 
+	 * @return true, if the parameter is a file parameter
+	 */
+	public boolean isAFile() {
 		return file;
 	}
 
-	public void setFile(boolean file) {
+	/**
+	 * Indicates whether the parameter should be a file parameter.
+	 * 
+	 * @param file
+	 *            boolean to set
+	 */
+	public void setIsAFile(boolean file) {
 		this.file = file;
 	}
 
-	public boolean isAset() {
+	/**
+	 * 
+	 * @return true, if the parameter is a set parameter
+	 */
+	public boolean isASet() {
 		return aset;
 	}
 
-	public void setAset(boolean aset) {
+	/**
+	 * Indicates whether the parameter should be a set parameter.
+	 * 
+	 * @param aset
+	 *            boolean to set
+	 */
+	public void setIsASet(boolean aset) {
 		this.aset = aset;
 	}
 

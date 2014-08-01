@@ -15,13 +15,19 @@
  */
 package org.aim.mainagent.service;
 
-import org.aim.api.instrumentation.entities.FlatMethodInstrumentation;
+import org.aim.api.instrumentation.entities.FlatInstrumentationState;
 import org.aim.mainagent.AdaptiveInstrumentationFacade;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 
+/**
+ * Retrieves instrumentation state.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class GetStateServlet implements Service {
 
 	@Override
@@ -29,7 +35,7 @@ public class GetStateServlet implements Service {
 		JsonFactory factory = new JsonFactory();
 		ObjectMapper mapper = new ObjectMapper(factory);
 
-		FlatMethodInstrumentation fmInstrumentation = AdaptiveInstrumentationFacade.getInstance()
+		FlatInstrumentationState fmInstrumentation = AdaptiveInstrumentationFacade.getInstance()
 				.getInstrumentationState();
 
 		resp.setContentType("application/json");

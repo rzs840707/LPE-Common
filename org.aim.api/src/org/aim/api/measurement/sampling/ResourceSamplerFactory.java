@@ -32,6 +32,12 @@ public final class ResourceSamplerFactory {
 
 	private static Sigar sigar;
 
+	/**
+	 * Getter for the Sigar singleton instance (required for resource
+	 * information retrieval).
+	 * 
+	 * @return Sigar instance
+	 */
 	public static Sigar getSigar() {
 		if (sigar == null) {
 			sigar = new Sigar();
@@ -47,13 +53,14 @@ public final class ResourceSamplerFactory {
 	 *            data collector to use
 	 * @return sampler for the type
 	 * @throws MeasurementException
+	 *             thrown if a sampler extension cannot be found
 	 */
 	public static AbstractSampler getSampler(String sType, IDataCollector dataCollector) throws MeasurementException {
 
 		AbstractSampler sampler = ExtensionRegistry.getSingleton().getExtensionArtifact(AbstractSamplerExtension.class,
 				sType);
 		if (sampler == null) {
-			throw new MeasurementException("Invalid sampling resource identifier "+sType+"!");
+			throw new MeasurementException("Invalid sampling resource identifier " + sType + "!");
 		}
 
 		sampler.setDataCollector(dataCollector);

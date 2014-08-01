@@ -25,11 +25,23 @@ import org.aim.description.probes.MeasurementProbe;
 import org.aim.description.scopes.MethodsEnclosingScope;
 import org.lpe.common.extension.IExtension;
 
+/**
+ * This probe collects information on memory footprints.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class MemoryFootprintProbe extends AbstractEnclosingProbe {
-	
-	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(MemoryFootprintProbe.class.getName());
 
-	
+	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(
+			MemoryFootprintProbe.class.getName());
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider.
+	 */
 	public MemoryFootprintProbe(IExtension<?> provider) {
 		super(provider);
 	}
@@ -67,6 +79,9 @@ public class MemoryFootprintProbe extends AbstractEnclosingProbe {
 	@ProbeVariable
 	public Long _MemoryFootprintProbe_afterTenured;
 
+	/**
+	 * Before part.
+	 */
 	@ProbeBeforePart
 	public void beforePart() {
 		_MemoryFootprintProbe_runtime = java.lang.Runtime.getRuntime();
@@ -78,7 +93,9 @@ public class MemoryFootprintProbe extends AbstractEnclosingProbe {
 		_MemoryFootprintProbe_beforeSurvivor = MemoryMXBeanCache.getInstance().getSurvivorBean().getUsage().getUsed();
 		_MemoryFootprintProbe_beforeTenured = MemoryMXBeanCache.getInstance().getOldBean().getUsage().getUsed();
 	}
-
+	/**
+	 * After part.
+	 */
 	@ProbeAfterPart
 	public void afterPart() {
 		_MemoryFootprintProbe_stopTime = System.currentTimeMillis();

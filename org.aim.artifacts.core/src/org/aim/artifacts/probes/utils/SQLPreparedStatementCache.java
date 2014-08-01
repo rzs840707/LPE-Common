@@ -22,9 +22,19 @@ import java.util.Map;
 import org.aim.api.instrumentation.IInstrumentationUtil;
 import org.aim.api.instrumentation.InstrumentationUtilsController;
 
-public class SQLPreparedStatementCache implements IInstrumentationUtil {
+/**
+ * Cache for prepared statements.
+ * 
+ * @author Alexander Wert
+ * 
+ */
+public final class SQLPreparedStatementCache implements IInstrumentationUtil {
 	private static SQLPreparedStatementCache instance;
 
+	/**
+	 * 
+	 * @return singleton instance of the cache
+	 */
 	public static SQLPreparedStatementCache getInstance() {
 		if (instance == null) {
 			instance = new SQLPreparedStatementCache();
@@ -39,10 +49,25 @@ public class SQLPreparedStatementCache implements IInstrumentationUtil {
 		InstrumentationUtilsController.getInstance().register(this);
 	}
 
+	/**
+	 * Registers a prepared statement.
+	 * 
+	 * @param stmt
+	 *            statements to register
+	 * @param query
+	 *            query to executeF
+	 */
 	public void register(PreparedStatement stmt, String query) {
 		queries.put(stmt, query);
 	}
 
+	/**
+	 * Returns the query for the given prepared statement.
+	 * 
+	 * @param stmt
+	 *            statement for which the query should be returned.
+	 * @return SQL queryF
+	 */
 	public String getQuery(PreparedStatement stmt) {
 		return queries.get(stmt);
 	}

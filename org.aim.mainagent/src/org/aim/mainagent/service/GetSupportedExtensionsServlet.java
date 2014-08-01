@@ -22,6 +22,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 
+/**
+ * Returns information on available extensions.
+ * @author Alexander Wert
+ *
+ */
 public class GetSupportedExtensionsServlet implements Service {
 
 	@Override

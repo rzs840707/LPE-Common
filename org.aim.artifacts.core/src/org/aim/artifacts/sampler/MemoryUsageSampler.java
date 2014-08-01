@@ -34,6 +34,12 @@ public class MemoryUsageSampler extends AbstractResourceSampler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MemoryUsageSampler.class);
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider
+	 */
 	public MemoryUsageSampler(IExtension<?> provider) {
 		super(provider);
 	}

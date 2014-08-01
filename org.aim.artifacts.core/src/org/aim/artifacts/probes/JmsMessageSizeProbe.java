@@ -25,16 +25,29 @@ import org.aim.api.instrumentation.ProbeBeforePart;
 import org.aim.api.instrumentation.ProbeVariable;
 import org.aim.artifacts.records.JmsMessageSizeRecord;
 import org.aim.description.probes.MeasurementProbe;
-import org.aim.description.scopes.MethodsEnclosingScope;
+import org.aim.description.scopes.APIScope;
 import org.lpe.common.extension.IExtension;
 
+/**
+ * The {@link JmsMessageSizeProbe} collects information on JMS message sizes.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class JmsMessageSizeProbe extends AbstractEnclosingProbe {
-	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(JmsMessageSizeProbe.class.getName());
-	
+	public static final MeasurementProbe<APIScope> MODEL_PROBE = new MeasurementProbe<>(
+			JmsMessageSizeProbe.class.getName());
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider.
+	 */
 	public JmsMessageSizeProbe(IExtension<?> provider) {
 		super(provider);
 	}
-	
+
 	@ProbeVariable
 	public JmsMessageSizeRecord _JmsMessageSizeProbe_record;
 
@@ -44,6 +57,9 @@ public class JmsMessageSizeProbe extends AbstractEnclosingProbe {
 	@ProbeVariable
 	public Object _JmsMessageSizeProbe_payload;
 
+	/**
+	 * Before part for JMS onMessage method.
+	 */
 	@ProbeBeforePart(requiredMethodName = "onMessage(javax.jms.Message")
 	public void onMessageBeforePart() {
 		try {
@@ -65,10 +81,13 @@ public class JmsMessageSizeProbe extends AbstractEnclosingProbe {
 			}
 
 		} catch (Exception e) {
-			// Ignore
+			_JmsMessageSizeProbe_record = null;
 		}
 	}
 
+	/**
+	 * After part for JMS receive method.
+	 */
 	@ProbeAfterPart(requiredMethodName = "receive(")
 	public void receiveAfterPart() {
 		try {
@@ -90,7 +109,7 @@ public class JmsMessageSizeProbe extends AbstractEnclosingProbe {
 			}
 
 		} catch (Exception e) {
-			// Ignore
+			_JmsMessageSizeProbe_record = null;
 		}
 	}
 }

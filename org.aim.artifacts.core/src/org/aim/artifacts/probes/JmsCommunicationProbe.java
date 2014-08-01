@@ -28,15 +28,27 @@ import org.aim.description.probes.MeasurementProbe;
 import org.aim.description.scopes.MethodsEnclosingScope;
 import org.lpe.common.extension.IExtension;
 
+/**
+ * JMS communication probe. Collects information about JMS messaging flow.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class JmsCommunicationProbe extends AbstractEnclosingProbe {
-	
-	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(JmsCommunicationProbe.class.getName());
+	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(
+			JmsCommunicationProbe.class.getName());
 	public static final String MSG_CORRELATION_VARIABLE = "org_ppd_measurement_trace_msg_correlation";
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider.
+	 */
 	public JmsCommunicationProbe(IExtension<?> provider) {
 		super(provider);
 	}
-	
+
 	@ProbeVariable
 	public JmsRecord _JmsCommunicationProbe_record;
 
@@ -46,6 +58,9 @@ public class JmsCommunicationProbe extends AbstractEnclosingProbe {
 	@ProbeVariable
 	public String _JmsCommunicationProbe_stackTrace;
 
+	/**
+	 * Before part for the JMS send method.
+	 */
 	@ProbeBeforePart(requiredMethodName = "send(javax.jms.Message")
 	public void sendMethodBeforePart() {
 		_JmsCommunicationProbe_record = new JmsRecord();
@@ -63,12 +78,15 @@ public class JmsCommunicationProbe extends AbstractEnclosingProbe {
 					_JmsCommunicationProbe_correlationValue);
 			_JmsCommunicationProbe_record.setMessageCorrelationHash(_JmsCommunicationProbe_correlationValue);
 		} catch (Exception e) {
-			// Ignore
+			_JmsCommunicationProbe_record.setMessageCorrelationHash("-");
 		}
 
 		_GenericProbe_collector.newRecord(_JmsCommunicationProbe_record);
 	}
 
+	/**
+	 * Before part for the onMessage method.
+	 */
 	@ProbeBeforePart(requiredMethodName = "onMessage(javax.jms.Message")
 	public void onMessageBeforePart() {
 		_JmsCommunicationProbe_record = new JmsRecord();
@@ -89,12 +107,15 @@ public class JmsCommunicationProbe extends AbstractEnclosingProbe {
 			}
 
 		} catch (Exception e) {
-			// Ignore
+			_JmsCommunicationProbe_record.setMessageCorrelationHash("-");
 		}
 
 		_GenericProbe_collector.newRecord(_JmsCommunicationProbe_record);
 	}
-	
+
+	/**
+	 * After part for the JMS receive method.
+	 */
 	@ProbeAfterPart(requiredMethodName = "receive(")
 	public void receiveAfterPart() {
 		_JmsCommunicationProbe_record = new JmsRecord();
@@ -115,7 +136,7 @@ public class JmsCommunicationProbe extends AbstractEnclosingProbe {
 			}
 
 		} catch (Exception e) {
-			// Ignore
+			_JmsCommunicationProbe_record.setMessageCorrelationHash("-");
 		}
 
 		_GenericProbe_collector.newRecord(_JmsCommunicationProbe_record);

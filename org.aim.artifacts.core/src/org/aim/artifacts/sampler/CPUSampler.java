@@ -32,15 +32,17 @@ import org.slf4j.LoggerFactory;
  */
 public class CPUSampler extends AbstractResourceSampler {
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider
+	 */
 	public CPUSampler(IExtension<?> provider) {
 		super(provider);
 	}
 
-
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(CPUSampler.class);
-
-
 
 	/**
 	 * Fetches the current cpu utilization and passes it in a CPUUtilization
@@ -76,5 +78,4 @@ public class CPUSampler extends AbstractResourceSampler {
 
 	}
 
-	
 }

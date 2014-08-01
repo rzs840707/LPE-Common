@@ -68,9 +68,10 @@ public final class SystemMonitor {
 	 * When no delay is specified in the configuration a default delay of 100ms
 	 * is chosen.
 	 * 
-	 * @param config
-	 *            the configuration object which should be used
-	 * @throws MeasurementException 
+	 * @param samplingDescriptions
+	 *            a set of sampling descriptions
+	 * @throws MeasurementException
+	 *             if a sampling extension cannot be found
 	 */
 	public void addMonitoringJob(Set<SamplingDescription> samplingDescriptions) throws MeasurementException {
 

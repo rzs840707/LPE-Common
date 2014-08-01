@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014 SAP AG
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.aim.description.builder;
 
 import org.aim.description.InstrumentationDescription;
@@ -57,7 +72,7 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 	 *            sampling delay
 	 * @return this builder
 	 */
-	public InstrumentationDescriptionBuilder newSampling(String resource, int delay) {
+	public InstrumentationDescriptionBuilder newSampling(String resource, long delay) {
 		description.addSamplingDescription(new SamplingDescription(resource, delay));
 		return this;
 	}
@@ -251,6 +266,41 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 	 */
 	public InstrumentationEntityBuilder<CustomScope> newCustomScopeEntityWithId(long id, String scopeName) {
 		return new InstrumentationEntityBuilder<>(new CustomScope(scopeName, id), this);
+	}
+
+	/**
+	 * Appends the passed instrumentation description to the current
+	 * instrumentation description represented by this builder.
+	 * 
+	 * @param instDescription
+	 *            instrumentation description to append
+	 */
+	public void appendOtherDescription(InstrumentationDescription instDescription) {
+
+		Restriction globalRestriction = instDescription.getGlobalRestriction();
+		RestrictionBuilder<?> globalRestrictionBuilder = newGlobalRestriction();
+		for (String inc : globalRestriction.getPackageIncludes()) {
+			globalRestrictionBuilder.includePackage(inc);
+		}
+		for (String exc : globalRestriction.getPackageExcludes()) {
+			globalRestrictionBuilder.excludePackage(exc);
+		}
+		for (int modifier : globalRestriction.getModifierIncludes()) {
+			globalRestrictionBuilder.includeModifier(modifier);
+		}
+		for (int modifier : globalRestriction.getModifierExcludes()) {
+			globalRestrictionBuilder.excludeModifier(modifier);
+		}
+		globalRestrictionBuilder.restrictionDone();
+
+		for (InstrumentationEntity<?> entity : instDescription.getInstrumentationEntities()) {
+			addInstrumentationEntity(entity);
+		}
+
+		for (SamplingDescription sDescr : instDescription.getSamplingDescriptions()) {
+			newSampling(sDescr.getResourceName(), sDescr.getDelay());
+		}
+
 	}
 
 }

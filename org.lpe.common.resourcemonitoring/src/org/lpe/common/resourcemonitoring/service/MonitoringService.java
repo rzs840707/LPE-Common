@@ -56,6 +56,7 @@ public class MonitoringService {
 	 *            instrumentation description containing a sampling
 	 *            configuration
 	 * @throws MeasurementException
+	 *             if monitoring fails
 	 */
 	@POST
 	@Path("startMonitor")

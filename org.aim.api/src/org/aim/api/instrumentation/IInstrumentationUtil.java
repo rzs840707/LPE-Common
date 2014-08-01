@@ -15,6 +15,16 @@
  */
 package org.aim.api.instrumentation;
 
+/**
+ * Common interface for instrumentation utils.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public interface IInstrumentationUtil {
+
+	/**
+	 * Clears all resources allocated with the concrete instrumentation util.
+	 */
 	void clear();
 }

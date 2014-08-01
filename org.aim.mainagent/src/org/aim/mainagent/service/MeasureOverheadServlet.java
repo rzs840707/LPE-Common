@@ -27,6 +27,12 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.overhead.OverheadEstimator;
 
+/**
+ * Measures probe overhead for given probe.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class MeasureOverheadServlet implements Service {
 
 	@Override

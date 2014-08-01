@@ -41,6 +41,12 @@ public class NetworkIOSampler extends AbstractResourceSampler {
 
 	private static String[] networkInterfaces = null;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider
+	 */
 	public NetworkIOSampler(IExtension<?> provider) {
 		super(provider);
 	}

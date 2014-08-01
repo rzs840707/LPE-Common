@@ -31,6 +31,12 @@ import java.util.Random;
  */
 public final class CSVRandomizer {
 
+	private static final int ARGS_LANGTH = 4;
+	private static final int ARG_0 = 0;
+	private static final int ARG_1 = 1;
+	private static final int ARG_2 = 2;
+	private static final int ARG_3 = 3;
+
 	/**
 	 * Private constructor due to utility class.
 	 */
@@ -39,13 +45,16 @@ public final class CSVRandomizer {
 
 	/**
 	 * Main.
-	 * @param args programm arguments
+	 * 
+	 * @param args
+	 *            programm arguments
 	 */
 	public static void main(String[] args) {
-		if (args.length != 4) {
+		if (args.length != ARGS_LANGTH) {
 			printUsageAndExit();
 		}
-		randomizeCSV(new File(args[0]), new File(args[1]), Double.parseDouble(args[2]), Integer.parseInt(args[3]));
+		randomizeCSV(new File(args[ARG_0]), new File(args[ARG_1]), Double.parseDouble(args[ARG_2]),
+				Integer.parseInt(args[ARG_3]));
 		System.out.println("CSV Randomized!");
 	}
 

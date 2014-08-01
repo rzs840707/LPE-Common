@@ -24,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 import org.aim.api.exceptions.InstrumentationException;
 import org.aim.api.exceptions.MeasurementException;
 import org.aim.api.instrumentation.AbstractEnclosingProbe;
-import org.aim.api.instrumentation.entities.FlatMethodInstrumentation;
+import org.aim.api.instrumentation.entities.FlatInstrumentationState;
 import org.aim.api.instrumentation.entities.OverheadData;
 import org.aim.api.instrumentation.entities.SupportedExtensions;
 import org.aim.api.measurement.MeasurementData;
@@ -133,8 +133,8 @@ public class InstrumentationClient {
 	 * 
 	 * @return a flat representation of the internal instrumentation state.
 	 */
-	public FlatMethodInstrumentation getInstrumentationState() {
-		return webResource.path(GET_STATE).accept(MediaType.APPLICATION_JSON).get(FlatMethodInstrumentation.class);
+	public FlatInstrumentationState getInstrumentationState() {
+		return webResource.path(GET_STATE).accept(MediaType.APPLICATION_JSON).get(FlatInstrumentationState.class);
 	}
 
 	/**
@@ -172,6 +172,13 @@ public class InstrumentationClient {
 		}
 	}
 
+	/**
+	 * Measures the overhead of the given probe type.
+	 * 
+	 * @param probeType
+	 *            type of the probe
+	 * @return overhead information.
+	 */
 	public OverheadData measureProbeOverhead(Class<? extends AbstractEnclosingProbe> probeType) {
 		String probeClassName = probeType.getName();
 		return webResource.path(MEASURE_OVERHEAD).accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON)

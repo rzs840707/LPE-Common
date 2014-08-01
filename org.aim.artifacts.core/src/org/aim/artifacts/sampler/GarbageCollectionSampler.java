@@ -34,9 +34,14 @@ public class GarbageCollectionSampler extends AbstractSampler {
 	private static final String[] OLD_GEN_GC_NAMES = { "MarkSweepCompact", "PS MarkSweep", "ConcurrentMarkSweep",
 			"G1 Old Generation" };
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider
+	 */
 	public GarbageCollectionSampler(IExtension<?> provider) {
 		super(provider);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

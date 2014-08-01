@@ -15,6 +15,12 @@
  */
 package org.aim.api.instrumentation.entities;
 
+/**
+ * Represents an entity of the instrumentation state.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class InstrumentationEntity {
 	private String method;
 	private String probe;

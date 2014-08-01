@@ -31,6 +31,10 @@ public abstract class AbstractResourceSampler extends AbstractSampler {
 	protected static final String RESOURCE_NAME_SEPARATOR = ":";
 	private Sigar sigar;
 
+	/**
+	 * Constructor.
+	 * @param provider extension provider
+	 */
 	public AbstractResourceSampler(IExtension<?> provider) {
 		super(provider);
 	}

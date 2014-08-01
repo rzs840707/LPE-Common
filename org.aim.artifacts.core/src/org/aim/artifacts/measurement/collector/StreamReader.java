@@ -31,13 +31,20 @@ import org.lpe.common.util.LpeStreamUtils;
 
 /**
  * Reads datasets from a stream.
+ * 
  * @author Alexander Wert
- *
+ * 
  */
 public class StreamReader implements IDataReader {
 
 	private InputStream inStream;
 
+	/**
+	 * Sets input stream.
+	 * 
+	 * @param source
+	 *            input stream to set as source
+	 */
 	public void setSource(InputStream source) {
 		inStream = source;
 
@@ -51,10 +58,10 @@ public class StreamReader implements IDataReader {
 			bReader = new BufferedReader(new InputStreamReader(inStream));
 			String line = bReader.readLine();
 			while (line != null) {
-					AbstractRecord record = AbstractRecord.fromString(line);
-					if (record != null) {
-						result.add(record);
-					}
+				AbstractRecord record = AbstractRecord.fromString(line);
+				if (record != null) {
+					result.add(record);
+				}
 				line = bReader.readLine();
 			}
 			MeasurementData data = new MeasurementData();

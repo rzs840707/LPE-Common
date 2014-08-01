@@ -27,9 +27,22 @@ import org.aim.description.probes.MeasurementProbe;
 import org.aim.description.scopes.MethodsEnclosingScope;
 import org.lpe.common.extension.IExtension;
 
+/**
+ * Gathers the query string of a JDBC request.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class SQLQueryProbe extends AbstractEnclosingProbe {
-	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(SQLQueryProbe.class.getName());
-	
+	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(
+			SQLQueryProbe.class.getName());
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider.
+	 */
 	public SQLQueryProbe(IExtension<?> provider) {
 		super(provider);
 	}
@@ -40,6 +53,9 @@ public class SQLQueryProbe extends AbstractEnclosingProbe {
 	@ProbeVariable
 	public String _SQLQueryProbe_query;
 
+	/**
+	 * Before part for JDBC execute(String query, ...) methods.
+	 */
 	@ProbeBeforePart(requiredMethodName = { "execute(java.lang.String", "executeQuery(java.lang.String",
 			"executeUpdate(java.lang.String" })
 	public void beforePart() {
@@ -50,6 +66,9 @@ public class SQLQueryProbe extends AbstractEnclosingProbe {
 		_GenericProbe_collector.newRecord(_SQLQueryProbe_record);
 	}
 
+	/**
+	 * Before part for JDBC execute() methods.
+	 */
 	@ProbeBeforePart(requiredMethodName = { "execute()", "executeQuery()", "executeUpdate()" })
 	public void beforePartForPreparedStatement() {
 		_SQLQueryProbe_record = new SQLQueryRecord();
@@ -60,6 +79,9 @@ public class SQLQueryProbe extends AbstractEnclosingProbe {
 		_GenericProbe_collector.newRecord(_SQLQueryProbe_record);
 	}
 
+	/**
+	 * After part for JDBC prepareStatement methods.
+	 */
 	@ProbeAfterPart(requiredMethodName = "prepareStatement(java.lang.String)")
 	public void afterPartForPrepareStatement() {
 		SQLPreparedStatementCache.getInstance().register((PreparedStatement) __returnObject, (String) __parameter[1]);

@@ -34,6 +34,12 @@ import org.lpe.common.extension.IExtension;
  */
 public abstract class AbstractInstAPIScope extends AbstractExtensionArtifact {
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider.
+	 */
 	public AbstractInstAPIScope(IExtension<?> provider) {
 		super(provider);
 		init();

@@ -24,11 +24,23 @@ import org.aim.description.probes.MeasurementProbe;
 import org.aim.description.scopes.MethodsEnclosingScope;
 import org.lpe.common.extension.IExtension;
 
+/**
+ * Collects thread information to be able to reconstruct traces.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class ThreadTracingProbe extends AbstractEnclosingProbe {
 
 	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(
 			ThreadTracingProbe.class.getName());
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider.
+	 */
 	public ThreadTracingProbe(IExtension<?> provider) {
 		super(provider);
 	}
@@ -42,11 +54,17 @@ public class ThreadTracingProbe extends AbstractEnclosingProbe {
 	@ProbeVariable
 	public ThreadTracingRecord _ThreadTracingProbe_record;
 
+	/**
+	 * Before part.
+	 */
 	@ProbeBeforePart
 	public void beforePart() {
 		_ThreadTracingProbe_startNanoTime = System.nanoTime();
 	}
 
+	/**
+	 * After part.
+	 */
 	@ProbeAfterPart
 	public void afterPart() {
 		_ThreadTracingProbe_stopNanoTime = System.nanoTime();

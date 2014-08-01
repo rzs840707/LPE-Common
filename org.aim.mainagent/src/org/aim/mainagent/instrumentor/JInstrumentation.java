@@ -70,12 +70,22 @@ public final class JInstrumentation {
 		System.getProperties().put(J_INSTRUMENTATION_KEY, jInstrumentation);
 	}
 
+	/**
+	 * Returns classes by their name.
+	 * 
+	 * @param className
+	 *            name of the classes to search for
+	 * @return list of classes matching the name
+	 * @throws InstrumentationException
+	 *             if the instrumentation agent is null
+	 */
 	public List<Class<?>> getClassesByName(String className) throws InstrumentationException {
 		if (jInstrumentation == null) {
 			throw new InstrumentationException("Java instrumentation instance has not been set, yet!");
 		}
 
-		// TODO: maybe a cache is useful / reasonable to reduce instrumentation time???
+		// TODO: maybe a cache is useful / reasonable to reduce instrumentation
+		// time???
 		List<Class<?>> classes = new ArrayList<>();
 		for (Class<?> clazz : jInstrumentation.getAllLoadedClasses()) {
 			if (clazz.getName().equals(className)) {

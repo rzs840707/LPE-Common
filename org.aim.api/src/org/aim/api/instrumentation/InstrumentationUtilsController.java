@@ -18,9 +18,19 @@ package org.aim.api.instrumentation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InstrumentationUtilsController {
+/**
+ * Controller for instrumentation utils.
+ * 
+ * @author Alexander Wert
+ * 
+ */
+public final class InstrumentationUtilsController {
 	private static InstrumentationUtilsController instance;
 
+	/**
+	 * 
+	 * @return singleton instance of the controller
+	 */
 	public static InstrumentationUtilsController getInstance() {
 		if (instance == null) {
 			instance = new InstrumentationUtilsController();
@@ -34,10 +44,19 @@ public class InstrumentationUtilsController {
 		utils = new ArrayList<>();
 	}
 
+	/**
+	 * Registers an instrumentation util.
+	 * 
+	 * @param util
+	 *            util to register
+	 */
 	public void register(IInstrumentationUtil util) {
 		utils.add(util);
 	}
 
+	/**
+	 * Clears all instrumentation utils.
+	 */
 	public void clear() {
 		for (IInstrumentationUtil util : utils) {
 			util.clear();

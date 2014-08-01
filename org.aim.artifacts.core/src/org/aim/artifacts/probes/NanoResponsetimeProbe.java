@@ -31,14 +31,19 @@ import org.lpe.common.extension.IExtension;
  * 
  */
 public class NanoResponsetimeProbe extends AbstractEnclosingProbe {
-	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(NanoResponsetimeProbe.class.getName());
-	
-	
+	public static final MeasurementProbe<MethodsEnclosingScope> MODEL_PROBE = new MeasurementProbe<>(
+			NanoResponsetimeProbe.class.getName());
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param provider
+	 *            extension provider.
+	 */
 	public NanoResponsetimeProbe(IExtension<?> provider) {
 		super(provider);
 	}
 
-	
 	@ProbeVariable
 	public long _NanoResponsetimeProbe_startTime;
 	@ProbeVariable
@@ -67,7 +72,7 @@ public class NanoResponsetimeProbe extends AbstractEnclosingProbe {
 		_NanoResponsetimeProbe_record.setResponseTime(_NanoResponsetimeProbe_stopTime
 				- _NanoResponsetimeProbe_startTime);
 		_NanoResponsetimeProbe_record.setTimeStamp(_GenericProbe_startTime);
-		
+
 		_GenericProbe_collector.newRecord(_NanoResponsetimeProbe_record);
 	}
 }

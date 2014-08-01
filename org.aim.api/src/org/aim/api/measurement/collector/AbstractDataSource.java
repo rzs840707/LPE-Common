@@ -77,7 +77,13 @@ public abstract class AbstractDataSource implements IDataCollector, IDataReader,
 	 *             Thrown if initialization fails.
 	 */
 	protected abstract void init() throws MeasurementException;
-	
+
+	/**
+	 * Initializes the data source.
+	 * 
+	 * @param properties
+	 *            properties to use for initialization
+	 */
 	public abstract void initialize(Properties properties);
 
 	/**
@@ -170,12 +176,11 @@ public abstract class AbstractDataSource implements IDataCollector, IDataReader,
 	}
 
 	/**
-	 * @param dataCollector
-	 *            the dataCollector to set
+	 * @param dataSource
+	 *            the dataSource to set
 	 */
 	public static void setDefaultDataSource(AbstractDataSource dataSource) {
 		AbstractDataSource.dataSource = dataSource;
 	}
-
 
 }

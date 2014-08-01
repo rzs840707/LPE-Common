@@ -23,6 +23,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+/**
+ * Container for overhead data.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class OverheadData {
@@ -43,6 +49,11 @@ public class OverheadData {
 		this.oRecords = oRecords;
 	}
 
+	/**
+	 * Returns the overhead mean of the before part of a probe.
+	 * 
+	 * @return mean overhead of the before part
+	 */
 	@JsonIgnore
 	public double getMeanBefore() {
 		double mean = 0.0;
@@ -52,20 +63,30 @@ public class OverheadData {
 		return mean;
 	}
 
+	/**
+	 * Returns the overhead mean of the after part of a probe.
+	 * 
+	 * @return mean overhead of the after part
+	 */
 	@JsonIgnore
 	public double getMeanAfter() {
 		double mean = 0.0;
 		for (OverheadRecord rec : oRecords) {
-			mean +=  ((double)rec.getAfterNanoTimeSpan()) / ((double)oRecords.size());
+			mean += ((double) rec.getAfterNanoTimeSpan()) / ((double) oRecords.size());
 		}
 		return mean;
 	}
 
+	/**
+	 * Returns the overhead mean of the probe.
+	 * 
+	 * @return mean overhead
+	 */
 	@JsonIgnore
 	public double getMeanOverall() {
 		double mean = 0.0;
 		for (OverheadRecord rec : oRecords) {
-			mean +=  ((double)rec.getOverallNanoTimeSpan()) / ((double)oRecords.size());
+			mean += ((double) rec.getOverallNanoTimeSpan()) / ((double) oRecords.size());
 		}
 		return mean;
 	}

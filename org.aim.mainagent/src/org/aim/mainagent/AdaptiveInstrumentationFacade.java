@@ -25,7 +25,7 @@ import org.aim.api.instrumentation.IScopeAnalyzer;
 import org.aim.api.instrumentation.InstrumentationUtilsController;
 import org.aim.api.instrumentation.description.internal.FlatInstrumentationEntity;
 import org.aim.api.instrumentation.description.internal.InstrumentationConstants;
-import org.aim.api.instrumentation.entities.FlatMethodInstrumentation;
+import org.aim.api.instrumentation.entities.FlatInstrumentationState;
 import org.aim.api.instrumentation.entities.SupportedExtensions;
 import org.aim.api.measurement.sampling.ISampler;
 import org.aim.description.InstrumentationDescription;
@@ -55,7 +55,7 @@ public final class AdaptiveInstrumentationFacade {
 
 	private MethodInstrumentor methodInstrumentor;
 	private TraceInstrumentor traceInstrumentor;
-	private EventInstrumentor eventInstrumentor;
+//	private EventInstrumentor eventInstrumentor;
 
 	private SupportedExtensions extensions = null;
 
@@ -89,7 +89,7 @@ public final class AdaptiveInstrumentationFacade {
 
 		methodInstrumentor.instrument(instrumentationDescription);
 		traceInstrumentor.instrument(instrumentationDescription);
-//		eventInstrumentor.instrument(instrumentationDescription);
+		// eventInstrumentor.instrument(instrumentationDescription);
 		// TODO: add Statement Instrumentation
 
 		if (!instrumentationDescription.getSamplingDescriptions().isEmpty()) {
@@ -119,8 +119,8 @@ public final class AdaptiveInstrumentationFacade {
 	 * 
 	 * @return flat instrumentation state
 	 */
-	public synchronized FlatMethodInstrumentation getInstrumentationState() {
-		FlatMethodInstrumentation fmInstrumentation = new FlatMethodInstrumentation();
+	public synchronized FlatInstrumentationState getInstrumentationState() {
+		FlatInstrumentationState fmInstrumentation = new FlatInstrumentationState();
 		for (FlatInstrumentationEntity fie : methodInstrumentor.getCurrentInstrumentationState()) {
 			fmInstrumentation.addEntity(fie.getMethodSignature(), fie.getProbeType().getName());
 		}
