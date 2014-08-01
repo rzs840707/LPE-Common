@@ -55,7 +55,7 @@ public final class AdaptiveInstrumentationFacade {
 
 	private MethodInstrumentor methodInstrumentor;
 	private TraceInstrumentor traceInstrumentor;
-//	private EventInstrumentor eventInstrumentor;
+	private EventInstrumentor eventInstrumentor;
 
 	private SupportedExtensions extensions = null;
 
@@ -63,8 +63,7 @@ public final class AdaptiveInstrumentationFacade {
 		methodInstrumentor = new MethodInstrumentor();
 
 		traceInstrumentor = TraceInstrumentor.getInstance();
-		// TODO: uncomment after EventInstrumentor works properly
-		// eventInstrumentor = EventInstrumentor.getInstance();
+		eventInstrumentor = EventInstrumentor.getInstance();
 	}
 
 	/**
@@ -89,7 +88,7 @@ public final class AdaptiveInstrumentationFacade {
 
 		methodInstrumentor.instrument(instrumentationDescription);
 		traceInstrumentor.instrument(instrumentationDescription);
-		// eventInstrumentor.instrument(instrumentationDescription);
+		eventInstrumentor.instrument(instrumentationDescription);
 		// TODO: add Statement Instrumentation
 
 		if (!instrumentationDescription.getSamplingDescriptions().isEmpty()) {
@@ -110,6 +109,7 @@ public final class AdaptiveInstrumentationFacade {
 	public synchronized void undoInstrumentation() throws InstrumentationException {
 		methodInstrumentor.undoInstrumentation();
 		traceInstrumentor.undoInstrumentation();
+		eventInstrumentor.undoInstrumentation();
 		Sampling.getInstance().clearMonitoringJobs();
 		InstrumentationUtilsController.getInstance().clear();
 	}

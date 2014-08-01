@@ -15,6 +15,9 @@
  */
 package org.aim.description.scopes;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * This scope refers to all points in execution related to {@code synchronized}
  * events.
@@ -36,7 +39,8 @@ public class SynchronizedScope implements Scope {
 	 * @param id
 	 *            scope id
 	 */
-	public SynchronizedScope(long id) {
+	@JsonCreator
+	public SynchronizedScope(@JsonProperty("id") long id) {
 		this.id = id;
 	}
 

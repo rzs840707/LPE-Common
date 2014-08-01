@@ -45,7 +45,7 @@ public class AllocationScope implements Scope {
 	 *            scope id
 	 */
 	@JsonCreator
-	public AllocationScope(@JsonProperty("targetClasses") String[] targetClasses, long id) {
+	public AllocationScope(@JsonProperty("targetClasses") String[] targetClasses, @JsonProperty("id") long id) {
 		this.id = id;
 		this.targetClasses = targetClasses;
 	}

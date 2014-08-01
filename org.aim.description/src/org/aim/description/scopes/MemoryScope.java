@@ -15,6 +15,9 @@
  */
 package org.aim.description.scopes;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * This scope refers to tasks related to memory.
  * 

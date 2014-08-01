@@ -71,13 +71,11 @@ public class InstrumentationDescription {
 	}
 
 	/**
-	 * Returns all instrumentation entities.
+	 * Returns all instrumentation entities of the given scope type.
 	 * 
 	 * @param type
-	 *            entity type class
-	 * @param <S>
-	 *            instrumentation type 
-	 * @return the instrumentation entities
+	 *            class object of the scope
+	 * @return the instrumentation entities of scope type {@code type}
 	 */
 	@SuppressWarnings("unchecked")
 	@JsonIgnore

@@ -17,8 +17,11 @@ package org.aim.mainagent;
 
 import org.aim.api.exceptions.InstrumentationException;
 import org.aim.description.InstrumentationDescription;
+import org.aim.description.InstrumentationEntity;
+import org.aim.description.scopes.SynchronizedScope;
 import org.aim.mainagent.events.EventProbeRegistry;
 import org.aim.mainagent.events.SynchonizedBlocksWaitingTimeProbe;
+import org.aim.mainagent.events.SynchronizedBlocksWaitingTimeProbe;
 import org.aim.mainagent.events.SynchronizedEventListener;
 
 /**
@@ -49,11 +52,15 @@ public final class EventInstrumentor implements IInstrumentor {
 
 	@Override
 	public void instrument(InstrumentationDescription descr) throws InstrumentationException {
-		CEventAgentAdapter.setSynchronizedListener(SynchronizedEventListener.getInstance());
-		// TODO: Change to select Scope and EventProbe from descr
-		EventProbeRegistry.getInstance().addProbe(SynchronizedEventListener.class,
-				SynchonizedBlocksWaitingTimeProbe.class);
-		CEventAgentAdapter.enableMonitorEvents();
+		for (InstrumentationEntity<SynchronizedScope> entitiy : descr.getInstrumentationEntities(SynchronizedScope.class)) {
+			CEventAgentAdapter.setSynchronizedListener(SynchronizedEventListener.getInstance());
+			if (entitiy.getProbes().contains(SynchronizedBlocksWaitingTimeProbe.MODEL_PROBE)) {
+				EventProbeRegistry.getInstance().addProbe(SynchronizedEventListener.class, SynchronizedBlocksWaitingTimeProbe.class);
+			}
+			
+			CEventAgentAdapter.enableMonitorEvents();
+		}
+
 	}
 
 	@Override

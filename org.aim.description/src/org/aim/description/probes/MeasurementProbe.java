@@ -49,4 +49,20 @@ public class MeasurementProbe<S extends Scope> {
 		return name;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		MeasurementProbe<?> other = (MeasurementProbe<?>) obj;
+
+		return this.getName().equals(other.getName());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
+	}
+
 }
