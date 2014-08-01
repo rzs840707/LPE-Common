@@ -45,7 +45,7 @@ public class AllocationScope implements Scope {
 	 *            scope id
 	 */
 	@JsonCreator
-	public AllocationScope(@JsonProperty("targetClasses") String[] targetClasses, long id) {
+	public AllocationScope(@JsonProperty("targetClasses") String[] targetClasses, @JsonProperty("id") long id) {
 		this.id = id;
 		this.targetClasses = targetClasses;
 	}
@@ -56,8 +56,7 @@ public class AllocationScope implements Scope {
 	 * @param targetClasses
 	 *            classes to be considered
 	 */
-	@JsonCreator
-	public AllocationScope(@JsonProperty("targetClasses") String[] targetClasses) {
+	public AllocationScope(String[] targetClasses) {
 		this(targetClasses, System.nanoTime());
 	}
 
@@ -89,6 +88,21 @@ public class AllocationScope implements Scope {
 		builder.append("]");
 
 		return builder.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		AllocationScope other = (AllocationScope) obj;
+		return this.getId() == other.getId();
+	}
+
+	@Override
+	public int hashCode() {
+		return (int) id;
 	}
 
 }

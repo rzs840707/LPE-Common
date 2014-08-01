@@ -71,13 +71,11 @@ public class InstrumentationDescription {
 	}
 
 	/**
-	 * Returns all instrumentation entities.
+	 * Returns all instrumentation entities of the given scope type.
 	 * 
 	 * @param type
-	 *            entity type class
-	 * @param <S>
-	 *            instrumentation type 
-	 * @return the instrumentation entities
+	 *            class object of the scope
+	 * @return the instrumentation entities of scope type {@code type}
 	 */
 	@SuppressWarnings("unchecked")
 	@JsonIgnore
@@ -178,6 +176,27 @@ public class InstrumentationDescription {
 		}
 
 		return builder.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		InstrumentationDescription other = (InstrumentationDescription) obj;
+		return this.getGlobalRestriction().equals(other.getGlobalRestriction())
+				&& this.getInstrumentationEntities().equals(other.getInstrumentationEntities())
+				&& this.getSamplingDescriptions().equals(other.getSamplingDescriptions());
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + getInstrumentationEntities().hashCode();
+		hash = hash * 31 + getSamplingDescriptions().hashCode();
+		hash = hash * 31 + getGlobalRestriction().hashCode();
+		return hash;
 	}
 
 }

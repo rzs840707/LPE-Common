@@ -18,11 +18,14 @@ package org.aim.description;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.aim.description.json.InstrumentationEntityDeserializer;
+import org.aim.description.json.InstrumentationEntitySerializer;
 import org.aim.description.probes.MeasurementProbe;
 import org.aim.description.restrictions.Restriction;
 import org.aim.description.scopes.Scope;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * This is a wrapper class for instrumentation entities, composed of one scope
@@ -34,6 +37,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author Henning Schulz
  * 
  */
+@JsonDeserialize(using = InstrumentationEntityDeserializer.class)
+@JsonSerialize(using = InstrumentationEntitySerializer.class)
 public class InstrumentationEntity<S extends Scope> {
 
 	private final S scope;
@@ -48,8 +53,7 @@ public class InstrumentationEntity<S extends Scope> {
 	 * @param scope
 	 *            scope to be set.
 	 */
-	@JsonCreator
-	public InstrumentationEntity(@JsonProperty("scope") S scope) {
+	public InstrumentationEntity(S scope) {
 		this.scope = scope;
 		this.probes = new HashSet<>();
 	}
@@ -83,6 +87,7 @@ public class InstrumentationEntity<S extends Scope> {
 	 * 
 	 * @return the probes as strings
 	 */
+	@JsonIgnore
 	public Set<String> getProbesAsStrings() {
 		Set<String> stringSet = new HashSet<>();
 		for (MeasurementProbe<?> mProbe : probes) {
@@ -105,6 +110,7 @@ public class InstrumentationEntity<S extends Scope> {
 	/**
 	 * @return the local restriction
 	 */
+	@JsonIgnore
 	public Restriction getLocalRestriction() {
 		if (localRestriction == null) {
 			localRestriction = new Restriction();
@@ -139,6 +145,26 @@ public class InstrumentationEntity<S extends Scope> {
 		}
 
 		return builder.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		InstrumentationEntity<?> other = (InstrumentationEntity<?>) obj;
+		return this.getScope().equals(other.getScope()) && this.getProbes().equals(other.getProbes())
+				&& this.getLocalRestriction().equals(other.getLocalRestriction());
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + getLocalRestriction().hashCode();
+		hash = hash * 31 + getProbes().hashCode();
+		hash = hash * 31 + getScope().hashCode();
+		return hash;
 	}
 
 }

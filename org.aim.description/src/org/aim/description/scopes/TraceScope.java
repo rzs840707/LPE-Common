@@ -17,6 +17,7 @@ package org.aim.description.scopes;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 /**
  * This scope contains all methods of all traces rooting from the methods in the
@@ -27,6 +28,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 public class TraceScope extends MethodsEnclosingScope {
 
+	@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 	private final MethodsEnclosingScope subScope;
 
 	/**
@@ -39,7 +41,7 @@ public class TraceScope extends MethodsEnclosingScope {
 	 *            scope id
 	 */
 	@JsonCreator
-	public TraceScope(@JsonProperty("subScope") MethodsEnclosingScope subScope, long id) {
+	public TraceScope(@JsonProperty("subScope") MethodsEnclosingScope subScope, @JsonProperty("id") long id) {
 		super(id);
 		this.subScope = subScope;
 	}
@@ -50,14 +52,8 @@ public class TraceScope extends MethodsEnclosingScope {
 	 * @param subScope
 	 *            scope of root methods
 	 */
-	@JsonCreator
-	public TraceScope(@JsonProperty("subScope") MethodsEnclosingScope subScope) {
+	public TraceScope(MethodsEnclosingScope subScope) {
 		this(subScope, System.nanoTime());
-	}
-
-	@Override
-	public String toString() {
-		return "Trace Scope [" + getSubScope().toString() + "]";
 	}
 
 	/**
@@ -66,6 +62,11 @@ public class TraceScope extends MethodsEnclosingScope {
 	 */
 	public MethodsEnclosingScope getSubScope() {
 		return subScope;
+	}
+
+	@Override
+	public String toString() {
+		return "Trace Scope [" + getSubScope().toString() + "]";
 	}
 
 }

@@ -15,6 +15,10 @@
  */
 package org.aim.description.scopes;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
+
 /**
  * This scope refers to tasks related to memory.
  * 
@@ -35,7 +39,8 @@ public class MemoryScope implements Scope {
 	 * @param id
 	 *            scope id
 	 */
-	public MemoryScope(long id) {
+	@JsonCreator
+	public MemoryScope(@JsonProperty("id") long id) {
 		this.id = id;
 	}
 
@@ -49,6 +54,21 @@ public class MemoryScope implements Scope {
 	@Override
 	public String toString() {
 		return "Memory Scope";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		MemoryScope other = (MemoryScope) obj;
+		return this.getId() == other.getId();
+	}
+
+	@Override
+	public int hashCode() {
+		return (int) id;
 	}
 
 }

@@ -33,7 +33,7 @@ public class IDBTest {
 	private static final MeasurementProbe<Scope> RESPONSE_TIME_PROBE = new MeasurementProbe<>("ResponseTimeProbe");
 	private static final MeasurementProbe<MethodsEnclosingScope> TRACING_PROBE = new MeasurementProbe<>("TracingProbe");
 	private static final String CPU_RESOURCE = "CPU";
-	private static final String DATABASE_API = "Database";
+	private static final String DATABASE_API = "Database API";
 
 	@Test
 	public void test() {
@@ -80,7 +80,7 @@ public class IDBTest {
 		id = idBuilder.build();
 		assertTrue(id.toString(), id.toString().contains("\n\t\t* Trace Scope [Method Scope [my.package.*]] (+my.package): "));
 		
-		idBuilder.newTraceScopeEntity().setAPISubScope("My").newLocalRestriction().includeModifier(Modifier.PUBLIC).restrictionDone().entityDone();
+		idBuilder.newTraceScopeEntity().setAPISubScope("My API").newLocalRestriction().includeModifier(Modifier.PUBLIC).restrictionDone().entityDone();
 		id = idBuilder.build();
 		assertTrue(id.toString(), id.toString().contains("\n\t\t* Trace Scope [My API Scope] (+\"public\" methods): "));
 		
