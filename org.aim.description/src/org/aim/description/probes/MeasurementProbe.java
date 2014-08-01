@@ -51,6 +51,10 @@ public class MeasurementProbe<S extends Scope> {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
 		if (!obj.getClass().equals(this.getClass())) {
 			return false;
 		}

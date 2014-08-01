@@ -26,6 +26,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 public class SamplingDescription {
 
+	private static final int HASH_PRIME = 31;
+
 	private final long delay;
 
 	private final String resourceName;
@@ -69,6 +71,10 @@ public class SamplingDescription {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+
 		if (!obj.getClass().equals(this.getClass())) {
 			return false;
 		}
@@ -80,7 +86,7 @@ public class SamplingDescription {
 
 	@Override
 	public int hashCode() {
-		return getResourceName().hashCode() * 31 + (int) getDelay();
+		return getResourceName().hashCode() * HASH_PRIME + (int) getDelay();
 	}
 
 }

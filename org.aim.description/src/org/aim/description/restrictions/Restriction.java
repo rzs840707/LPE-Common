@@ -31,6 +31,8 @@ import org.lpe.common.util.LpeStringUtils;
  */
 public class Restriction {
 
+	private static final int HASH_PRIME = 31;
+
 	private final Set<String> packageIncludes;
 	private final Set<String> packageExcludes;
 
@@ -211,7 +213,7 @@ public class Restriction {
 
 	/**
 	 * Returns all included modifiers as one integer (the modifiers linked with
-	 * OR)
+	 * OR).
 	 * 
 	 * @return all included modifiers
 	 */
@@ -259,6 +261,10 @@ public class Restriction {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+
 		if (!obj.getClass().equals(this.getClass())) {
 			return false;
 		}
@@ -269,13 +275,13 @@ public class Restriction {
 				&& this.getPackageIncludes().equals(other.getPackageIncludes())
 				&& this.getModifiersOrLinked() == other.getModifiersOrLinked();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		int hash = 1;
-		hash = hash * 31 + getModifiersOrLinked();
-		hash = hash * 31 + getPackageExcludes().hashCode();
-		hash = hash * 31 + getPackageIncludes().hashCode();
+		hash = hash * HASH_PRIME + getModifiersOrLinked();
+		hash = hash * HASH_PRIME + getPackageExcludes().hashCode();
+		hash = hash * HASH_PRIME + getPackageIncludes().hashCode();
 		return hash;
 	}
 

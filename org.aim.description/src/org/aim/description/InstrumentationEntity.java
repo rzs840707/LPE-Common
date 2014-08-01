@@ -41,6 +41,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonSerialize(using = InstrumentationEntitySerializer.class)
 public class InstrumentationEntity<S extends Scope> {
 
+	private static final int HASH_PRIME = 31;
+
 	private final S scope;
 
 	private Set<MeasurementProbe<? super S>> probes;
@@ -149,6 +151,10 @@ public class InstrumentationEntity<S extends Scope> {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
 		if (!obj.getClass().equals(this.getClass())) {
 			return false;
 		}
@@ -161,9 +167,9 @@ public class InstrumentationEntity<S extends Scope> {
 	@Override
 	public int hashCode() {
 		int hash = 1;
-		hash = hash * 31 + getLocalRestriction().hashCode();
-		hash = hash * 31 + getProbes().hashCode();
-		hash = hash * 31 + getScope().hashCode();
+		hash = hash * HASH_PRIME + getLocalRestriction().hashCode();
+		hash = hash * HASH_PRIME + getProbes().hashCode();
+		hash = hash * HASH_PRIME + getScope().hashCode();
 		return hash;
 	}
 

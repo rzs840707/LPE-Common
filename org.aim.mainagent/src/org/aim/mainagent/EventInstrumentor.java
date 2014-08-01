@@ -20,9 +20,10 @@ import org.aim.description.InstrumentationDescription;
 import org.aim.description.InstrumentationEntity;
 import org.aim.description.scopes.SynchronizedScope;
 import org.aim.mainagent.events.EventProbeRegistry;
-import org.aim.mainagent.events.SynchonizedBlocksWaitingTimeProbe;
 import org.aim.mainagent.events.SynchronizedBlocksWaitingTimeProbe;
 import org.aim.mainagent.events.SynchronizedEventListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Instrumentor responsible for activating and deactivating JVM events and
@@ -32,6 +33,8 @@ import org.aim.mainagent.events.SynchronizedEventListener;
  * 
  */
 public final class EventInstrumentor implements IInstrumentor {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(EventInstrumentor.class);
 
 	private static EventInstrumentor instance;
 
@@ -52,19 +55,24 @@ public final class EventInstrumentor implements IInstrumentor {
 
 	@Override
 	public void instrument(InstrumentationDescription descr) throws InstrumentationException {
-		for (InstrumentationEntity<SynchronizedScope> entitiy : descr.getInstrumentationEntities(SynchronizedScope.class)) {
+		for (InstrumentationEntity<SynchronizedScope> entitiy : descr
+				.getInstrumentationEntities(SynchronizedScope.class)) {
 			CEventAgentAdapter.setSynchronizedListener(SynchronizedEventListener.getInstance());
 			if (entitiy.getProbes().contains(SynchronizedBlocksWaitingTimeProbe.MODEL_PROBE)) {
-				EventProbeRegistry.getInstance().addProbe(SynchronizedEventListener.class, SynchronizedBlocksWaitingTimeProbe.class);
+				LOGGER.info("Enabling event listening with SynchronizedBlocksWaitingTimeProbe");
+				LOGGER.warn("Choosing the event listeing description from the instrumentation description is not implemented yet.");
+				EventProbeRegistry.getInstance().addProbe(SynchronizedEventListener.class,
+						SynchronizedBlocksWaitingTimeProbe.class);
 			}
-			
-			CEventAgentAdapter.enableMonitorEvents();
 		}
 
+		CEventAgentAdapter.setRestriction(descr.getGlobalRestriction());
+		CEventAgentAdapter.enableMonitorEvents();
 	}
 
 	@Override
 	public void undoInstrumentation() throws InstrumentationException {
+		LOGGER.info("Disabling event listening.");
 		CEventAgentAdapter.disableMonitorEvents();
 	}
 

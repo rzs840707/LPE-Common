@@ -15,6 +15,7 @@
  */
 package org.aim.mainagent;
 
+import org.aim.description.restrictions.Restriction;
 import org.aim.mainagent.events.SynchronizedEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ public final class CEventAgentAdapter {
 	private static final String CLASS_NAME = "java.lang.Class";
 
 	private static SynchronizedEventListener synchronizedListener;
+	private static Restriction restriction;
 
 	private static boolean initialized = false;
 	private static boolean activated = false;
@@ -68,8 +70,7 @@ public final class CEventAgentAdapter {
 		}
 
 		String className = monitor.getClass().getName();
-		if (!className.startsWith(PACKAGE_AIM) && !className.startsWith(PACKAGE_LPE_COMMON)
-				&& (!className.startsWith(PACKAGE_JAVA) || className.startsWith(CLASS_NAME))) {
+		if (!restriction.isExcluded(className) || className.startsWith(CLASS_NAME)) {
 			synchronizedListener.onMonitorWait(thread, monitor, enterTime);
 		}
 	}
@@ -96,8 +97,7 @@ public final class CEventAgentAdapter {
 		}
 
 		String className = monitor.getClass().getName();
-		if (!className.startsWith(PACKAGE_AIM) && !className.startsWith(PACKAGE_LPE_COMMON)
-				&& (!className.startsWith(PACKAGE_JAVA) || className.startsWith(CLASS_NAME))) {
+		if (!restriction.isExcluded(className) || className.startsWith(CLASS_NAME)) {
 			synchronizedListener.onMonitorEntered(thread, monitor, enteredTime);
 		}
 	}
@@ -133,6 +133,16 @@ public final class CEventAgentAdapter {
 	 */
 	public static void setSynchronizedListener(SynchronizedEventListener listener) {
 		synchronizedListener = listener;
+	}
+
+	/**
+	 * Sets the restriction.
+	 * 
+	 * @param res
+	 *            Restriction to be set
+	 */
+	public static void setRestriction(Restriction res) {
+		restriction = res;
 	}
 
 	private static native void init();
