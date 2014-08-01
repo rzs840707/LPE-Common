@@ -10,3 +10,6 @@ org.aim.artifacts.probes.NanoResponsetimeProbeExtension
 org.aim.artifacts.probes.ResponsetimeProbeExtension
 org.aim.artifacts.probes.SQLQueryProbeExtension
 org.aim.artifacts.probes.ThreadTracingProbeExtension
+org.aim.artifacts.scopes.EntryPointScopeExtension
+org.aim.artifacts.scopes.JDBCScopeExtension
+org.aim.artifacts.scopes.JmsScopeExtension
