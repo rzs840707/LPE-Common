@@ -46,7 +46,7 @@ public final class AdaptiveInstrumentationFacade {
 	 * 
 	 * @return singleton instance
 	 */
-	public static AdaptiveInstrumentationFacade getInstance() {
+	public static synchronized AdaptiveInstrumentationFacade getInstance() {
 		if (instance == null) {
 			instance = new AdaptiveInstrumentationFacade();
 		}

@@ -41,7 +41,7 @@ public final class WebServer {
 	 * 
 	 * @return singleton instance
 	 */
-	public static WebServer getInstance() {
+	public static synchronized WebServer getInstance() {
 		if (instance == null) {
 			instance = new WebServer();
 		}

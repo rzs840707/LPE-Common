@@ -101,8 +101,9 @@ public abstract class AbstractDataSource implements IDataCollector, IDataReader,
 			}
 		}
 
-		synchronized (records) {
-			records.notifyAll();
+		synchronized (this) {
+			enabled = false;
+			this.notifyAll();
 		}
 
 		finished = true;
@@ -144,10 +145,10 @@ public abstract class AbstractDataSource implements IDataCollector, IDataReader,
 	@Override
 	public void disable() {
 		enabled = false;
-		synchronized (records) {
+		synchronized (this) {
 			while (!records.isEmpty()) {
 				try {
-					records.wait();
+					this.wait();
 				} catch (InterruptedException e) {
 					LOGGER.error("Wait for empty queue interrupted. Cause: {}", e.getMessage());
 					throw new RuntimeException("Wait for empty queue interrupted.");
