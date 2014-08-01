@@ -38,7 +38,7 @@ public class APIScope extends MethodsEnclosingScope {
 	 *            scope id
 	 */
 	@JsonCreator
-	public APIScope(@JsonProperty("aPIName") String aPIName, long id) {
+	public APIScope(@JsonProperty("aPIName") String aPIName, @JsonProperty("id") long id) {
 		super(id);
 		this.aPIName = aPIName;
 	}
@@ -49,8 +49,7 @@ public class APIScope extends MethodsEnclosingScope {
 	 * @param aPIName
 	 *            name of the represented API
 	 */
-	@JsonCreator
-	public APIScope(@JsonProperty("aPIName") String aPIName) {
+	public APIScope(String aPIName) {
 		this(aPIName, System.nanoTime());
 	}
 

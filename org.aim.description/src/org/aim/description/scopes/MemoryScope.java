@@ -18,6 +18,7 @@ package org.aim.description.scopes;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+
 /**
  * This scope refers to tasks related to memory.
  * 
@@ -38,7 +39,8 @@ public class MemoryScope implements Scope {
 	 * @param id
 	 *            scope id
 	 */
-	public MemoryScope(long id) {
+	@JsonCreator
+	public MemoryScope(@JsonProperty("id") long id) {
 		this.id = id;
 	}
 

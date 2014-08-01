@@ -39,7 +39,7 @@ public class TraceScope extends MethodsEnclosingScope {
 	 *            scope id
 	 */
 	@JsonCreator
-	public TraceScope(@JsonProperty("subScope") MethodsEnclosingScope subScope, long id) {
+	public TraceScope(@JsonProperty("subScope") MethodsEnclosingScope subScope, @JsonProperty("id") long id) {
 		super(id);
 		this.subScope = subScope;
 	}
@@ -50,8 +50,7 @@ public class TraceScope extends MethodsEnclosingScope {
 	 * @param subScope
 	 *            scope of root methods
 	 */
-	@JsonCreator
-	public TraceScope(@JsonProperty("subScope") MethodsEnclosingScope subScope) {
+	public TraceScope(MethodsEnclosingScope subScope) {
 		this(subScope, System.nanoTime());
 	}
 

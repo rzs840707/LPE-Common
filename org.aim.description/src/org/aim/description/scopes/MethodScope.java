@@ -38,7 +38,7 @@ public class MethodScope extends MethodsEnclosingScope {
 	 *            scope id
 	 */
 	@JsonCreator
-	public MethodScope(@JsonProperty("methods") String[] methods, long id) {
+	public MethodScope(@JsonProperty("methods") String[] methods, @JsonProperty("id") long id) {
 		super(id);
 		this.methods = methods;
 	}
@@ -49,8 +49,7 @@ public class MethodScope extends MethodsEnclosingScope {
 	 * @param methods
 	 *            methods which are to be instrumented
 	 */
-	@JsonCreator
-	public MethodScope(@JsonProperty("methods") String[] methods) {
+	public MethodScope(String[] methods) {
 		this(methods, System.nanoTime());
 	}
 

@@ -178,4 +178,16 @@ public class InstrumentationDescription {
 		return builder.toString();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		InstrumentationDescription other = (InstrumentationDescription) obj;
+		return this.getGlobalRestriction().equals(other.getGlobalRestriction())
+				&& this.getInstrumentationEntities().equals(other.getInstrumentationEntities())
+				&& this.getSamplingDescriptions().equals(other.getSamplingDescriptions());
+	}
+
 }

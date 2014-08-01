@@ -56,8 +56,7 @@ public class AllocationScope implements Scope {
 	 * @param targetClasses
 	 *            classes to be considered
 	 */
-	@JsonCreator
-	public AllocationScope(@JsonProperty("targetClasses") String[] targetClasses) {
+	public AllocationScope(String[] targetClasses) {
 		this(targetClasses, System.nanoTime());
 	}
 
