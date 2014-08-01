@@ -226,7 +226,7 @@ public final class TraceInstrumentor implements IInstrumentor {
 			InstrumentationDescriptionBuilder idBuilder, MethodsEnclosingScope iScope) {
 		APIScope apiScope = (APIScope) iScope;
 		InstrumentationEntityBuilder<APIScope> apisBuilder = idBuilder.newAPIScopeEntityWithId(scopeId,
-				apiScope.getAPIName());
+				apiScope.getApiName());
 		apisBuilder.addProbe(IncrementalInstrumentationProbe.MODEL_PROBE);
 		for (String probe : eiEntity.getProbesAsStrings()) {
 			apisBuilder.addProbe(probe);

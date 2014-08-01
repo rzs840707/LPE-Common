@@ -174,7 +174,7 @@ public class ScopeAnalysisController {
 							+ scopeName);
 				}
 			} else if (mScopeEntity.getScope() instanceof APIScope) {
-				String apiName = ((APIScope) mScopeEntity.getScope()).getAPIName();
+				String apiName = ((APIScope) mScopeEntity.getScope()).getApiName();
 
 				AbstractInstAPIScope apiScopeInstance = ExtensionRegistry.getSingleton().getExtensionArtifact(
 						AbstractInstApiScopeExtension.class, apiName);
