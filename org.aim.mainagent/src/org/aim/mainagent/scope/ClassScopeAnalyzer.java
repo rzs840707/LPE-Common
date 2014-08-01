@@ -66,7 +66,7 @@ public class ClassScopeAnalyzer extends AbstractScopeAnalyzer {
 		}
 
 		Set<Method> methods = new HashSet<>();
-		if (!restriction.hasModifierRestrictions() || !restriction.isAtLeastOneOfTheModifiersExcluded(Modifier.PUBLIC)) {
+		if (!restriction.hasModifierRestrictions() || !restriction.modifierSetExcluded(Modifier.PUBLIC)) {
 			for (Method m : clazz.getMethods()) {
 				if (!restriction.isExcluded(m.getDeclaringClass().getName())) {
 					methods.add(m);
@@ -75,7 +75,7 @@ public class ClassScopeAnalyzer extends AbstractScopeAnalyzer {
 			}
 		}
 		for (Method m : clazz.getDeclaredMethods()) {
-			if (!restriction.isAtLeastOneOfTheModifiersExcluded(m.getModifiers())) {
+			if (!restriction.modifierSetExcluded(m.getModifiers())) {
 				methods.add(m);
 			}
 		}

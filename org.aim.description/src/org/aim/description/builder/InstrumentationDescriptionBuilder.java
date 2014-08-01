@@ -26,7 +26,6 @@ import org.aim.description.scopes.CustomScope;
 import org.aim.description.scopes.MemoryScope;
 import org.aim.description.scopes.MethodScope;
 import org.aim.description.scopes.SynchronizedScope;
-import org.aim.description.scopes.TraceScope;
 
 /**
  * Builder for {@link InstrumentationDescription}s.
@@ -100,8 +99,8 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 
 	/**
 	 * Starts definition of an {@link InstrumentationEntity} with a
-	 * {@link TraceScope}. In a first step, the sub-scope of the trace scope has
-	 * to be specified.
+	 * {@link org.aim.description.scopes.TraceScope}. In a first step, the
+	 * sub-scope of the trace scope has to be specified.
 	 * 
 	 * @return an {@link TraceEntityBuilder}
 	 */
@@ -181,6 +180,8 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 	 * Starts definition of an {@link InstrumentationEntity} with a
 	 * {@link MethodScope}.
 	 * 
+	 * @param id
+	 *            scope id
 	 * @param patterns
 	 *            methods in the method scope
 	 * @return an {@link InstrumentationEntityBuilder}
@@ -191,9 +192,11 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 
 	/**
 	 * Starts definition of an {@link InstrumentationEntity} with a
-	 * {@link TraceScope}. In a first step, the sub-scope of the trace scope has
-	 * to be specified.
+	 * {@link org.aim.description.scopes.TraceScope}. In a first step, the
+	 * sub-scope of the trace scope has to be specified.
 	 * 
+	 * @param id
+	 *            scope id
 	 * @return an {@link TraceEntityBuilder}
 	 */
 	public TraceEntityBuilder newTraceScopeEntityWithId(long id) {
@@ -204,6 +207,8 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 	 * Starts definition of an {@link InstrumentationEntity} with a
 	 * {@link MemoryScope}.
 	 * 
+	 * @param id
+	 *            scope id
 	 * @return an {@link InstrumentationEntityBuilder}
 	 */
 	public InstrumentationEntityBuilder<MemoryScope> newMemoryScopeEntityWithId(long id) {
@@ -214,6 +219,8 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 	 * Starts definition of an {@link InstrumentationEntity} with an
 	 * {@link AllocationScope}.
 	 * 
+	 * @param id
+	 *            scope id
 	 * @param classes
 	 *            classes of the allocation scope
 	 * @return an {@link InstrumentationEntityBuilder}
@@ -226,6 +233,8 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 	 * Starts definition of an {@link InstrumentationEntity} with a
 	 * {@link ConstructorScope}.
 	 * 
+	 * @param id
+	 *            scope id
 	 * @param classes
 	 *            classes of the constructor scope
 	 * @return an {@link InstrumentationEntityBuilder}
@@ -238,6 +247,8 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 	 * Starts definition of an {@link InstrumentationEntity} with a
 	 * {@link SynchronizedScope}.
 	 * 
+	 * @param id
+	 *            scope id
 	 * @return an {@link InstrumentationEntityBuilder}
 	 */
 	public InstrumentationEntityBuilder<SynchronizedScope> newSynchronizedScopeEntityWithId(long id) {
@@ -248,6 +259,8 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 	 * Starts definition of an {@link InstrumentationEntity} with an
 	 * {@link APIScope}.
 	 * 
+	 * @param id
+	 *            scope id
 	 * @param apiName
 	 *            name of the API
 	 * @return an {@link InstrumentationEntityBuilder}
@@ -260,6 +273,8 @@ public class InstrumentationDescriptionBuilder extends AbstractRestrictableBuild
 	 * Starts definition of an {@link InstrumentationEntity} with a
 	 * {@link CustomScope}.
 	 * 
+	 * @param id
+	 *            scope id
 	 * @param scopeName
 	 *            name of the scope
 	 * @return an {@link InstrumentationEntityBuilder}

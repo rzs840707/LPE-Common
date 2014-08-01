@@ -15,7 +15,6 @@
  */
 package org.aim.description.builder;
 
-import org.aim.description.InstrumentationEntity;
 import org.aim.description.scopes.APIScope;
 import org.aim.description.scopes.ConstructorScope;
 import org.aim.description.scopes.CustomScope;
@@ -23,9 +22,9 @@ import org.aim.description.scopes.MethodScope;
 import org.aim.description.scopes.TraceScope;
 
 /**
- * Builder of an {@link InstrumentationEntity} with a {@link TraceScope}. It is
- * only responsible for setting the sub-scope and delegates all further
- * buildings to the {@link InstrumentationEntityBuilder}.
+ * Builder of an {@link org.aim.description.InstrumentationEntity} with a
+ * {@link TraceScope}. It is only responsible for setting the sub-scope and
+ * delegates all further buildings to the {@link InstrumentationEntityBuilder}.
  * 
  * @author Henning Schulz
  * 
@@ -44,6 +43,14 @@ public class TraceEntityBuilder {
 		this(parentBuilder, System.nanoTime());
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param parentBuilder
+	 *            parent builder
+	 * @param id
+	 *            scope id
+	 */
 	public TraceEntityBuilder(InstrumentationDescriptionBuilder parentBuilder, long id) {
 		this.parentBuilder = parentBuilder;
 		scopeId = id;

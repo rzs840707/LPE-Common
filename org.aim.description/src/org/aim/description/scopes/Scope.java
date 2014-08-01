@@ -23,7 +23,10 @@ package org.aim.description.scopes;
  * 
  */
 public interface Scope {
-	
-	public long getId();
-	
+	/**
+	 * 
+	 * @return the scope id
+	 */
+	long getId();
+
 }

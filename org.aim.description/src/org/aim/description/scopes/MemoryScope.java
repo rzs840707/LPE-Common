@@ -29,10 +29,19 @@ public class MemoryScope implements Scope {
 		return id;
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param id
+	 *            scope id
+	 */
 	public MemoryScope(long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Constructor.
+	 */
 	public MemoryScope() {
 		this(System.nanoTime());
 	}

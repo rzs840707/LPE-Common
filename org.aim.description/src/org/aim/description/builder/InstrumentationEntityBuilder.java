@@ -23,6 +23,8 @@ import org.aim.description.scopes.Scope;
 /**
  * Builder for an {@link InstrumentationEntity}.
  * 
+ * @param <S>
+ *            scope type
  * @author Henning Schulz
  * 
  */
@@ -64,8 +66,8 @@ public class InstrumentationEntityBuilder<S extends Scope> extends AbstractRestr
 	 * given scope. (e.g. if this scope is a {@code MethodScope}, the probe type
 	 * is set to {@code MethodScope}).
 	 * 
-	 * @param probe
-	 *            probe to be added
+	 * @param probeName
+	 *            name of the probe to be added
 	 * @return this builder
 	 */
 	public InstrumentationEntityBuilder<S> addProbe(String probeName) {

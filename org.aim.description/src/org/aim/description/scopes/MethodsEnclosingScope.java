@@ -25,6 +25,12 @@ package org.aim.description.scopes;
 public abstract class MethodsEnclosingScope implements Scope {
 	private final long id;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param id
+	 *            scope id
+	 */
 	public MethodsEnclosingScope(long id) {
 		this.id = id;
 	}

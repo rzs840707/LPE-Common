@@ -34,13 +34,21 @@ public class CustomScope extends MethodsEnclosingScope {
 	 * 
 	 * @param scopeName
 	 *            name of the custom scope
+	 * @param id
+	 *            scope id
 	 */
 	@JsonCreator
 	public CustomScope(@JsonProperty("scopeName") String scopeName, long id) {
 		super(id);
 		this.scopeName = scopeName;
 	}
-	
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param scopeName
+	 *            name of the custom scope
+	 */
 	@JsonCreator
 	public CustomScope(@JsonProperty("scopeName") String scopeName) {
 		this(scopeName, System.nanoTime());

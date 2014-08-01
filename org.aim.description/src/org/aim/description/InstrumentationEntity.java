@@ -28,6 +28,9 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * This is a wrapper class for instrumentation entities, composed of one scope
  * and several probes.
  * 
+ * @param <S>
+ *            scope type
+ * 
  * @author Henning Schulz
  * 
  */
