@@ -147,4 +147,24 @@ public class InstrumentationEntity<S extends Scope> {
 		return builder.toString();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		InstrumentationEntity<?> other = (InstrumentationEntity<?>) obj;
+		return this.getScope().equals(other.getScope()) && this.getProbes().equals(other.getProbes())
+				&& this.getLocalRestriction().equals(other.getLocalRestriction());
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + getLocalRestriction().hashCode();
+		hash = hash * 31 + getProbes().hashCode();
+		hash = hash * 31 + getScope().hashCode();
+		return hash;
+	}
+
 }

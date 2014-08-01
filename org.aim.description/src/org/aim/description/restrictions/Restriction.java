@@ -210,6 +210,26 @@ public class Restriction {
 	}
 
 	/**
+	 * Returns all included modifiers as one integer (the modifiers linked with
+	 * OR)
+	 * 
+	 * @return all included modifiers
+	 */
+	@JsonIgnore
+	public int getModifiersOrLinked() {
+		int thisModifiers = 0;
+		for (int includedModifier : getModifierIncludes()) {
+			thisModifiers |= includedModifier;
+		}
+
+		for (int excludedModifier : getModifierExcludes()) {
+			thisModifiers &= ~excludedModifier;
+		}
+
+		return thisModifiers;
+	}
+
+	/**
 	 * Checks whether the given set of modifiers is excluded. THis method checks
 	 * whether the passed set of modifiers covers all modifiers included in the
 	 * restrictions.
@@ -222,14 +242,8 @@ public class Restriction {
 		if (!hasModifierRestrictions()) {
 			return false;
 		}
-		int thisModifiers = 0;
-		for (int includedModifier : getModifierIncludes()) {
-			thisModifiers |= includedModifier;
-		}
 
-		for (int excludedModifier : getModifierExcludes()) {
-			thisModifiers &= ~excludedModifier;
-		}
+		int thisModifiers = getModifiersOrLinked();
 
 		return (thisModifiers & modifiers) != thisModifiers;
 	}
@@ -241,6 +255,28 @@ public class Restriction {
 	 */
 	public boolean hasModifierRestrictions() {
 		return !getModifierIncludes().isEmpty() || !getModifierExcludes().isEmpty();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		Restriction other = (Restriction) obj;
+
+		return this.getPackageExcludes().equals(other.getPackageExcludes())
+				&& this.getPackageIncludes().equals(other.getPackageIncludes())
+				&& this.getModifiersOrLinked() == other.getModifiersOrLinked();
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + getModifiersOrLinked();
+		hash = hash * 31 + getPackageExcludes().hashCode();
+		hash = hash * 31 + getPackageIncludes().hashCode();
+		return hash;
 	}
 
 }

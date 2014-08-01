@@ -90,4 +90,19 @@ public class AllocationScope implements Scope {
 		return builder.toString();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		AllocationScope other = (AllocationScope) obj;
+		return this.getId() == other.getId();
+	}
+
+	@Override
+	public int hashCode() {
+		return (int) id;
+	}
+
 }

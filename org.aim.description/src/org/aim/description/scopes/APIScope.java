@@ -27,7 +27,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 public class APIScope extends MethodsEnclosingScope {
 
-	private final String aPIName;
+	private final String apiName;
 
 	/**
 	 * Constructor.
@@ -38,9 +38,9 @@ public class APIScope extends MethodsEnclosingScope {
 	 *            scope id
 	 */
 	@JsonCreator
-	public APIScope(@JsonProperty("aPIName") String aPIName, @JsonProperty("id") long id) {
+	public APIScope(@JsonProperty("apiName") String apiName, @JsonProperty("id") long id) {
 		super(id);
-		this.aPIName = aPIName;
+		this.apiName = apiName;
 	}
 
 	/**
@@ -56,13 +56,13 @@ public class APIScope extends MethodsEnclosingScope {
 	/**
 	 * @return the API name
 	 */
-	public String getAPIName() {
-		return aPIName;
+	public String getApiName() {
+		return apiName;
 	}
 
 	@Override
 	public String toString() {
-		return aPIName + " API Scope";
+		return apiName + " Scope";
 	}
 
 }

@@ -56,4 +56,19 @@ public class SynchronizedScope implements Scope {
 		return "Synchronized Scope";
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		SynchronizedScope other = (SynchronizedScope) obj;
+		return this.getId() == other.getId();
+	}
+	
+	@Override
+	public int hashCode() {
+		return (int) id;
+	}
+
 }

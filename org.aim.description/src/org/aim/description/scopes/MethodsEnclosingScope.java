@@ -43,4 +43,19 @@ public abstract class MethodsEnclosingScope implements Scope {
 	public long getId() {
 		return id;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		MethodsEnclosingScope other = (MethodsEnclosingScope) obj;
+		return this.getId() == other.getId();
+	}
+	
+	@Override
+	public int hashCode() {
+		return (int) id;
+	}
 }

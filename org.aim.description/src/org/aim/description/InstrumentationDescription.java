@@ -189,5 +189,14 @@ public class InstrumentationDescription {
 				&& this.getInstrumentationEntities().equals(other.getInstrumentationEntities())
 				&& this.getSamplingDescriptions().equals(other.getSamplingDescriptions());
 	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + getInstrumentationEntities().hashCode();
+		hash = hash * 31 + getSamplingDescriptions().hashCode();
+		hash = hash * 31 + getGlobalRestriction().hashCode();
+		return hash;
+	}
 
 }

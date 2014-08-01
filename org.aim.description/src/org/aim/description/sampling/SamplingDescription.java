@@ -40,7 +40,11 @@ public class SamplingDescription {
 	 */
 	@JsonCreator
 	public SamplingDescription(@JsonProperty("resourceName") String resourceName, @JsonProperty("delay") long delay) {
-		this.resourceName = resourceName;
+		if (resourceName == null) {
+			this.resourceName = "";
+		} else {
+			this.resourceName = resourceName;
+		}
 		this.delay = delay;
 	}
 
@@ -61,6 +65,22 @@ public class SamplingDescription {
 	@Override
 	public String toString() {
 		return resourceName + " +" + delay;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		SamplingDescription other = (SamplingDescription) obj;
+
+		return this.getResourceName().equals(other.getResourceName()) && this.getDelay() == other.getDelay();
+	}
+
+	@Override
+	public int hashCode() {
+		return getResourceName().hashCode() * 31 + (int) getDelay();
 	}
 
 }
