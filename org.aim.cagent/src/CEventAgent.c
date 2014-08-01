@@ -64,13 +64,13 @@ JNIEXPORT void JNICALL Java_org_aim_mainagent_CEventAgentAdapter_init(JNIEnv* jn
 	onMonitorWait = (*jni_env)->GetStaticMethodID(jni_env, agentClass,
 			"onMonitorWait", "(Ljava/lang/Thread;Ljava/lang/Object;)V");
 	if (onMonitorWait == NULL) {
-		printf("onMonitorWait jmethodID is NULL");
+		printf("WARN CEventAgent: onMonitorWait jmethodID is NULL");
 	}
 
 	onMonitorEntered = (*jni_env)->GetStaticMethodID(jni_env, agentClass,
 			"onMonitorEntered", "(Ljava/lang/Thread;Ljava/lang/Object;)V");
 	if (onMonitorWait == NULL) {
-		printf("onMonitorEntered jmethodID is NULL");
+		printf("WARN CEventAgent: onMonitorEntered jmethodID is NULL");
 	}
 }
 
@@ -118,7 +118,7 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *jvm, char *options, void *reserved) 
 	error = (*jvmti)->SetEventCallbacks(jvmti, &callbacks,
 			(jint) sizeof(callbacks));
 
-	printf("C: Hello, I'm the JVMTI agent.\n");
+	printf("INFO CEventAgent: initialized.\n");
 
 	return 0;
 }
