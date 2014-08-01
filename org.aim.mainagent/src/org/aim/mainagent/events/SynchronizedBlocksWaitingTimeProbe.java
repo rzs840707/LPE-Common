@@ -43,7 +43,16 @@ public class SynchronizedBlocksWaitingTimeProbe implements ISynchronizedEventPro
 	@Override
 	public void afterPart() {
 		WaitingTimeRecord record = new WaitingTimeRecord();
-		record.setLocation(monitor.getClass().getName() + "@" + monitor.hashCode());
+		StringBuilder locationBuilder = new StringBuilder();
+		locationBuilder.append(monitor.getClass().getName());
+		if (monitor instanceof Class<?>) {
+			locationBuilder.append("<");
+			locationBuilder.append(((Class<?>) monitor).getName());
+			locationBuilder.append(">");
+		}
+		locationBuilder.append("@");
+		locationBuilder.append(monitor.hashCode());
+		record.setLocation(locationBuilder.toString());
 		record.setCallId(GenericProbe.getNewCallID());
 		record.setTimeStamp(waitStartTime);
 		record.setWaitingTime(enteredTime - waitStartTime);

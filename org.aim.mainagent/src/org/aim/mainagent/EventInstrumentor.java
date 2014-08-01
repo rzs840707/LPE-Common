@@ -55,17 +55,19 @@ public final class EventInstrumentor implements IInstrumentor {
 
 	@Override
 	public void instrument(InstrumentationDescription descr) throws InstrumentationException {
-		for (InstrumentationEntity<SynchronizedScope> entitiy : descr.getInstrumentationEntities(SynchronizedScope.class)) {
+		for (InstrumentationEntity<SynchronizedScope> entitiy : descr
+				.getInstrumentationEntities(SynchronizedScope.class)) {
 			CEventAgentAdapter.setSynchronizedListener(SynchronizedEventListener.getInstance());
 			if (entitiy.getProbes().contains(SynchronizedBlocksWaitingTimeProbe.MODEL_PROBE)) {
 				LOGGER.info("Enabling event listening with SynchronizedBlocksWaitingTimeProbe");
 				LOGGER.warn("Choosing the event listeing description from the instrumentation description is not implemented yet.");
-				EventProbeRegistry.getInstance().addProbe(SynchronizedEventListener.class, SynchronizedBlocksWaitingTimeProbe.class);
+				EventProbeRegistry.getInstance().addProbe(SynchronizedEventListener.class,
+						SynchronizedBlocksWaitingTimeProbe.class);
 			}
-			
-			CEventAgentAdapter.enableMonitorEvents();
 		}
 
+		CEventAgentAdapter.setRestriction(descr.getGlobalRestriction());
+		CEventAgentAdapter.enableMonitorEvents();
 	}
 
 	@Override
