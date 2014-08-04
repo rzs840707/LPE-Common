@@ -109,7 +109,7 @@ public final class LpeSystemUtils {
 	 * retrieves a cached thread pool
 	 * @return thread pool
 	 */
-	private static ExecutorService getThreadPool() {
+	private static synchronized ExecutorService getThreadPool() {
 		if (threadPool == null) {
 			threadPool = Executors.newCachedThreadPool();
 		}

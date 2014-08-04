@@ -200,11 +200,12 @@ public class FileDataSource extends AbstractDataSource {
 
 	@Override
 	public void initialize(Properties properties) {
+		String tmpPrefix = null;
 		if (properties != null) {
 			this.pathToFile = properties.getProperty(SINK_DIRECTORY);
+			tmpPrefix = properties.getProperty(ADDITIONAL_FILE_PREFIX_KEY);
 		}
 
-		String tmpPrefix = properties.getProperty(ADDITIONAL_FILE_PREFIX_KEY);
 		prefix = tmpPrefix == null ? "" : tmpPrefix;
 
 		if (pathToFile == null || pathToFile.isEmpty()) {

@@ -58,19 +58,23 @@ public class NetworkIOSampler extends AbstractResourceSampler {
 	@Override
 	public void sample() {
 		long timestamp = System.currentTimeMillis();
-		if (networkInterfaces == null) {
-			try {
-				networkInterfaces = getSigar().getNetInterfaceList();
-				for (String networkInterface : networkInterfaces) {
-					NetInterfaceStat netStat = getSigar().getNetInterfaceStat(networkInterface);
-					getDataCollector().newRecord(
-							new NetworkInterfaceInfoRecord(System.currentTimeMillis(), networkInterface, netStat
-									.getSpeed()));
+		synchronized (this) {
+			if (networkInterfaces == null) {
+				try {
+					networkInterfaces = getSigar().getNetInterfaceList();
+					for (String networkInterface : networkInterfaces) {
+						NetInterfaceStat netStat = getSigar().getNetInterfaceStat(networkInterface);
+						getDataCollector().newRecord(
+								new NetworkInterfaceInfoRecord(System.currentTimeMillis(), networkInterface, netStat
+										.getSpeed()));
+					}
+				} catch (SigarException e) {
+					LOGGER.warn("Sigar Exception: {}", e);
+					return;
 				}
-			} catch (SigarException e) {
-				LOGGER.warn("Sigar Exception: {}", e);
 			}
 		}
+
 		for (String networkInterface : networkInterfaces) {
 			try {
 				NetInterfaceStat netStat = getSigar().getNetInterfaceStat(networkInterface);

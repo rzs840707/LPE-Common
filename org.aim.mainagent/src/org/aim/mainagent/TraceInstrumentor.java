@@ -51,7 +51,7 @@ public final class TraceInstrumentor implements IInstrumentor {
 	 * 
 	 * @return singleton instance
 	 */
-	public static TraceInstrumentor getInstance() {
+	public static synchronized TraceInstrumentor getInstance() {
 		if (instance == null) {
 			instance = new TraceInstrumentor();
 		}

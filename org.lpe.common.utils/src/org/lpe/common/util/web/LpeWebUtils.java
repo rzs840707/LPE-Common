@@ -221,9 +221,7 @@ public final class LpeWebUtils {
 			// connection failed
 			result = false;
 		} finally {
-			if (client != null) {
 				client.destroy();
-			}
 		}
 
 		return result;
