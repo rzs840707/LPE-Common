@@ -39,6 +39,8 @@ import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
+import org.lpe.common.config.GlobalConfiguration;
+import org.lpe.common.extension.ExtensionRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +58,8 @@ public final class InstrumentationAgent {
 
 	private static final String PORT_KEY = "port=";
 	private static final String DATA_COLLECTOR_KEY = "collector=";
+	private static final String PLUGINS_ROOT_KEY = "pluginsRootDir=";
+	private static final String DEFAULT_PLUGINS_FOLDER = "plugins";
 
 	public static final String URL_PATH_INSTRUMENTATION = InstrumentationClient.URL_PATH_INSTRUMENTATION;
 	public static final String URL_PATH_MEASUREMENT = InstrumentationClient.URL_PATH_MEASUREMENT;
@@ -64,6 +68,7 @@ public final class InstrumentationAgent {
 	private static final Properties properties = new Properties();
 
 	private static String port = "8888";
+	private static String pluginsRoot;
 	private static String collectorType = MemoryDataSource.class.getName();
 
 	/**
@@ -108,21 +113,33 @@ public final class InstrumentationAgent {
 		boolean cAgentInitializedSuccessfully = CEventAgentAdapter.initialize();
 		if (!cAgentInitializedSuccessfully) {
 			LOGGER.warn("The C event agent could not be initialized and will not be used therefore.");
-			//TODO: handle this case
+			// TODO: handle this case
 		}
-		
+
 		try {
 			if (!inst.isRedefineClassesSupported()) {
 				throw new IllegalStateException(
 						"Redefining classes not supported, InstrumentationAgent cannot work properly!");
 			}
 			parseArgs(agentArgs);
+			initializeGlobalConfig();
 			JInstrumentation.getInstance().setjInstrumentation(inst);
 			initDataCollector();
 			startServer();
 		} catch (Exception e) {
 			LOGGER.error("Agent ERROR: {}", e);
 		}
+	}
+
+	private static void initializeGlobalConfig() {
+		if (pluginsRoot == null) {
+			pluginsRoot = System.getProperty("user.dir");
+		}
+
+		Properties coreProperties = new Properties();
+		coreProperties.setProperty(ExtensionRegistry.APP_ROOT_DIR_PROPERTY_KEY, pluginsRoot);
+		coreProperties.setProperty(ExtensionRegistry.PLUGINS_FOLDER_PROPERTY_KEY, DEFAULT_PLUGINS_FOLDER);
+		GlobalConfiguration.initialize(coreProperties);
 	}
 
 	private static void startServer() {
@@ -134,15 +151,15 @@ public final class InstrumentationAgent {
 			addServlet(server, new InstrumentServlet(), URL_PATH_INSTRUMENTATION + "/instrument");
 			addServlet(server, new UninstrumentServlet(), URL_PATH_INSTRUMENTATION + "/uninstrument");
 			addServlet(server, new GetStateServlet(), URL_PATH_INSTRUMENTATION + "/getState");
-			addServlet(server, new GetSupportedExtensionsServlet(), URL_PATH_INSTRUMENTATION + "/getSupportedExtensions");
-			
-			
+			addServlet(server, new GetSupportedExtensionsServlet(), URL_PATH_INSTRUMENTATION
+					+ "/getSupportedExtensions");
+
 			addServlet(server, new EnableMeasurementServlet(), URL_PATH_MEASUREMENT + "/enable");
 			addServlet(server, new DisableMeasurementServlet(), URL_PATH_MEASUREMENT + "/disable");
 			addServlet(server, new GetDataServlet(), URL_PATH_MEASUREMENT + "/getdata");
 			addServlet(server, new CurrentTimeServlet(), URL_PATH_MEASUREMENT + "/currentTime");
 			addServlet(server, new MeasureOverheadServlet(), URL_PATH_MEASUREMENT + "/measureOverhead");
-			
+
 			server.start();
 			LOGGER.info("Started Instrumentation Agent Server: {}.", getAddress());
 
@@ -181,6 +198,8 @@ public final class InstrumentationAgent {
 				port = arg.substring(PORT_KEY.length());
 			} else if (arg.startsWith(DATA_COLLECTOR_KEY)) {
 				collectorType = arg.substring(DATA_COLLECTOR_KEY.length());
+			} else if (arg.startsWith(PLUGINS_ROOT_KEY)) {
+				pluginsRoot = arg.substring(PLUGINS_ROOT_KEY.length());
 			} else if (arg.contains("=")) {
 				String[] keyValuePair = arg.split("=");
 				if (keyValuePair.length == 2) {

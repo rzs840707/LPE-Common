@@ -205,4 +205,12 @@ public final class CEventAgentAdapter {
 	 */
 	private static native void printlnNonBlocking(String message);
 
+	/**
+	 * Checks whether the C-Agent has been successfully initialized.
+	 * 
+	 * @return true, if the CAgent has been initialized
+	 */
+	public static boolean isInitialized() {
+		return initialized;
+	}
 }

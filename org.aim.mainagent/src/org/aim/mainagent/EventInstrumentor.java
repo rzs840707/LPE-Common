@@ -55,6 +55,9 @@ public final class EventInstrumentor implements IInstrumentor {
 
 	@Override
 	public void instrument(InstrumentationDescription descr) throws InstrumentationException {
+		if (!CEventAgentAdapter.isInitialized()) {
+			return;
+		}
 		for (InstrumentationEntity<SynchronizedScope> entitiy : descr
 				.getInstrumentationEntities(SynchronizedScope.class)) {
 			CEventAgentAdapter.setSynchronizedListener(SynchronizedEventListener.getInstance());
@@ -72,6 +75,9 @@ public final class EventInstrumentor implements IInstrumentor {
 
 	@Override
 	public void undoInstrumentation() throws InstrumentationException {
+		if (!CEventAgentAdapter.isInitialized()) {
+			return;
+		}
 		LOGGER.info("Disabling event listening.");
 		CEventAgentAdapter.disableMonitorEvents();
 	}

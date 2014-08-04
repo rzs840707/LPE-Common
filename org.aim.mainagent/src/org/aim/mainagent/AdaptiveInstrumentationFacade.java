@@ -89,6 +89,7 @@ public final class AdaptiveInstrumentationFacade {
 		methodInstrumentor.instrument(instrumentationDescription);
 		traceInstrumentor.instrument(instrumentationDescription);
 		eventInstrumentor.instrument(instrumentationDescription);
+
 		// TODO: add Statement Instrumentation
 
 		if (!instrumentationDescription.getSamplingDescriptions().isEmpty()) {
@@ -110,6 +111,7 @@ public final class AdaptiveInstrumentationFacade {
 		methodInstrumentor.undoInstrumentation();
 		traceInstrumentor.undoInstrumentation();
 		eventInstrumentor.undoInstrumentation();
+
 		Sampling.getInstance().clearMonitoringJobs();
 		InstrumentationUtilsController.getInstance().clear();
 	}
