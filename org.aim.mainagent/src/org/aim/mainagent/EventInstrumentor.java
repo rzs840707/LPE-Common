@@ -58,6 +58,9 @@ public final class EventInstrumentor implements IInstrumentor {
 		if (!CEventAgentAdapter.isInitialized()) {
 			return;
 		}
+
+		boolean activated = false;
+
 		for (InstrumentationEntity<SynchronizedScope> entitiy : descr
 				.getInstrumentationEntities(SynchronizedScope.class)) {
 			CEventAgentAdapter.setSynchronizedListener(SynchronizedEventListener.getInstance());
@@ -66,11 +69,14 @@ public final class EventInstrumentor implements IInstrumentor {
 				LOGGER.warn("Choosing the event listeing description from the instrumentation description is not implemented yet.");
 				EventProbeRegistry.getInstance().addProbe(SynchronizedEventListener.class,
 						SynchronizedBlocksWaitingTimeProbe.class);
+				activated = true;
 			}
 		}
 
-		CEventAgentAdapter.setRestriction(descr.getGlobalRestriction());
-		CEventAgentAdapter.enableMonitorEvents();
+		if (activated) {
+			CEventAgentAdapter.setRestriction(descr.getGlobalRestriction());
+			CEventAgentAdapter.enableMonitorEvents();
+		}
 	}
 
 	@Override
