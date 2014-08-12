@@ -13,3 +13,4 @@ org.aim.artifacts.probes.ThreadTracingProbeExtension
 org.aim.artifacts.scopes.EntryPointScopeExtension
 org.aim.artifacts.scopes.JDBCScopeExtension
 org.aim.artifacts.scopes.JmsScopeExtension
+org.aim.artifacts.scopes.SpringRequestMappingAnnotationScopeExtension

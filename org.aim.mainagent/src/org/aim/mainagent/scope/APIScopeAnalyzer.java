@@ -54,7 +54,8 @@ public class APIScopeAnalyzer extends AbstractScopeAnalyzer {
 	 * @throws InstrumentationException
 	 *             if an API class or interface could not be found.
 	 */
-	public APIScopeAnalyzer(AbstractInstAPIScope apiScope) throws InstrumentationException {
+	public APIScopeAnalyzer(AbstractInstAPIScope apiScope, List<Class> allLoadedClasses)
+			throws InstrumentationException {
 		methodsToMatch = new HashMap<>();
 		for (String containerName : apiScope.getMethodsToMatch().keySet()) {
 			try {
@@ -75,7 +76,7 @@ public class APIScopeAnalyzer extends AbstractScopeAnalyzer {
 		for (String annotationName : apiScope.getMethodAnnotationsToMatch()) {
 			try {
 				@SuppressWarnings("unchecked")
-				Class<Annotation> annotationClass = (Class<Annotation>) Class.forName(annotationName);
+				Class<Annotation> annotationClass = findAnnotation(allLoadedClasses, annotationName);
 				methodAnnotationsToMatch.add(annotationClass);
 			} catch (ClassNotFoundException e) {
 				throw new InstrumentationException("Failed determining scope " + apiScope.getClass().getName(), e);
@@ -83,12 +84,25 @@ public class APIScopeAnalyzer extends AbstractScopeAnalyzer {
 		}
 	}
 
+	private Class<Annotation> findAnnotation(List<Class> allLoadedClasses, String annotationName)
+			throws ClassNotFoundException {
+		for (Class<?> clazz : allLoadedClasses) {
+			if (clazz.getName().equals(annotationName)) {
+				@SuppressWarnings("unchecked")
+				Class<Annotation> annotationClass = (Class<Annotation>)clazz;
+				return annotationClass;
+			}
+		}
+		throw new ClassNotFoundException("Class for Annotation with name" + annotationName + " not found!");
+
+	}
+
 	@Override
 	public void visitClass(Class<?> clazz, Set<FlatScopeEntity> scopeEntities) {
 		if (clazz == null || !Utils.isNormalClass(clazz)) {
 			return;
 		}
-		if (restriction.hasModifierRestrictions() &&  restriction.modifierSetExcluded(Modifier.PUBLIC)) {
+		if (restriction.hasModifierRestrictions() && restriction.modifierSetExcluded(Modifier.PUBLIC)) {
 			return;
 		}
 		if (restriction.isExcluded(clazz.getName())) {
