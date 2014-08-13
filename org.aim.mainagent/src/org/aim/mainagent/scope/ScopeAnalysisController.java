@@ -76,16 +76,16 @@ public class ScopeAnalysisController {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public Set<FlatInstrumentationEntity> resolveScopes(List<Class> allLoadedClasses) throws InstrumentationException {
-		removeGlobalyExcludedClasses(allLoadedClasses);
+		List<Class> filteredClasses = removeGlobalyExcludedClasses(allLoadedClasses);
 
-		Map<IScopeAnalyzer, Set<String>> scopeAnalyzersToProbesMap = createScopeAnalyzerToProbesMapping();
+		Map<IScopeAnalyzer, Set<String>> scopeAnalyzersToProbesMap = createScopeAnalyzerToProbesMapping(allLoadedClasses);
 		Set<FlatInstrumentationEntity> instrumentationEntities = new HashSet<>();
 		Map<String, Class<? extends AbstractEnclosingProbe>> probeClasses = new HashMap<>();
 		for (Entry<IScopeAnalyzer, Set<String>> mapEntry : scopeAnalyzersToProbesMap.entrySet()) {
 			IScopeAnalyzer sAnalyzer = mapEntry.getKey();
 			Set<String> probes = mapEntry.getValue();
 			Set<FlatScopeEntity> scopeEntities = new HashSet<>();
-			for (Class<?> clazz : allLoadedClasses) {
+			for (Class<?> clazz : filteredClasses) {
 				try {
 					sAnalyzer.visitClass(clazz, scopeEntities);
 				} catch (Throwable t) {
@@ -123,8 +123,8 @@ public class ScopeAnalysisController {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void removeGlobalyExcludedClasses(List<Class> allLoadedClasses) {
-		List<Class> toRemove = new ArrayList<>();
+	private List<Class> removeGlobalyExcludedClasses(List<Class> allLoadedClasses) {
+		List<Class> toKeep = new ArrayList<>();
 
 		for (Class clazz : allLoadedClasses) {
 			String className = clazz.getName();
@@ -146,16 +146,15 @@ public class ScopeAnalysisController {
 				}
 			}
 
-			if (invalidClass) {
-				toRemove.add(clazz);
+			if (!invalidClass) {
+				toKeep.add(clazz);
 			}
 
 		}
-
-		allLoadedClasses.removeAll(toRemove);
+		return toKeep;
 	}
 
-	private Map<IScopeAnalyzer, Set<String>> createScopeAnalyzerToProbesMapping() throws InstrumentationException {
+	private Map<IScopeAnalyzer, Set<String>> createScopeAnalyzerToProbesMapping(List<Class> allLoadedClasses) throws InstrumentationException {
 		Map<IScopeAnalyzer, Set<String>> mapping = new HashMap<>();
 		for (InstrumentationEntity<MethodsEnclosingScope> mScopeEntity : instrumentationDescription
 				.getInstrumentationEntities(MethodsEnclosingScope.class)) {
@@ -184,7 +183,7 @@ public class ScopeAnalysisController {
 							+ apiName);
 				}
 
-				scopeAnalyzer = new APIScopeAnalyzer(apiScopeInstance);
+				scopeAnalyzer = new APIScopeAnalyzer(apiScopeInstance, allLoadedClasses);
 			} else {
 				continue;
 			}
