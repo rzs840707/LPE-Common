@@ -86,6 +86,7 @@ public final class EventInstrumentor implements IInstrumentor {
 		}
 		LOGGER.info("Disabling event listening.");
 		CEventAgentAdapter.disableMonitorEvents();
+		EventProbeRegistry.getInstance().clear();
 	}
 
 }

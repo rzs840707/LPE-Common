@@ -49,7 +49,7 @@ public final class MonitorEventListener implements IEventListener<IMonitorEventP
 	 * @param monitor
 	 *            monitor which has been requested
 	 * @param timestamp
-	 *            timestamp
+	 *            timestamp in nanoseconds
 	 */
 	public void onMonitorWait(Thread thread, Object monitor, long timestamp) {
 		for (Class<? extends IMonitorEventProbe> probeClass : EventProbeRegistry.getInstance()
@@ -75,7 +75,7 @@ public final class MonitorEventListener implements IEventListener<IMonitorEventP
 	 * @param monitor
 	 *            monitor which has been requested
 	 * @param timestamp
-	 *            timestamp
+	 *            timestamp in nanoseconds
 	 */
 	public void onMonitorEntered(Thread thread, Object monitor, long timestamp) {
 		for (Class<? extends IMonitorEventProbe> probeClass : EventProbeRegistry.getInstance()

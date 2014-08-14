@@ -35,7 +35,7 @@ public class EventTimeStampRecord extends AbstractRecord {
 
 	public static final String PAR_LOCATION = "location";
 
-	public static final String PAR_MICRO_TIMESTAMP = "microTimestamp";
+	public static final String PAR_MICRO_TIMESTAMP = "eventNanoTimestamp";
 
 	/**
 	 * Default constructor required for programmatic instantiation.
@@ -58,7 +58,7 @@ public class EventTimeStampRecord extends AbstractRecord {
 		super(timestamp);
 		this.eventType = eventType;
 		this.location = location;
-		this.eventMicroTimestamp = microTimestamp;
+		this.eventNanoTimestamp = microTimestamp;
 	}
 
 	@RecordValue(name = PAR_EVENT_TYPE)
@@ -68,7 +68,7 @@ public class EventTimeStampRecord extends AbstractRecord {
 	String location;
 
 	@RecordValue(name = PAR_MICRO_TIMESTAMP)
-	long eventMicroTimestamp;
+	long eventNanoTimestamp;
 
 	/**
 	 * @return the eventType
@@ -103,16 +103,16 @@ public class EventTimeStampRecord extends AbstractRecord {
 	/**
 	 * @return the microTimestamp
 	 */
-	public long getEventMicroTimestamp() {
-		return eventMicroTimestamp;
+	public long getEventNanoTimestamp() {
+		return eventNanoTimestamp;
 	}
 
 	/**
 	 * @param microTimestamp
 	 *            the microTimestamp to set
 	 */
-	public void setEventMicroTimestamp(long microTimestamp) {
-		this.eventMicroTimestamp = microTimestamp;
+	public void setEventNanoTimestamp(long microTimestamp) {
+		this.eventNanoTimestamp = microTimestamp;
 	}
 
 }

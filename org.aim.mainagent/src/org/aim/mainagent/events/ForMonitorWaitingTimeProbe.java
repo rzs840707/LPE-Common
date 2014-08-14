@@ -32,7 +32,7 @@ public class ForMonitorWaitingTimeProbe implements IMonitorEventProbe {
 
 	public static final MeasurementProbe<SynchronizedScope> MODEL_PROBE = new MeasurementProbe<>("SynchronizedProbe");
 
-	private static final long NANO_FACTOR = 1000;
+	private static final long MILLI_FACTOR = 1000000L;
 
 	private Object monitor;
 	private long eventTimeStamp;
@@ -55,9 +55,9 @@ public class ForMonitorWaitingTimeProbe implements IMonitorEventProbe {
 		locationBuilder.append(threadId);
 		record.setLocation(locationBuilder.toString());
 		record.setEventType("monitor-" + eventType);
-		record.setEventMicroTimestamp(eventTimeStamp);
+		record.setEventNanoTimestamp(eventTimeStamp);
 		record.setCallId(GenericProbe.getNewCallID());
-		record.setTimeStamp(eventTimeStamp * NANO_FACTOR);
+		record.setTimeStamp(eventTimeStamp / MILLI_FACTOR);
 
 		AbstractDataSource dataSource = org.aim.api.measurement.collector.AbstractDataSource.getDefaultDataSource();
 		dataSource.newRecord(record);

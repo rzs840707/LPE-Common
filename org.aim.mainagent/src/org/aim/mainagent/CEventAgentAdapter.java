@@ -59,20 +59,20 @@ public final class CEventAgentAdapter {
 	 *            Thread which has to wait
 	 * @param monitor
 	 *            Monitor on which {@code thread} has to wait
-	 * @param enterTryTime
-	 *            timestamp in microseconds
+	 * @param waitTime
+	 *            timestamp in nanoseconds
 	 * 
 	 * @see CEventAgentAdapter#enableMonitorEvents() enableMonitorEvents()
 	 * @see CEventAgentAdapter#disableMonitorEvents() disableMonitorEvents()
 	 */
-	public static void onMonitorWait(Thread thread, Object monitor, int enterTryTime) {
+	public static void onMonitorWait(Thread thread, Object monitor, long waitTime) {
 		if (monitorListener == null) {
 			throw new IllegalStateException("No AIMEventListener specified!");
 		}
 
 		String className = monitor.getClass().getName();
 		if (!restriction.isExcluded(className) || className.startsWith(CLASS_NAME)) {
-			monitorListener.onMonitorWait(thread, monitor, enterTryTime);
+			monitorListener.onMonitorWait(thread, monitor, waitTime);
 		}
 	}
 
@@ -88,12 +88,12 @@ public final class CEventAgentAdapter {
 	 * @param monitor
 	 *            Monitor on which {@code thread} had to wait
 	 * @param enteredTime
-	 *            timestamp in microseconds
+	 *            timestamp in nanoseconds
 	 * 
 	 * @see CEventAgentAdapter#enableMonitorEvents() enableMonitorEvents()
 	 * @see CEventAgentAdapter#disableMonitorEvents() disableMonitorEvents()
 	 */
-	public static void onMonitorEntered(Thread thread, Object monitor, int enteredTime) {
+	public static void onMonitorEntered(Thread thread, Object monitor, long enteredTime) {
 		if (monitorListener == null) {
 			throw new IllegalStateException("No AIMEventListener specified!");
 		}
@@ -112,7 +112,7 @@ public final class CEventAgentAdapter {
 	 */
 	public static boolean initialize() {
 		if (initialized) {
-			LOGGER.warn("The C agent has alredy been initialized!");
+			LOGGER.warn("The C agent has already been initialized!");
 		} else {
 			try {
 				init();

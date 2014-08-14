@@ -38,18 +38,18 @@ static jmethodID onMonitorEntered;
 
 void JNICALL jvmti_wait_for_monitor_enter(jvmtiEnv *jvmti_env, JNIEnv* jni_env,
 		jthread thread, jobject object) {
-	struct timeval tv;
-	gettimeofday(&tv,NULL);
+	jlong nanos_ptr;
+	(*jvmti)->GetTime(jvmti, &nanos_ptr);
 	(*jni_env)->CallStaticVoidMethod(jni_env, agentClass, onMonitorWait, thread,
-			object, (unsigned) (tv.tv_sec * 1000000 + tv.tv_usec));
+			object, nanos_ptr);
 }
 
 void JNICALL jvmti_monitor_entered(jvmtiEnv *jvmti_env, JNIEnv* jni_env,
 		jthread thread, jobject object) {
-	struct timeval tv;
-	gettimeofday(&tv,NULL);
+	jlong nanos_ptr;
+	(*jvmti)->GetTime(jvmti, &nanos_ptr);
 	(*jni_env)->CallStaticVoidMethod(jni_env, agentClass, onMonitorEntered, thread,
-			object, (unsigned) (tv.tv_sec * 1000000 + tv.tv_usec));
+			object, nanos_ptr);
 }
 
 JNIEXPORT void JNICALL Java_org_aim_mainagent_CEventAgentAdapter_printlnNonBlocking(JNIEnv *jni_env,
@@ -57,7 +57,7 @@ JNIEXPORT void JNICALL Java_org_aim_mainagent_CEventAgentAdapter_printlnNonBlock
 	const char *cMessage = (*jni_env)->GetStringUTFChars(jni_env, javaMessage,
 			NULL);
 	if (NULL == cMessage)
-		return;
+	return;
 
 	printf("%s\n", cMessage);
 	(*jni_env)->ReleaseStringUTFChars(jni_env, javaMessage, cMessage);
@@ -66,13 +66,13 @@ JNIEXPORT void JNICALL Java_org_aim_mainagent_CEventAgentAdapter_printlnNonBlock
 JNIEXPORT void JNICALL Java_org_aim_mainagent_CEventAgentAdapter_init(JNIEnv* jni_env, jclass aClass) {
 	agentClass = aClass;
 	onMonitorWait = (*jni_env)->GetStaticMethodID(jni_env, agentClass,
-			"onMonitorWait", "(Ljava/lang/Thread;Ljava/lang/Object;)V");
+			"onMonitorWait", "(Ljava/lang/Thread;Ljava/lang/Object;J)V");
 	if (onMonitorWait == NULL) {
 		printf("WARN CEventAgent: onMonitorWait jmethodID is NULL");
 	}
 
 	onMonitorEntered = (*jni_env)->GetStaticMethodID(jni_env, agentClass,
-			"onMonitorEntered", "(Ljava/lang/Thread;Ljava/lang/Object;)V");
+			"onMonitorEntered", "(Ljava/lang/Thread;Ljava/lang/Object;J)V");
 	if (onMonitorWait == NULL) {
 		printf("WARN CEventAgent: onMonitorEntered jmethodID is NULL");
 	}
@@ -96,7 +96,7 @@ JNIEXPORT void JNICALL Java_org_aim_mainagent_CEventAgentAdapter_deactivateMonit
 		jclass class) {
 	jvmtiCapabilities caps;
 	memset(&caps, 0, sizeof(jvmtiCapabilities));
-	error = (*jvmti)->GetCapabilities(jvmti, &caps);
+	caps.can_generate_monitor_events = 1;
 	error = (*jvmti)->RelinquishCapabilities(jvmti, &caps);
 
 	error = (*jvmti)->SetEventNotificationMode(jvmti, JVMTI_DISABLE,
