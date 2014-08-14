@@ -103,7 +103,7 @@ public final class GlobalConfiguration {
 			Properties projectProperties) {
 		if (!initialized) {
 			GlobalConfiguration.coreProperties = new Properties();
-			coreProperties.putAll(coreProperties);
+			GlobalConfiguration.coreProperties.putAll(coreProperties);
 			instance = new GlobalConfiguration(coreProperties,
 					projectProperties);
 			initialized = true;
