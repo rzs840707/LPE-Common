@@ -38,14 +38,18 @@ static jmethodID onMonitorEntered;
 
 void JNICALL jvmti_wait_for_monitor_enter(jvmtiEnv *jvmti_env, JNIEnv* jni_env,
 		jthread thread, jobject object) {
+	struct timeval tv;
+	gettimeofday(&tv,NULL);
 	(*jni_env)->CallStaticVoidMethod(jni_env, agentClass, onMonitorWait, thread,
-			object);
+			object, (unsigned) (tv.tv_sec * 1000000 + tv.tv_usec));
 }
 
 void JNICALL jvmti_monitor_entered(jvmtiEnv *jvmti_env, JNIEnv* jni_env,
 		jthread thread, jobject object) {
-	(*jni_env)->CallStaticVoidMethod(jni_env, agentClass, onMonitorEntered,
-			thread, object);
+	struct timeval tv;
+	gettimeofday(&tv,NULL);
+	(*jni_env)->CallStaticVoidMethod(jni_env, agentClass, onMonitorEntered, thread,
+			object, (unsigned) (tv.tv_sec * 1000000 + tv.tv_usec));
 }
 
 JNIEXPORT void JNICALL Java_org_aim_mainagent_CEventAgentAdapter_printlnNonBlocking(JNIEnv *jni_env,

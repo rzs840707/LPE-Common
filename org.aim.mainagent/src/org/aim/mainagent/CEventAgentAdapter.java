@@ -16,7 +16,7 @@
 package org.aim.mainagent;
 
 import org.aim.description.restrictions.Restriction;
-import org.aim.mainagent.events.SynchronizedEventListener;
+import org.aim.mainagent.events.MonitorEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public final class CEventAgentAdapter {
 	private static final String PACKAGE_JAVA = "java.";
 	private static final String CLASS_NAME = "java.lang.Class";
 
-	private static SynchronizedEventListener synchronizedListener;
+	private static MonitorEventListener monitorListener;
 	private static Restriction restriction;
 
 	private static boolean initialized = false;
@@ -59,25 +59,26 @@ public final class CEventAgentAdapter {
 	 *            Thread which has to wait
 	 * @param monitor
 	 *            Monitor on which {@code thread} has to wait
+	 * @param enterTryTime
+	 *            timestamp in microseconds
 	 * 
 	 * @see CEventAgentAdapter#enableMonitorEvents() enableMonitorEvents()
 	 * @see CEventAgentAdapter#disableMonitorEvents() disableMonitorEvents()
 	 */
-	public static void onMonitorWait(Thread thread, Object monitor) {
-		long enterTime = System.nanoTime();
-		if (synchronizedListener == null) {
+	public static void onMonitorWait(Thread thread, Object monitor, int enterTryTime) {
+		if (monitorListener == null) {
 			throw new IllegalStateException("No AIMEventListener specified!");
 		}
 
 		String className = monitor.getClass().getName();
 		if (!restriction.isExcluded(className) || className.startsWith(CLASS_NAME)) {
-			synchronizedListener.onMonitorWait(thread, monitor, enterTime);
+			monitorListener.onMonitorWait(thread, monitor, enterTryTime);
 		}
 	}
 
 	/**
-	 * This method is called if a thread enters a synchronized block, after he
-	 * had to wait on the corresponding monitor.
+	 * This method is called if a thread had to wait on a monitor and entered
+	 * it.
 	 * 
 	 * <b>This methods implementation should avoid to provoke monitor waits as
 	 * they may lead to endless recursions!</b>
@@ -86,19 +87,20 @@ public final class CEventAgentAdapter {
 	 *            Thread which had to wait
 	 * @param monitor
 	 *            Monitor on which {@code thread} had to wait
+	 * @param enteredTime
+	 *            timestamp in microseconds
 	 * 
 	 * @see CEventAgentAdapter#enableMonitorEvents() enableMonitorEvents()
 	 * @see CEventAgentAdapter#disableMonitorEvents() disableMonitorEvents()
 	 */
-	public static void onMonitorEntered(Thread thread, Object monitor) {
-		long enteredTime = System.nanoTime();
-		if (synchronizedListener == null) {
+	public static void onMonitorEntered(Thread thread, Object monitor, int enteredTime) {
+		if (monitorListener == null) {
 			throw new IllegalStateException("No AIMEventListener specified!");
 		}
 
 		String className = monitor.getClass().getName();
 		if (!restriction.isExcluded(className) || className.startsWith(CLASS_NAME)) {
-			synchronizedListener.onMonitorEntered(thread, monitor, enteredTime);
+			monitorListener.onMonitorEntered(thread, monitor, enteredTime);
 		}
 	}
 
@@ -131,8 +133,8 @@ public final class CEventAgentAdapter {
 	 * @param listener
 	 *            synchronized listener to be set
 	 */
-	public static void setSynchronizedListener(SynchronizedEventListener listener) {
-		synchronizedListener = listener;
+	public static void setMonitorListener(MonitorEventListener listener) {
+		monitorListener = listener;
 	}
 
 	/**
@@ -187,6 +189,7 @@ public final class CEventAgentAdapter {
 			LOGGER.warn("Synchronized listening has alredy been deactivated!");
 		} else {
 			deactivateMonitorEvents();
+			monitorListener = null;
 			activated = false;
 		}
 	}

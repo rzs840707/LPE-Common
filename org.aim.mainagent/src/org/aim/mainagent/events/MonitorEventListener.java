@@ -15,8 +15,6 @@
  */
 package org.aim.mainagent.events;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Event listener for synchronized events.
@@ -24,25 +22,23 @@ import java.util.Map;
  * @author Alexander Wert
  * 
  */
-public final class SynchronizedEventListener implements IEventListener<ISynchronizedEventProbe> {
+public final class MonitorEventListener implements IEventListener<IMonitorEventProbe> {
 
-	private static SynchronizedEventListener instance;
+	private static MonitorEventListener instance;
 
 	/**
 	 * 
 	 * @return singleton instance
 	 */
-	public static SynchronizedEventListener getInstance() {
+	public static MonitorEventListener getInstance() {
 		if (instance == null) {
-			instance = new SynchronizedEventListener();
+			instance = new MonitorEventListener();
 		}
 
 		return instance;
 	}
 
-	private final Map<ProbeKey, ISynchronizedEventProbe> probes = new HashMap<>();
-
-	private SynchronizedEventListener() {
+	private MonitorEventListener() {
 	}
 
 	/**
@@ -56,15 +52,15 @@ public final class SynchronizedEventListener implements IEventListener<ISynchron
 	 *            timestamp
 	 */
 	public void onMonitorWait(Thread thread, Object monitor, long timestamp) {
-		for (Class<? extends ISynchronizedEventProbe> probeClass : EventProbeRegistry.getInstance().getProbeClasses(
-				getClass())) {
+		for (Class<? extends IMonitorEventProbe> probeClass : EventProbeRegistry.getInstance()
+				.getProbeClasses(getClass())) {
 			try {
-				ISynchronizedEventProbe probe = probeClass.newInstance();
+				IMonitorEventProbe probe = probeClass.newInstance();
 				probe.setThread(thread);
 				probe.setMonitor(monitor);
-				probe.setEnteredTime(timestamp);
-				probes.put(newProbeKey(thread, monitor), probe);
-				probe.beforePart();
+				probe.setEventTimeStamp(timestamp);
+				probe.setEventType(IMonitorEventProbe.TYPE_WAIT_ON_MONITOR);
+				probe.proceed();
 			} catch (InstantiationException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
@@ -82,36 +78,18 @@ public final class SynchronizedEventListener implements IEventListener<ISynchron
 	 *            timestamp
 	 */
 	public void onMonitorEntered(Thread thread, Object monitor, long timestamp) {
-		ISynchronizedEventProbe probe = probes.get(newProbeKey(thread, monitor));
-		probe.afterPart();
-	}
-
-	private ProbeKey newProbeKey(Thread thread, Object monitor) {
-		ProbeKey key = new ProbeKey();
-		key.thread = thread;
-		key.monitor = monitor;
-		return key;
-	}
-
-	private class ProbeKey {
-		private static final int HASH_CONSTANT = 31;
-		private Thread thread;
-		private Object monitor;
-
-		@Override
-		public int hashCode() {
-			return thread.hashCode() * HASH_CONSTANT + monitor.hashCode();
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (!(obj instanceof ProbeKey)) {
-				return false;
+		for (Class<? extends IMonitorEventProbe> probeClass : EventProbeRegistry.getInstance()
+				.getProbeClasses(getClass())) {
+			try {
+				IMonitorEventProbe probe = probeClass.newInstance();
+				probe.setThread(thread);
+				probe.setMonitor(monitor);
+				probe.setEventTimeStamp(timestamp);
+				probe.setEventType(IMonitorEventProbe.TYPE_ENTERED_MONITOR);
+				probe.proceed();
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.printStackTrace();
 			}
-
-			ProbeKey other = (ProbeKey) obj;
-			return this.thread == other.thread && this.monitor == other.monitor;
 		}
 	}
-
 }
