@@ -16,7 +16,7 @@
 package org.aim.mainagent.events;
 
 import org.aim.api.measurement.collector.AbstractDataSource;
-import org.aim.artifacts.records.WaitingTimeRecord;
+import org.aim.artifacts.records.EventTimeStampRecord;
 import org.aim.description.probes.MeasurementProbe;
 import org.aim.description.scopes.SynchronizedScope;
 import org.aim.mainagent.probes.GenericProbe;
@@ -28,21 +28,20 @@ import org.aim.mainagent.probes.GenericProbe;
  * @author Henning Schulz
  * 
  */
-public class SynchronizedBlocksWaitingTimeProbe implements ISynchronizedEventProbe {
+public class ForMonitorWaitingTimeProbe implements IMonitorEventProbe {
 
 	public static final MeasurementProbe<SynchronizedScope> MODEL_PROBE = new MeasurementProbe<>("SynchronizedProbe");
 
+	private static final long MILLI_FACTOR = 1000000L;
+
 	private Object monitor;
-	private long waitStartTime;
-	private long enteredTime;
+	private long eventTimeStamp;
+	private String eventType;
+	private long threadId;
 
 	@Override
-	public void beforePart() {
-	}
-
-	@Override
-	public void afterPart() {
-		WaitingTimeRecord record = new WaitingTimeRecord();
+	public void proceed() {
+		EventTimeStampRecord record = new EventTimeStampRecord();
 		StringBuilder locationBuilder = new StringBuilder();
 		locationBuilder.append(monitor.getClass().getName());
 		if (monitor instanceof Class<?>) {
@@ -52,10 +51,13 @@ public class SynchronizedBlocksWaitingTimeProbe implements ISynchronizedEventPro
 		}
 		locationBuilder.append("@");
 		locationBuilder.append(monitor.hashCode());
+		locationBuilder.append(":");
+		locationBuilder.append(threadId);
 		record.setLocation(locationBuilder.toString());
+		record.setEventType("monitor-" + eventType);
+		record.setEventNanoTimestamp(eventTimeStamp);
 		record.setCallId(GenericProbe.getNewCallID());
-		record.setTimeStamp(waitStartTime);
-		record.setWaitingTime(enteredTime - waitStartTime);
+		record.setTimeStamp(eventTimeStamp / MILLI_FACTOR);
 
 		AbstractDataSource dataSource = org.aim.api.measurement.collector.AbstractDataSource.getDefaultDataSource();
 		dataSource.newRecord(record);
@@ -63,6 +65,7 @@ public class SynchronizedBlocksWaitingTimeProbe implements ISynchronizedEventPro
 
 	@Override
 	public void setThread(Thread thread) {
+		this.threadId = thread.getId();
 	}
 
 	@Override
@@ -71,13 +74,13 @@ public class SynchronizedBlocksWaitingTimeProbe implements ISynchronizedEventPro
 	}
 
 	@Override
-	public void setWaitStartTime(long timestamp) {
-		this.waitStartTime = timestamp;
+	public void setEventType(String type) {
+		this.eventType = type;
 	}
 
 	@Override
-	public void setEnteredTime(long timestamp) {
-		this.enteredTime = timestamp;
+	public void setEventTimeStamp(long eventTimeStamp) {
+		this.eventTimeStamp = eventTimeStamp;
 	}
 
 }

@@ -20,8 +20,8 @@ import org.aim.description.InstrumentationDescription;
 import org.aim.description.InstrumentationEntity;
 import org.aim.description.scopes.SynchronizedScope;
 import org.aim.mainagent.events.EventProbeRegistry;
-import org.aim.mainagent.events.SynchronizedBlocksWaitingTimeProbe;
-import org.aim.mainagent.events.SynchronizedEventListener;
+import org.aim.mainagent.events.ForMonitorWaitingTimeProbe;
+import org.aim.mainagent.events.MonitorEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,12 +63,12 @@ public final class EventInstrumentor implements IInstrumentor {
 
 		for (InstrumentationEntity<SynchronizedScope> entitiy : descr
 				.getInstrumentationEntities(SynchronizedScope.class)) {
-			CEventAgentAdapter.setSynchronizedListener(SynchronizedEventListener.getInstance());
-			if (entitiy.getProbes().contains(SynchronizedBlocksWaitingTimeProbe.MODEL_PROBE)) {
+			CEventAgentAdapter.setMonitorListener(MonitorEventListener.getInstance());
+			if (entitiy.getProbes().contains(ForMonitorWaitingTimeProbe.MODEL_PROBE)) {
 				LOGGER.info("Enabling event listening with SynchronizedBlocksWaitingTimeProbe");
 				LOGGER.warn("Choosing the event listeing description from the instrumentation description is not implemented yet.");
-				EventProbeRegistry.getInstance().addProbe(SynchronizedEventListener.class,
-						SynchronizedBlocksWaitingTimeProbe.class);
+				EventProbeRegistry.getInstance().addProbe(MonitorEventListener.class,
+						ForMonitorWaitingTimeProbe.class);
 				activated = true;
 			}
 		}
@@ -86,6 +86,7 @@ public final class EventInstrumentor implements IInstrumentor {
 		}
 		LOGGER.info("Disabling event listening.");
 		CEventAgentAdapter.disableMonitorEvents();
+		EventProbeRegistry.getInstance().clear();
 	}
 
 }

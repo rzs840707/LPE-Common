@@ -21,7 +21,10 @@ package org.aim.mainagent.events;
  * @author Alexander Wert
  * 
  */
-public interface ISynchronizedEventProbe extends IEventProbe {
+public interface IMonitorEventProbe extends IEventProbe {
+
+	String TYPE_WAIT_ON_MONITOR = "wait";
+	String TYPE_ENTERED_MONITOR = "entered";
 
 	/**
 	 * Sets the thread.
@@ -40,19 +43,19 @@ public interface ISynchronizedEventProbe extends IEventProbe {
 	void setMonitor(Object monitor);
 
 	/**
-	 * Sets the wait start time.
+	 * Sets the timestamp in microseconds.
 	 * 
 	 * @param timestamp
 	 *            timestamp to set
 	 */
-	void setWaitStartTime(long timestamp);
+	void setEventTimeStamp(long timestamp);
 
 	/**
-	 * Sets the entered time.
+	 * Sets the type of the event - try to get monitor or get monitor.
 	 * 
-	 * @param timestamp
-	 *            timestamp to set
+	 * @param type
+	 *            type of the event
 	 */
-	void setEnteredTime(long timestamp);
+	void setEventType(String type);
 
 }

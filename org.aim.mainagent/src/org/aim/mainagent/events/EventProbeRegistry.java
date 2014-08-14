@@ -65,7 +65,9 @@ public final class EventProbeRegistry {
 			activatedProbes.put(listenerClass, probeList);
 		}
 
-		probeList.add(probeClass);
+		if (!probeList.contains(probeClass)) {
+			probeList.add(probeClass);
+		}
 	}
 
 	/**
@@ -92,6 +94,13 @@ public final class EventProbeRegistry {
 		}
 
 		return (List<Class<? extends P>>) castedProbeClassList;
+	}
+
+	/**
+	 * Removes all listener-to-probe class mappings.
+	 */
+	public void clear() {
+		activatedProbes.clear();
 	}
 
 }

@@ -24,23 +24,23 @@ import org.aim.api.measurement.RecordValue;
  * @author Henning Schulz
  * 
  */
-public class WaitingTimeRecord extends AbstractRecord {
+public class EventTimeStampRecord extends AbstractRecord {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8172433493460433334L;
 
-	public static final String PAR_WAITING_TIME = "waitingTime";
+	public static final String PAR_EVENT_TYPE = "eventType";
 
-	public static final String PAR_LOCATION = "monitorClass";
+	public static final String PAR_LOCATION = "location";
 
-	public static final String PAR_MONITOR_HASH_CODE = "monitorHashCode";
+	public static final String PAR_MICRO_TIMESTAMP = "eventNanoTimestamp";
 
 	/**
 	 * Default constructor required for programmatic instantiation.
 	 */
-	public WaitingTimeRecord() {
+	public EventTimeStampRecord() {
 		super();
 	}
 
@@ -54,17 +54,36 @@ public class WaitingTimeRecord extends AbstractRecord {
 	 * @param waitingTime
 	 *            timespan the thread had to wait
 	 */
-	public WaitingTimeRecord(long timestamp, String location, long waitingTime) {
+	public EventTimeStampRecord(long timestamp, String eventType, String location, long microTimestamp) {
 		super(timestamp);
+		this.eventType = eventType;
 		this.location = location;
-		this.waitingTime = waitingTime;
+		this.eventNanoTimestamp = microTimestamp;
 	}
+
+	@RecordValue(name = PAR_EVENT_TYPE)
+	String eventType;
 
 	@RecordValue(name = PAR_LOCATION)
 	String location;
 
-	@RecordValue(name = PAR_WAITING_TIME)
-	long waitingTime;
+	@RecordValue(name = PAR_MICRO_TIMESTAMP)
+	long eventNanoTimestamp;
+
+	/**
+	 * @return the eventType
+	 */
+	public String getEventType() {
+		return eventType;
+	}
+
+	/**
+	 * @param eventType
+	 *            the eventType to set
+	 */
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
+	}
 
 	/**
 	 * @return the monitorClass
@@ -82,18 +101,18 @@ public class WaitingTimeRecord extends AbstractRecord {
 	}
 
 	/**
-	 * @return the waitingTime
+	 * @return the microTimestamp
 	 */
-	public long getWaitingTime() {
-		return waitingTime;
+	public long getEventNanoTimestamp() {
+		return eventNanoTimestamp;
 	}
 
 	/**
-	 * @param waitingTime
-	 *            the waitingTime to set
+	 * @param microTimestamp
+	 *            the microTimestamp to set
 	 */
-	public void setWaitingTime(long waitingTime) {
-		this.waitingTime = waitingTime;
+	public void setEventNanoTimestamp(long microTimestamp) {
+		this.eventNanoTimestamp = microTimestamp;
 	}
 
 }

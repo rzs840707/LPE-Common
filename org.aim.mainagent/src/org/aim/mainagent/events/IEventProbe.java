@@ -24,13 +24,8 @@ package org.aim.mainagent.events;
 public interface IEventProbe {
 
 	/**
-	 * Code to execute at the occurrence of first event of the event pair.
+	 * Code to execute at the occurrence of the event.
 	 */
-	void beforePart();
-
-	/**
-	 * Code to execute at the occurrence of second event of the event pair.
-	 */
-	void afterPart();
+	void proceed();
 
 }
