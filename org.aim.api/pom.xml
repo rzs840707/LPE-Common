@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.lpe.common</groupId>
 		<artifactId>org.lpe.common.parent</artifactId>
-		<version>1.0.2-SNAPSHOT</version>
+		<version>1.0.2</version>
 		<relativePath>../org.lpe.common.parent</relativePath>
 	</parent>
 
@@ -27,12 +27,12 @@
 		<dependency>
 			<groupId>org.lpe.common</groupId>
 			<artifactId>org.lpe.common.utils</artifactId>
-			<version>1.0.2-SNAPSHOT</version>
+			<version>1.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.lpe.common</groupId>
 			<artifactId>org.lpe.common.hyperic.sigar</artifactId>
-			<version>1.0.2-SNAPSHOT</version>
+			<version>1.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.aim.description</groupId>
@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>org.lpe.common</groupId>
 			<artifactId>org.lpe.common.extension</artifactId>
-			<version>1.0.2-SNAPSHOT</version>
+			<version>1.0.2</version>
 		</dependency>
 	</dependencies>
 </project>

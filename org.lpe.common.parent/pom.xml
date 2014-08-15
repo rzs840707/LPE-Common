@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.lpe.common</groupId>
 	<artifactId>org.lpe.common.parent</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.2</version>
 	<packaging>pom</packaging>
 	<name>LPE Common Parent</name>
 
@@ -166,9 +166,9 @@
 						<xml>XML_STYLE</xml>
 					</mapping>
 					<excludes>
-            			<exclude>**/README</exclude>
-            			<exclude>**license.txt</exclude>
-        			</excludes>
+						<exclude>**/README</exclude>
+						<exclude>**license.txt</exclude>
+					</excludes>
 					<properties>
 						<year>2014</year>
 						<organization>SAP AG</organization>
@@ -177,6 +177,7 @@
 					<useDefaultExcludes>true</useDefaultExcludes>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 
