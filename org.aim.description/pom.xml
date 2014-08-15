@@ -3,7 +3,8 @@
   <parent>
     <groupId>org.lpe.common</groupId>
     <artifactId>org.lpe.common.parent</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
+    <relativePath>../org.lpe.common.parent</relativePath>
   </parent>
   
   <artifactId>org.aim.description</artifactId>
@@ -17,7 +18,7 @@
   	<dependency>
   		<groupId>org.lpe.common</groupId>
   		<artifactId>org.lpe.common.utils</artifactId>
-  		<version>1.0.2-SNAPSHOT</version>
+  		<version>1.0.2</version>
   	</dependency>
   </dependencies>
 </project>
