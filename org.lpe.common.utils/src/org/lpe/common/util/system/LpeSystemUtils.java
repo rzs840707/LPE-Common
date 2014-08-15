@@ -39,6 +39,7 @@ import java.util.jar.JarFile;
 
 import org.apache.commons.io.FileUtils;
 import org.lpe.common.util.LpeFileUtils;
+import org.lpe.common.util.LpeStreamUtils;
 import org.lpe.common.util.LpeStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -277,7 +278,7 @@ public final class LpeSystemUtils {
 			String tempLibDir = extractFilesFromClasspath(NATIVE_SUBFOLDER, "lpeLibs", "native libraries",
 					LpeSystemUtils.class.getClassLoader());
 			appendLibraryPath(tempLibDir);
-			
+
 			// trick to make the JVM reload the java.library.path
 			Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
 			fieldSysPath.setAccessible(true);
@@ -401,14 +402,12 @@ public final class LpeSystemUtils {
 			}
 
 			Iterator<File> libs = null;
-
+			String unpackedJarDir = null;
 			if (url.getProtocol().equals("bundleresource")) {
 				continue;
 			} else if (url.getProtocol().equals("jar")) {
 				try {
-					// most likely because it is within a JAR file
-					final String unpackedJarDir = LpeFileUtils.concatFileName(targetDirName, "temp");
-					// TODO: fix exception handling
+					unpackedJarDir = LpeFileUtils.concatFileName(targetDirName, "temp");
 
 					extractJARtoTemp(url, srcDirName, unpackedJarDir);
 
@@ -432,6 +431,15 @@ public final class LpeSystemUtils {
 				logger.debug("Copying resouce file {}...", libFile.getName());
 				FileUtils.copyFileToDirectory(libFile, targetDirFile);
 			}
+
+			// clean up temp dir
+			if (unpackedJarDir != null) {
+				File dirToRemove = new File(unpackedJarDir);
+				if (dirToRemove.isDirectory() && dirToRemove.exists()) {
+					LpeFileUtils.removeDir(unpackedJarDir);
+				}
+			}
+
 		}
 
 		return targetDirName;
@@ -468,12 +476,7 @@ public final class LpeSystemUtils {
 			}
 
 		} else {
-			try {
-				FileUtils.cleanDirectory(tempJarDirFile);
-			} catch (Throwable e) {
-				// ignore
-			}
-
+			FileUtils.cleanDirectory(tempJarDirFile);
 		}
 
 		String urlStr = url.getFile();
@@ -519,9 +522,8 @@ public final class LpeSystemUtils {
 				}
 				is = new BufferedInputStream(jar.getInputStream(file));
 				fos = new BufferedOutputStream(new FileOutputStream(f));
-				while (is.available() > 0) {
-					fos.write(is.read());
-				}
+
+				LpeStreamUtils.pipe(is, fos);
 			}
 
 			logger.debug("Unpacking jar file done.");
