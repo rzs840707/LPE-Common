@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.lpe.common</groupId>
 		<artifactId>org.lpe.common.parent</artifactId>
-		<version>1.0.2</version>
+		<version>1.0.3-SNAPSHOT</version>
 		<relativePath>../org.lpe.common.parent</relativePath>
 	</parent>
 	<artifactId>org.lpe.common.remotecontrol</artifactId>
@@ -32,12 +32,12 @@
 		<dependency>
 			<groupId>org.lpe.common</groupId>
 			<artifactId>org.lpe.common.utils</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.lpe.common</groupId>
 			<artifactId>org.lpe.common.config</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.3-SNAPSHOT</version>
 		</dependency>
 
 
