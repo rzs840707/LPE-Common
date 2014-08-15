@@ -30,6 +30,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -66,6 +67,8 @@ public final class LpeSystemUtils {
 	private static String systemTempDir = null;
 
 	private static String eol;
+
+	private static OSType os;
 
 	/**
 	 * private constructor due to utility class.
@@ -107,6 +110,7 @@ public final class LpeSystemUtils {
 
 	/**
 	 * retrieves a cached thread pool
+	 * 
 	 * @return thread pool
 	 */
 	private static synchronized ExecutorService getThreadPool() {
@@ -273,6 +277,11 @@ public final class LpeSystemUtils {
 			String tempLibDir = extractFilesFromClasspath(NATIVE_SUBFOLDER, "lpeLibs", "native libraries",
 					LpeSystemUtils.class.getClassLoader());
 			appendLibraryPath(tempLibDir);
+			
+			// trick to make the JVM reload the java.library.path
+			Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+			fieldSysPath.setAccessible(true);
+			fieldSysPath.set(null, null);
 
 			nativeLibrariesLoaded = true;
 
@@ -459,7 +468,12 @@ public final class LpeSystemUtils {
 			}
 
 		} else {
-			FileUtils.cleanDirectory(tempJarDirFile);
+			try {
+				FileUtils.cleanDirectory(tempJarDirFile);
+			} catch (Throwable e) {
+				// ignore
+			}
+
 		}
 
 		String urlStr = url.getFile();
@@ -564,5 +578,24 @@ public final class LpeSystemUtils {
 	 */
 	public static void main(String[] args) {
 		loadNativeLibraries();
+	}
+
+	/**
+	 * Determines the operating system.
+	 * 
+	 * @return operating system
+	 */
+	public static OSType getOperatingSystemType() {
+		if (os == null) {
+			String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+			if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
+				os = OSType.MAC;
+			} else if (OS.indexOf("win") >= 0) {
+				os = OSType.WINDOWS;
+			} else if (OS.indexOf("nux") >= 0) {
+				os = OSType.LINUX;
+			}
+		}
+		return os;
 	}
 }
