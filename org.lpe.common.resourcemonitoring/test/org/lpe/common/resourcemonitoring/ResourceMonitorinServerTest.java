@@ -15,6 +15,7 @@
  */
 package org.lpe.common.resourcemonitoring;
 
+import java.lang.reflect.Field;
 import java.util.Properties;
 
 import org.aim.api.exceptions.MeasurementException;
@@ -40,11 +41,18 @@ public class ResourceMonitorinServerTest {
 
 	/**
 	 * starts server.
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
 	 */
 	@BeforeClass
-	public static void startServer() {
+	public static void startServer() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		String[] args = { "start", "port=" + PORT };
 		ServerLauncher.main(args);
+		Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+		fieldSysPath.setAccessible(true);
+		fieldSysPath.set(null, null);
 		client = new ResourceMonitoringClient("localhost", PORT);
 		
 		Properties globalProperties = new Properties();

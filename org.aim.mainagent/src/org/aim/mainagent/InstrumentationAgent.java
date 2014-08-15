@@ -41,6 +41,7 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.lpe.common.config.GlobalConfiguration;
 import org.lpe.common.extension.ExtensionRegistry;
+import org.lpe.common.util.system.LpeSystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,6 +124,7 @@ public final class InstrumentationAgent {
 			}
 			parseArgs(agentArgs);
 			initializeGlobalConfig();
+			LpeSystemUtils.loadNativeLibraries();
 			JInstrumentation.getInstance().setjInstrumentation(inst);
 			initDataCollector();
 			startServer();
