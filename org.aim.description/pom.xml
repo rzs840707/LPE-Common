@@ -9,6 +9,7 @@
   
   <artifactId>org.aim.description</artifactId>
   <name>Instrumentation Description</name>
+  
   <dependencies>
   	<dependency>
   		<groupId>org.codehaus.jackson</groupId>

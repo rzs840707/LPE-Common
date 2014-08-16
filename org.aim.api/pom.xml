@@ -35,9 +35,9 @@
 			<version>1.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.aim.description</groupId>
+			<groupId>org.lpe.common</groupId>
 			<artifactId>org.aim.description</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.lpe.common</groupId>
