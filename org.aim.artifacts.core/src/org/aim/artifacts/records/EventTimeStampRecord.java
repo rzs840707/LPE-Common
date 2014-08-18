@@ -29,7 +29,7 @@ public class EventTimeStampRecord extends AbstractRecord {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8172433493460433334L;
+	private static final long serialVersionUID = 22887790642061789L;
 
 	public static final String PAR_EVENT_TYPE = "eventType";
 
@@ -53,12 +53,14 @@ public class EventTimeStampRecord extends AbstractRecord {
 	 *            location of the monitor
 	 * @param waitingTime
 	 *            timespan the thread had to wait
+	 * @param eventNanoTimestamp
+	 *            event timestamp in nanoseconds
 	 */
-	public EventTimeStampRecord(long timestamp, String eventType, String location, long microTimestamp) {
+	public EventTimeStampRecord(long timestamp, String eventType, String location, long eventNanoTimestamp) {
 		super(timestamp);
 		this.eventType = eventType;
 		this.location = location;
-		this.eventNanoTimestamp = microTimestamp;
+		this.eventNanoTimestamp = eventNanoTimestamp;
 	}
 
 	@RecordValue(name = PAR_EVENT_TYPE)
