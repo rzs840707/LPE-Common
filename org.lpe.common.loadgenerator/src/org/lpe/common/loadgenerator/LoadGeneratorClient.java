@@ -20,10 +20,9 @@ import java.io.OutputStream;
 
 import javax.ws.rs.core.MediaType;
 
-import org.aim.api.exceptions.MeasurementException;
-import org.aim.api.measurement.MeasurementData;
 import org.lpe.common.loadgenerator.config.LGMeasurementConfig;
 import org.lpe.common.loadgenerator.config.LGWorkloadConfig;
+import org.lpe.common.loadgenerator.data.LGMeasurementData;
 import org.lpe.common.util.LpeStreamUtils;
 import org.lpe.common.util.web.LpeWebUtils;
 
@@ -74,10 +73,10 @@ public class LoadGeneratorClient {
 	 * @return collected measurement data
 	 * 
 	 */
-	public MeasurementData getMeasurementData(LGMeasurementConfig lrmConfig) {
+	public LGMeasurementData getMeasurementData(LGMeasurementConfig lrmConfig) {
 
 		return webResource.path(REST).path(GET_DATA).type(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON).post(MeasurementData.class, lrmConfig);
+				.accept(MediaType.APPLICATION_JSON).post(LGMeasurementData.class, lrmConfig);
 
 	}
 
@@ -147,17 +146,11 @@ public class LoadGeneratorClient {
 	 * @throws MeasurementException
 	 *             thrown if streaming fails
 	 */
-	public void pipeReportToOutputStream(OutputStream oStream, LGMeasurementConfig lrmConfig)
-			throws MeasurementException {
+	public void pipeReportToOutputStream(OutputStream oStream, LGMeasurementConfig lrmConfig) throws IOException {
+		ClientResponse response = webResource.path(REST).path(GET_REPORT).type(MediaType.APPLICATION_JSON)
+				.accept("application/zip").post(ClientResponse.class, lrmConfig);
 
-		try {
-			ClientResponse response = webResource.path(REST).path(GET_REPORT).type(MediaType.APPLICATION_JSON)
-					.accept("application/zip").post(ClientResponse.class, lrmConfig);
+		LpeStreamUtils.pipe(response.getEntityInputStream(), oStream);
 
-			LpeStreamUtils.pipe(response.getEntityInputStream(), oStream);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new MeasurementException(e);
-		}
 	}
 }

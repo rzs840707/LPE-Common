@@ -20,17 +20,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.aim.api.exceptions.MeasurementException;
-import org.aim.api.measurement.AbstractRecord;
-import org.aim.api.measurement.MeasurementData;
-import org.aim.artifacts.records.ResponseTimeRecord;
 import org.apache.commons.io.IOUtils;
 import org.lpe.common.loadgenerator.config.LGMeasurementConfig;
+import org.lpe.common.loadgenerator.data.LGMeasurementData;
 import org.lpe.common.util.LpeFileUtils;
 import org.lpe.common.util.LpeStreamUtils;
 import org.slf4j.Logger;
@@ -92,7 +87,7 @@ public final class LoadGeneratorMeasurementController {
 	 * @throws IOException
 	 *             if retrieving data fails
 	 */
-	public MeasurementData getMeasurementData(LGMeasurementConfig lrmConfig) throws IOException {
+	public LGMeasurementData getMeasurementData(LGMeasurementConfig lrmConfig) throws IOException {
 		LOGGER.debug("Fetching measurement data from load generator Measurement...");
 
 		if (!isAnalysisFinished()) {
@@ -103,22 +98,18 @@ public final class LoadGeneratorMeasurementController {
 				+ lrmConfig.getSessionName() + System.getProperty("file.separator") + lrmConfig.getSessionName()
 				+ ACCESS_DB_FILE_EXTENSION;
 
-		List<AbstractRecord> responseTimes = new LinkedList<AbstractRecord>();
-
 		// Open database connection
 		Database db = Database.open(new File(databasePath));
 
 		HashMap<String, String> transactionNames = getTransactionIdsAndNames(db);
 
-		getResponseTimes(responseTimes, db, transactionNames);
+		LGMeasurementData measurementData = getTransactionTimes(db, transactionNames);
 
 		// Close database connection
 		db.close();
 
 		LOGGER.debug("Measurement data from load generator Measurement fetched!");
 
-		MeasurementData measurementData = new MeasurementData();
-		measurementData.setRecords(responseTimes);
 		return measurementData;
 	}
 
@@ -143,8 +134,10 @@ public final class LoadGeneratorMeasurementController {
 		setAnalysisFinished(true);
 	}
 
-	private void getResponseTimes(List<AbstractRecord> responseTimes, Database db,
-			HashMap<String, String> transactionNames) throws IOException {
+	private LGMeasurementData getTransactionTimes(Database db, HashMap<String, String> transactionNames)
+			throws IOException {
+
+		LGMeasurementData data = new LGMeasurementData();
 		// Get response times and timestamp of transactions in ms
 		Table eventMeterTable = db.getTable(TABLE_EVENT_METER);
 		Set<String> transactionIDs = transactionNames.keySet();
@@ -161,9 +154,11 @@ public final class LoadGeneratorMeasurementController {
 				long responseTime = (long) (new Double(row.get(COLUMN_VALUE).toString()) * KILO);
 
 				// Add record
-				responseTimes.add(new ResponseTimeRecord(endTime, operation, responseTime));
+				data.addTransactionTime(operation, endTime - responseTime, endTime);
 			}
 		}
+
+		return data;
 	}
 
 	private HashMap<String, String> getTransactionIdsAndNames(Database db) throws IOException {
@@ -209,19 +204,14 @@ public final class LoadGeneratorMeasurementController {
 	 *            from
 	 * @param oStream
 	 *            stream where to pipe to
+	 * @throws IOException
 	 * @throws MeasurementException
 	 *             thrown if streaming fails
 	 */
-	public void pipeReportToOutputStream(LGMeasurementConfig lrmConfig, OutputStream oStream)
-			throws MeasurementException {
-		try {
-			FileInputStream fileInputStream = getMeasurementReport(lrmConfig);
-			LpeStreamUtils.pipe(fileInputStream, oStream);
-
-			fileInputStream.close();
-		} catch (IOException e) {
-			throw new MeasurementException(e);
-		}
+	public void pipeReportToOutputStream(LGMeasurementConfig lrmConfig, OutputStream oStream) throws IOException {
+		FileInputStream fileInputStream = getMeasurementReport(lrmConfig);
+		LpeStreamUtils.pipe(fileInputStream, oStream);
+		fileInputStream.close();
 	}
 
 	/**

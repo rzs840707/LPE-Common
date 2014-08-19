@@ -16,12 +16,6 @@
 		<module>../org.lpe.common.utils</module>
 		<module>../org.lpe.common.config</module>
 		<module>../org.lpe.common.extension</module>
-		<module>../org.aim.description</module>
-		<module>../org.aim.api</module>
-		<module>../org.aim.artifacts.core</module>
-		<module>../org.aim.mainagent</module>
-		<module>../org.aim.cagent</module>
-		<module>../org.lpe.common.resourcemonitoring</module>
 		<module>../org.lpe.common.loadgenerator</module>
 		<module>../org.lpe.common.jmeter</module>
 		<module>../org.lpe.common.remotecontrol</module>
