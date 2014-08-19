@@ -41,14 +41,14 @@ public class ForMonitorWaitingTimeProbe implements IMonitorEventProbe {
 	public void proceed() {
 		EventTimeStampRecord record = new EventTimeStampRecord();
 		StringBuilder locationBuilder = new StringBuilder();
-		locationBuilder.append(monitor.getClass().getName());
+		locationBuilder.append(monitor == null ? "null" : monitor.getClass().getName());
 		if (monitor instanceof Class<?>) {
 			locationBuilder.append("<");
 			locationBuilder.append(((Class<?>) monitor).getName());
 			locationBuilder.append(">");
 		}
 		locationBuilder.append("@");
-		locationBuilder.append(monitor.hashCode());
+		locationBuilder.append(monitor == null ? 0 : monitor.hashCode());
 		locationBuilder.append(":");
 		locationBuilder.append(threadId);
 		record.setLocation(locationBuilder.toString());
@@ -63,7 +63,11 @@ public class ForMonitorWaitingTimeProbe implements IMonitorEventProbe {
 
 	@Override
 	public void setThread(Thread thread) {
-		this.threadId = thread.getId();
+		if (thread == null) {
+			this.threadId = -1;
+		} else {
+			this.threadId = thread.getId();
+		}
 	}
 
 	@Override

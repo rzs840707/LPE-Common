@@ -70,7 +70,7 @@ public final class CEventAgentAdapter {
 			throw new IllegalStateException("No AIMEventListener specified!");
 		}
 
-		String className = monitor.getClass().getName();
+		String className = monitor == null ? "null" : monitor.getClass().getName();
 		if (!restriction.isExcluded(className) || className.startsWith(CLASS_NAME)) {
 			monitorListener.onMonitorWait(thread, monitor, waitTime);
 		}
@@ -98,7 +98,7 @@ public final class CEventAgentAdapter {
 			throw new IllegalStateException("No AIMEventListener specified!");
 		}
 
-		String className = monitor.getClass().getName();
+		String className = monitor == null ? "null" : monitor.getClass().getName();
 		if (!restriction.isExcluded(className) || className.startsWith(CLASS_NAME)) {
 			monitorListener.onMonitorEntered(thread, monitor, enteredTime);
 		}
