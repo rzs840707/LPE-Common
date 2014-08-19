@@ -26,19 +26,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.aim.api.measurement.MeasurementData;
 import org.lpe.common.loadgenerator.LoadGeneratorMeasurementController;
 import org.lpe.common.loadgenerator.LoadGeneratorWorkloadController;
 import org.lpe.common.loadgenerator.config.LGMeasurementConfig;
 import org.lpe.common.loadgenerator.config.LGWorkloadConfig;
+import org.lpe.common.loadgenerator.data.LGMeasurementData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.spi.resource.Singleton;
 
 /**
- * The server of load generator offering RESTful web services to the
- * client.
+ * The server of load generator offering RESTful web services to the client.
  * 
  * @author Le-Huan Stefan Tran
  */
@@ -101,7 +100,7 @@ public class LoadGeneratorService {
 	 * 
 	 * @param lrmConfig
 	 *            data source configuration
-	 * @return data collected by load generator
+	 * @return data collected by the load generator
 	 * @throws IOException
 	 *             if data cannot be retrieved
 	 */
@@ -109,7 +108,7 @@ public class LoadGeneratorService {
 	@Path("getData")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public MeasurementData getData(LGMeasurementConfig lrmConfig) throws IOException {
+	public LGMeasurementData getData(LGMeasurementConfig lrmConfig) throws IOException {
 		lrmConfig.correctPathSeparators();
 		return LoadGeneratorMeasurementController.getInstance().getMeasurementData(lrmConfig);
 	}
