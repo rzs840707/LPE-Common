@@ -58,6 +58,7 @@ public class LoadGeneratorService {
 	@Path("startLoad")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void startLoad(LGWorkloadConfig lrConfig) throws IOException {
+		LOGGER.info("Starting load with {} users ...", lrConfig.getNumUsers() );
 		lrConfig.correctPathSeparators();
 		LoadGeneratorWorkloadController.getInstance().startExperiment(lrConfig);
 	}
@@ -70,7 +71,12 @@ public class LoadGeneratorService {
 	@Path("isLoadFinished")
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean isLoadFinished() {
-		return LoadGeneratorWorkloadController.getInstance().isFinished();
+		boolean finished =  LoadGeneratorWorkloadController.getInstance().isFinished();
+		
+		if(finished){
+			LOGGER.info("Load generation finished!");
+		}
+		return finished;
 	}
 
 	/**
@@ -109,8 +115,11 @@ public class LoadGeneratorService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public LGMeasurementData getData(LGMeasurementConfig lrmConfig) throws IOException {
+		LOGGER.info("Requested measurement data ...");
 		lrmConfig.correctPathSeparators();
-		return LoadGeneratorMeasurementController.getInstance().getMeasurementData(lrmConfig);
+		LGMeasurementData data =  LoadGeneratorMeasurementController.getInstance().getMeasurementData(lrmConfig);
+		LOGGER.info("Measurement data has {} items.", data.getTransactionTimes().size());
+		return data;
 	}
 
 	/**
@@ -124,6 +133,7 @@ public class LoadGeneratorService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces("application/zip")
 	public StreamingOutput getReport(LGMeasurementConfig lrmConfig) {
+		LOGGER.info("Requested report ...");
 		lrmConfig.correctPathSeparators();
 		final LGMeasurementConfig finalConfig = lrmConfig;
 		StreamingOutput stream = new StreamingOutput() {
