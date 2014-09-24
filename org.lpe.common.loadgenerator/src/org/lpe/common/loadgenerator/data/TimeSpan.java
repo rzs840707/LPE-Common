@@ -1,5 +1,8 @@
 package org.lpe.common.loadgenerator.data;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * Defines a times sapn.
  * 
@@ -18,7 +21,8 @@ public class TimeSpan {
 	 * @param stop
 	 *            stop timestamp in [ms]
 	 */
-	public TimeSpan(long start, long stop) {
+	@JsonCreator
+	public TimeSpan(@JsonProperty("start") long start, @JsonProperty("stop") long stop) {
 		super();
 		this.start = start;
 		this.stop = stop;
