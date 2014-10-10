@@ -15,6 +15,8 @@
  */
 package org.lpe.common.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +26,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -133,6 +137,55 @@ public final class LpeFileUtils {
 	 */
 	public static String readFromFile(String fileName) throws IOException {
 		return LpeStreamUtils.readFromInputStream(new FileInputStream(fileName));
+	}
+
+	/**
+	 * Writes the object to the given file.
+	 * 
+	 * @param fileName
+	 *            name of the file where to write the object
+	 * @param object
+	 *            the object to write
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	public static void writeObject(String fileName, Object object) throws IOException {
+		ObjectOutputStream outStream = null;
+		try {
+			BufferedOutputStream bufferedOutStream = new BufferedOutputStream(new FileOutputStream(fileName));
+			outStream = new ObjectOutputStream(bufferedOutStream);
+			outStream.writeObject(object);
+		} finally {
+			if (outStream != null) {
+				outStream.close();
+			}
+		}
+	}
+
+	/**
+	 * Reads the object of the given file.
+	 * 
+	 * @param file
+	 *            the file to read from
+	 * @return the object read from the given file
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @throws ClassNotFoundException
+	 *             if class of the serialized object cannot be found
+	 */
+	public static Object readObject(File file) throws IOException, ClassNotFoundException {
+		ObjectInputStream objectIn = null;
+		Object object = null;
+		try {
+			BufferedInputStream bufferedInStream = new BufferedInputStream(new FileInputStream(file));
+			objectIn = new ObjectInputStream(bufferedInStream);
+			object = objectIn.readObject();
+		} finally {
+			if (objectIn != null) {
+				objectIn.close();
+			}
+		}
+		return object;
 	}
 
 	/**
@@ -393,6 +446,16 @@ public final class LpeFileUtils {
 		}
 	}
 
+	/**
+	 * Copies all bytes from an input stream to a given output stream.
+	 * 
+	 * @param in
+	 *            the input stream to read from
+	 * @param out
+	 *            the output stream to write to
+	 * @throws IOException
+	 *             if copying fails
+	 */
 	protected static void copy(final InputStream in, final OutputStream out) throws IOException {
 		int bytesRead;
 		while ((bytesRead = in.read(BUFFER)) != -1) {
