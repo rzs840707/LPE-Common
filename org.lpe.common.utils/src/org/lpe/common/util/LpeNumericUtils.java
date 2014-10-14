@@ -655,10 +655,13 @@ public final class LpeNumericUtils {
 	 *            double to be converted into a fraction
 	 * @param basis
 	 *            basis of the denominator
-	 *            @param precision denotes how close to the decimal value the fraction may be<br>
-	 *            <b>Note:</b> 0 < {@code precision} and {@code basis}<sup>{@code precision}</sup> * {@code dec} <= {@code Integer.MAX_VALUE} 
-	 * @return the closest fraction to {@code dec} with {@code basis}<sup>n</sup> as
-	 *         denominator
+	 * @param precision
+	 *            denotes how close to the decimal value the fraction may be<br>
+	 *            <b>Note:</b> 0 < {@code precision} and {@code basis}<sup>
+	 *            {@code precision}</sup> * {@code dec} <=
+	 *            {@code Integer.MAX_VALUE}
+	 * @return the closest fraction to {@code dec} with {@code basis}
+	 *         <sup>n</sup> as denominator
 	 */
 	public static int[] getFractionFromDouble(double dec, int basis, int precision) {
 		int denom = (int) Math.pow(basis, precision);
