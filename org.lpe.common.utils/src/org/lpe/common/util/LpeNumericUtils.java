@@ -73,8 +73,7 @@ public final class LpeNumericUtils {
 			pattern += "0";
 		}
 
-		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(
-				Locale.ENGLISH);
+		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
 		DecimalFormat format = new DecimalFormat(pattern, otherSymbols);
 		return format.format(v);
 	}
@@ -111,8 +110,7 @@ public final class LpeNumericUtils {
 		double result = 0;
 
 		if (values == null) {
-			throw new IllegalArgumentException(
-					"Cannot calculate average on a null object.");
+			throw new IllegalArgumentException("Cannot calculate average on a null object.");
 		}
 
 		if (values.size() == 0) {
@@ -191,8 +189,7 @@ public final class LpeNumericUtils {
 		double result = 0;
 
 		if (values == null) {
-			throw new IllegalArgumentException(
-					"Cannot calculate average on a null object.");
+			throw new IllegalArgumentException("Cannot calculate average on a null object.");
 		}
 
 		if (values.length == 0) {
@@ -218,13 +215,11 @@ public final class LpeNumericUtils {
 		double result = 0;
 
 		if (values == null) {
-			throw new IllegalArgumentException(
-					"Cannot calculate standard deviation on a null object.");
+			throw new IllegalArgumentException("Cannot calculate standard deviation on a null object.");
 		}
 
 		if (values.length < 1) {
-			throw new IllegalArgumentException(
-					"Cannot calculated standard deviation on an empty set.");
+			throw new IllegalArgumentException("Cannot calculated standard deviation on an empty set.");
 		}
 
 		final double mean = average(values);
@@ -280,10 +275,9 @@ public final class LpeNumericUtils {
 	 * @return the width of the confidence interval around the mean with the
 	 *         given significance level
 	 */
-	public static double getConfidenceIntervalWidth(
-			SummaryStatistics summaryStatistics, double significance) {
-		return getConfidenceIntervalWidth(summaryStatistics.getN(),
-				summaryStatistics.getStandardDeviation(), significance);
+	public static double getConfidenceIntervalWidth(SummaryStatistics summaryStatistics, double significance) {
+		return getConfidenceIntervalWidth(summaryStatistics.getN(), summaryStatistics.getStandardDeviation(),
+				significance);
 	}
 
 	/**
@@ -299,8 +293,7 @@ public final class LpeNumericUtils {
 	 * @return the width of the confidence interval around the mean with the
 	 *         given significance level
 	 */
-	public static double getConfidenceIntervalWidth(long sampleSize,
-			double stdDev, double significance) {
+	public static double getConfidenceIntervalWidth(long sampleSize, double stdDev, double significance) {
 		TDistribution tDist = new TDistribution(sampleSize - 1);
 		double a = tDist.inverseCumulativeProbability(1.0 - significance / 2);
 		return a * stdDev / Math.sqrt(sampleSize) * 2;
@@ -369,9 +362,8 @@ public final class LpeNumericUtils {
 	 *            value type
 	 * @return filtered list of pairs
 	 */
-	public static <T extends Number> NumericPairList<Double, T> removeNoiseInKeys(
-			NumericPairList<Double, T> list, double noiseThreshold,
-			int windowSize) {
+	public static <T extends Number> NumericPairList<Double, T> removeNoiseInKeys(NumericPairList<Double, T> list,
+			double noiseThreshold, int windowSize) {
 		NumericPairList<Double, T> result = new NumericPairList<>();
 
 		double[] noiseMetrics = new double[list.size()];
@@ -396,8 +388,7 @@ public final class LpeNumericUtils {
 		for (int i = 0; i < noiseMetrics.length; i++) {
 			double relativeNoise = noiseMetrics[i] / maxNoise;
 			if (relativeNoise < noiseThreshold) {
-				result.add(new NumericPair<Double, T>(list.get(i).getKey(),
-						list.get(i).getValue()));
+				result.add(new NumericPair<Double, T>(list.get(i).getKey(), list.get(i).getValue()));
 			}
 		}
 
@@ -423,9 +414,8 @@ public final class LpeNumericUtils {
 	 *            value type
 	 * @return filtered list of pairs
 	 */
-	public static <T extends Number> NumericPairList<T, Double> removeNoiseInValues(
-			NumericPairList<T, Double> list, double noiseThreshold,
-			double percentile, int windowSize) {
+	public static <T extends Number> NumericPairList<T, Double> removeNoiseInValues(NumericPairList<T, Double> list,
+			double noiseThreshold, double percentile, int windowSize) {
 		NumericPairList<T, Double> result = new NumericPairList<>();
 		if (noiseThreshold > 0) {
 			double[] noiseMetrics = new double[list.size()];
@@ -437,8 +427,7 @@ public final class LpeNumericUtils {
 					if (j < 0 || j >= list.size() || i == j) {
 						continue;
 					}
-					sum += Math.abs(list.get(i).getValue()
-							- list.get(j).getValue());
+					sum += Math.abs(list.get(i).getValue() - list.get(j).getValue());
 					count += 1.0;
 				}
 
@@ -451,8 +440,7 @@ public final class LpeNumericUtils {
 			for (int i = 0; i < noiseMetrics.length; i++) {
 				double relativeNoise = noiseMetrics[i] / maxNoise;
 				if (relativeNoise < noiseThreshold) {
-					result.add(new NumericPair<T, Double>(list.get(i).getKey(),
-							list.get(i).getValue()));
+					result.add(new NumericPair<T, Double>(list.get(i).getKey(), list.get(i).getValue()));
 				}
 			}
 		} else {
@@ -465,8 +453,7 @@ public final class LpeNumericUtils {
 					if (j < 0 || j >= list.size() || i == j) {
 						continue;
 					}
-					sum += Math.abs(list.get(i).getValue()
-							- list.get(j).getValue());
+					sum += Math.abs(list.get(i).getValue() - list.get(j).getValue());
 					count += 1.0;
 				}
 
@@ -489,8 +476,7 @@ public final class LpeNumericUtils {
 
 			for (int i = 0; i < noiseMetrics.length; i++) {
 				if (noiseMetrics[i] < noiseThreshold) {
-					result.add(new NumericPair<T, Double>(list.get(i).getKey(),
-							list.get(i).getValue()));
+					result.add(new NumericPair<T, Double>(list.get(i).getKey(), list.get(i).getValue()));
 				}
 			}
 		}
@@ -510,9 +496,8 @@ public final class LpeNumericUtils {
 	 * @param valueColumnName
 	 *            name of the value column
 	 */
-	public static void exportAsCSV(
-			NumericPairList<? extends Number, ? extends Number> list,
-			String file, String keyColumnName, String valueColumnName) {
+	public static void exportAsCSV(NumericPairList<? extends Number, ? extends Number> list, String file,
+			String keyColumnName, String valueColumnName) {
 		FileWriter fWriter = null;
 		CSVWriter csvWriter = null;
 		try {
@@ -575,8 +560,8 @@ public final class LpeNumericUtils {
 	/**
 	 * Calculates the p-Value by executing an unpaired t-test for the given to
 	 * samples.<br />
-	 * <b>Be aware</b>: The method requires at least two values for each value list
-	 * to run a t-test.
+	 * <b>Be aware</b>: The method requires at least two values for each value
+	 * list to run a t-test.
 	 * 
 	 * @param values1
 	 *            sample one
@@ -585,8 +570,7 @@ public final class LpeNumericUtils {
 	 * @return p-value the t-test p-value in range [0-1]. Can be -1, if at least
 	 *         one of the lists has below 2 data entries.
 	 */
-	public static double tTest(List<? extends Number> values1,
-			List<? extends Number> values2) {
+	public static double tTest(List<? extends Number> values1, List<? extends Number> values2) {
 		// Apache commons requires at least 2 values to do a t-test
 		if (values1.size() < 2 || values2.size() < 2) {
 			return -1;
@@ -624,8 +608,7 @@ public final class LpeNumericUtils {
 	 *            target type
 	 */
 	@SuppressWarnings("unchecked")
-	public static <A extends Number, B extends Number> List<B> convertList(
-			List<A> values, Class<B> targetType) {
+	public static <A extends Number, B extends Number> List<B> convertList(List<A> values, Class<B> targetType) {
 		LpeSupportedTypes lpeType = LpeSupportedTypes.get(targetType);
 		List<B> bList = new ArrayList<>();
 		switch (lpeType) {
@@ -661,5 +644,52 @@ public final class LpeNumericUtils {
 
 		return bList;
 
+	}
+
+	/**
+	 * Returns a fraction closest to the specified double with a power of the
+	 * given basis as denominator. The fraction is returned as array of integer
+	 * with the numerator as zeroth and the denominator as first element.
+	 * 
+	 * @param dec
+	 *            double to be converted into a fraction
+	 * @param basis
+	 *            basis of the denominator
+	 *            @param precision denotes how close to the decimal value the fraction may be<br>
+	 *            <b>Note:</b> 0 < {@code precision} and {@code basis}<sup>{@code precision}</sup> * {@code dec} <= {@code Integer.MAX_VALUE} 
+	 * @return the closest fraction to {@code dec} with {@code basis}<sup>n</sup> as
+	 *         denominator
+	 */
+	public static int[] getFractionFromDouble(double dec, int basis, int precision) {
+		int denom = (int) Math.pow(basis, precision);
+		int num = (int) Math.round(dec * denom);
+
+		while (num % 2 == 0) {
+			num /= 2;
+			denom /= 2;
+		}
+
+		return new int[] { num, denom };
+	}
+
+	/**
+	 * Returns a fraction closest to the specified double. The fraction is
+	 * returned as array of integer with the numerator as zeroth and the
+	 * denominator as first element.
+	 * 
+	 * @param dec
+	 *            double to be converted into a fraction
+	 * @return the closest fraction to {@code dec}
+	 */
+	public static int[] getFractionFromDouble(double dec) {
+		if (dec < 0.005) {
+			return new int[] { 0, 1 };
+		}
+
+		double tmp = 1 / dec;
+		int integer = (int) tmp;
+		int[] rest = getFractionFromDouble(tmp - integer);
+
+		return new int[] { rest[1], integer * rest[1] + rest[0] };
 	}
 }
