@@ -19,6 +19,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -533,9 +534,25 @@ public final class LpeFileUtils {
 	 *            the source folder holding the content
 	 * @param target
 	 *            the ZIP file to pack the content into
+	 * @param fileFilter
+	 *            the file filter used to filter the files that will be added;
+	 *            may be <code>null</code>
+	 */
+	public static void zip(final File source, final File target, final FileFilter fileFilter) {
+		pack(source, target, fileFilter);
+	}
+
+	/**
+	 * Packs the content of the specified source folder into the specified
+	 * target ZIP file.
+	 * 
+	 * @param source
+	 *            the source folder holding the content
+	 * @param target
+	 *            the ZIP file to pack the content into
 	 */
 	public static void zip(final File source, final File target) {
-		pack(source, target);
+		zip(source, target, null);
 	}
 
 	/**
@@ -610,11 +627,11 @@ public final class LpeFileUtils {
 	 *            the source folder holding the content
 	 * @param target
 	 *            the file to pack the content into
-	 * @param packAsJar
-	 *            true, if a JAR file should be created; false, if a ZIP file
-	 *            should be created
+	 * @param fileFilter
+	 *            the file filter used to filter the files that will be added;
+	 *            may be <code>null</code>
 	 */
-	private static void pack(final File source, final File target) {
+	private static void pack(final File source, final File target, final FileFilter fileFilter) {
 		if (target.exists() && target.isDirectory()) {
 			throw new RuntimeException("Target for zip must not be a directory but a file!");
 		}
@@ -623,7 +640,7 @@ public final class LpeFileUtils {
 
 			zipOut = new ZipOutputStream(new FileOutputStream(target));
 
-			pack(source, zipOut, source.getAbsolutePath().length() + 1);
+			pack(source, zipOut, source.getAbsolutePath().length() + 1, fileFilter);
 			zipOut.close();
 		} catch (final FileNotFoundException e) {
 			throw new RuntimeException(e);
@@ -632,7 +649,15 @@ public final class LpeFileUtils {
 		}
 	}
 
-	private static void pack(final File file, final ZipOutputStream out, final int pathStartIndex) {
+	private static void pack(final File file, final ZipOutputStream out, final int pathStartIndex,
+			final FileFilter fileFilter) {
+		if (fileFilter != null && !fileFilter.accept(file)) {
+			/*
+			 * Ignore file/directory.
+			 */
+			return;
+		}
+
 		final String filePath = file.getAbsolutePath();
 		String entryName = "";
 		if (filePath.length() > pathStartIndex) {
@@ -659,7 +684,7 @@ public final class LpeFileUtils {
 				}
 			}
 			for (final File directoryItem : file.listFiles()) {
-				pack(directoryItem, out, pathStartIndex);
+				pack(directoryItem, out, pathStartIndex, fileFilter);
 			}
 		} else {
 			/*
