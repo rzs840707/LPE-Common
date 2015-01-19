@@ -29,6 +29,7 @@ import java.util.Map;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.apache.commons.math3.stat.inference.TestUtils;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.lpe.common.util.stats.IQROutlierDetector;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -40,6 +41,7 @@ import au.com.bytecode.opencsv.CSVWriter;
  * 
  */
 public final class LpeNumericUtils {
+	private static final int NUM_ITEMS_IN_SUM = 6;
 	private static final int kilo = 1000;
 	private static final int SEC_IN_MIN = 60;
 	private static final int MIN_IN_H = 60;
@@ -558,6 +560,70 @@ public final class LpeNumericUtils {
 	}
 
 	/**
+	 * Calculates the p-Value by executing an unpaired t-test for the given two
+	 * non-normally distributed samples.<br />
+	 * <b>Be aware</b>: The method requires at least two values for each value
+	 * list to run a t-test.
+	 * 
+	 * @param values1
+	 *            sample one
+	 * @param values2
+	 *            sample two
+	 * @return p-value the t-test p-value in range [0-1]. Can be -1, if at least
+	 *         one of the lists has below 2 data entries.
+	 */
+	public static double tTestOnNonNormalDistributedSample(List<? extends Number> values1,
+			List<? extends Number> values2) {
+
+		List<Double> sums1 = new ArrayList<>();
+		List<Double> sums2 = new ArrayList<>();
+		createNormalDistributionByBootstrapping(values1, values2, sums1, sums2);
+		return tTest(sums1, sums2);
+
+	}
+
+	/**
+	 * Creates normal distribution by bootstrapping the given samples.
+	 * 
+	 * @param values1
+	 *            input sample 1
+	 * @param values2
+	 *            input sample 2
+	 * @param sums1
+	 *            output for sample 1
+	 * @param sums2
+	 *            output for sample 2
+	 */
+	public static void createNormalDistributionByBootstrapping(List<? extends Number> values1,
+			List<? extends Number> values2, final List<Double> sums1, final List<Double> sums2) {
+		if (values1.size() < 3 * NUM_ITEMS_IN_SUM || values2.size() < 3 * NUM_ITEMS_IN_SUM) {
+			throw new RuntimeException(
+					"Cannot conduct t-test on non normally distributed sample sets. Not enough data points!");
+		}
+		double sum = 0;
+		int counter = 0;
+		for (Number num : values1) {
+			if (counter % NUM_ITEMS_IN_SUM == 0 && counter != 0) {
+				sums1.add(sum / (double) NUM_ITEMS_IN_SUM);
+				sum = 0;
+			}
+			sum += num.doubleValue();
+			counter++;
+		}
+
+		sum = 0;
+		counter = 0;
+		for (Number num : values2) {
+			if (counter % NUM_ITEMS_IN_SUM == 0 && counter != 0) {
+				sums2.add(sum / (double) NUM_ITEMS_IN_SUM);
+				sum = 0;
+			}
+			sum += num.doubleValue();
+			counter++;
+		}
+	}
+
+	/**
 	 * Calculates the p-Value by executing an unpaired t-test for the given to
 	 * samples.<br />
 	 * <b>Be aware</b>: The method requires at least two values for each value
@@ -695,4 +761,64 @@ public final class LpeNumericUtils {
 
 		return new int[] { rest[1], integer * rest[1] + rest[0] };
 	}
+
+	/**
+	 * Creates a linear regression object.
+	 * 
+	 * @param dataPoints
+	 *            data points to add
+	 * @return SimpleRegression
+	 */
+	public static SimpleRegression linearRegression(NumericPairList<? extends Number, ? extends Number> dataPoints) {
+		SimpleRegression regression = new SimpleRegression(true);
+		for (NumericPair<? extends Number, ? extends Number> point : dataPoints) {
+			regression.addData(point.getKey().doubleValue(), point.getValue().doubleValue());
+		}
+		return regression;
+	}
+
+	/**
+	 * calculates Erlangs C formula for further calculation of response times in
+	 * a multi-server queue (cf. queueing theory).
+	 * 
+	 * @param numServers
+	 *            number of servers
+	 * @param utilization
+	 *            overall server utilization
+	 * @return the calculated value for the given parameters
+	 */
+	public static double calculateErlangsCFormula(int numServers, double utilization) {
+		double c = (double) numServers;
+		double p = utilization;
+		double cp = c * p;
+		double cpC = Math.pow(cp, c);
+		double cFac = factorial(numServers);
+		double termA = (cpC / cFac) * (1 / (1 - p));
+
+		double termB = 0;
+		for (int i = 0; i < numServers; i++) {
+			double cpI = Math.pow(cp, i);
+			double iFac = factorial(i);
+			termB += cpI / iFac;
+		}
+
+		return termA / (termB + termA);
+	}
+
+	/**
+	 * Calculates the factorial of x.
+	 * 
+	 * @param x
+	 *            the value for which to calculate the factorial
+	 * @return fac(x)
+	 */
+	public static long factorial(int x) {
+		long result = 1;
+		while (x >= 1) {
+			result *= x;
+			x--;
+		}
+		return result;
+	}
+
 }
