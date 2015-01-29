@@ -27,6 +27,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.math3.distribution.TDistribution;
+import org.apache.commons.math3.ml.clustering.Cluster;
+import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.apache.commons.math3.stat.inference.TestUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
@@ -310,7 +312,7 @@ public final class LpeNumericUtils {
 	 * 
 	 * @see IQROutlierDetector#filterOutliers(List)
 	 */
-	public static List<Double> filterOutliersUsingIQR(List<Double> values) {
+	public static <T extends Number> List<T> filterOutliersUsingIQR(List<T> values) {
 		return getDefaultIQROutlierDetector().filterOutliers(values);
 	}
 
@@ -819,6 +821,61 @@ public final class LpeNumericUtils {
 			x--;
 		}
 		return result;
+	}
+
+	public static <T extends Number, S extends Number> double meanNormalizedDistance(NumericPairList<T, S> points,
+			double keyRange, double valueRange) {
+		double keyFactor = 1.0 / keyRange;
+		double valueFactor = 1.0 / valueRange;
+		double sumDistance = 0;
+		NumericPair<T, S> prevPoint = null;
+		for (NumericPair<T, S> point : points) {
+			if (prevPoint != null) {
+				sumDistance += distance(prevPoint, point, keyFactor, valueFactor);
+			}
+			prevPoint = point;
+		}
+		return sumDistance / (double) (points.size() - 1);
+	}
+
+	public static <T extends Number, S extends Number> List<NumericPairList<T, S>> dbscanNormalized(
+			NumericPairList<T, S> points, double epsilon, int minNumPoints, double keyRange, double valueRange) {
+		NormalizedDistanceMeasure distanceMeasure = new NormalizedDistanceMeasure(1.0 / keyRange, 1.0 / valueRange);
+		DBSCANClusterer<NumericPair<T, S>> clusterer = new DBSCANClusterer<NumericPair<T, S>>(epsilon, minNumPoints,
+				distanceMeasure);
+		List<Cluster<NumericPair<T, S>>> clusters = clusterer.cluster(points.getPairs());
+		List<NumericPairList<T, S>> result = new ArrayList<>();
+		for (Cluster<NumericPair<T, S>> c : clusters) {
+			NumericPairList<T, S> pairList = new NumericPairList<>();
+			for (NumericPair<T, S> pair : c.getPoints()) {
+				pairList.add(pair);
+			}
+			result.add(pairList);
+
+		}
+		return result;
+	}
+
+	public static <T extends Number, S extends Number> List<NumericPairList<T, S>> dbscan(NumericPairList<T, S> points,
+			double epsilon, int minNumPoints) {
+		DBSCANClusterer<NumericPair<T, S>> clusterer = new DBSCANClusterer<NumericPair<T, S>>(epsilon, minNumPoints);
+		List<Cluster<NumericPair<T, S>>> clusters = clusterer.cluster(points.getPairs());
+		List<NumericPairList<T, S>> result = new ArrayList<>();
+		for (Cluster<NumericPair<T, S>> c : clusters) {
+			NumericPairList<T, S> pairList = new NumericPairList<>();
+			for (NumericPair<T, S> pair : c.getPoints()) {
+				pairList.add(pair);
+			}
+			result.add(pairList);
+
+		}
+		return result;
+	}
+
+	private static <T extends Number, S extends Number> double distance(NumericPair<T, S> point_1,
+			NumericPair<T, S> point_2, double keyFactor, double valueFactor) {
+		return Math.sqrt(Math.pow((point_1.getKey().doubleValue() - point_2.getKey().doubleValue()) * keyFactor, 2)
+				+ Math.pow((point_1.getValue().doubleValue() - point_2.getValue().doubleValue()) * valueFactor, 2));
 	}
 
 }
