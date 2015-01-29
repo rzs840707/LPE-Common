@@ -18,6 +18,7 @@
  */
 package org.lpe.common.util.stats;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +50,52 @@ public abstract class AbstractOutlierDetector {
 	 * @see #filterOutliers(double[])
 	 * 
 	 */
-	public List<Double> filterOutliers(List<Double> values) {
-		return filterOutliers(convertListToArray(values));
+	public <T extends Number> List<T> filterOutliers(List<T> values) {
+		double[] dValues = new double[values.size()];
+		String type = "";
+		int i = 0;
+		for (T value : values) {
+			if (i == 0) {
+				if (value instanceof Integer) {
+					type = "Integer";
+				} else if (value instanceof Long) {
+					type = "Long";
+				} else if (value instanceof Double) {
+					type = "Double";
+				} else if (value instanceof Float) {
+					type = "Float";
+				}
+			}
+			dValues[i] = value.doubleValue();
+			i++;
+		}
+
+		List<Double> resultDoubleList = filterOutliers(dValues);
+		List<T> resultList = new ArrayList<>();
+		switch (type) {
+		case "Integer":
+			for (Double d : resultDoubleList) {
+				resultList.add((T) new Integer(d.intValue()));
+			}
+			break;
+		case "Long":
+			for (Double d : resultDoubleList) {
+				resultList.add((T) new Long(d.longValue()));
+			}
+			break;
+		case "Double":
+			return (List<T>) resultDoubleList;
+		case "Float":
+			for (Double d : resultDoubleList) {
+				resultList.add((T) new Float(d.floatValue()));
+			}
+			break;
+		default:
+			break;
+		}
+
+		return resultList;
+
 	}
 
 	/**
@@ -88,7 +133,6 @@ public abstract class AbstractOutlierDetector {
 	 * 
 	 * @see #markOutliersUsingIQR(double[])
 	 * 
-
 	 */
 	public Map<Double, Boolean> markOutliersUsingIQR(List<Double> values) {
 		return markOutliersUsingIQR(convertListToArray(values));

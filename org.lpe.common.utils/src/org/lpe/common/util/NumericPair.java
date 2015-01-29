@@ -15,6 +15,8 @@
  */
 package org.lpe.common.util;
 
+import org.apache.commons.math3.ml.clustering.Clusterable;
+
 /**
  * Wrapps a pair of two numeric values.
  * 
@@ -25,7 +27,7 @@ package org.lpe.common.util;
  * @param <S>
  *            value type
  */
-public class NumericPair<T extends Number, S extends Number> implements Comparable<NumericPair<T, S>> {
+public class NumericPair<T extends Number, S extends Number> implements Comparable<NumericPair<T, S>>, Clusterable {
 	private T key;
 	private S value;
 
@@ -135,6 +137,14 @@ public class NumericPair<T extends Number, S extends Number> implements Comparab
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public double[] getPoint() {
+		double [] point = new double[2];
+		point[0]=this.getKey().doubleValue();
+		point[1]=this.getValue().doubleValue();
+		return point;
 	}
 
 }
