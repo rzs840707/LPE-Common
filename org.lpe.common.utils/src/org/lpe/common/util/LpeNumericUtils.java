@@ -877,5 +877,30 @@ public final class LpeNumericUtils {
 		return Math.sqrt(Math.pow((point_1.getKey().doubleValue() - point_2.getKey().doubleValue()) * keyFactor, 2)
 				+ Math.pow((point_1.getValue().doubleValue() - point_2.getValue().doubleValue()) * valueFactor, 2));
 	}
+	
+	public static double getUtilizationForResponseTimeFactorQT(double rtFactor, int numCores){
+	
+		double left = 0.01;
+		double right = 1.0;
+		double mid = 0.5;
+		double epsilon = 1.0;
+		double epsilonThreshold = 0.01;
+		double result =mid;
+		while(epsilon > epsilonThreshold){
+			double midValue = 1.0 / (1 - mid)
+					* LpeNumericUtils.calculateErlangsCFormula(numCores, mid) + numCores
+					* 1;
+			epsilon = Math.abs((midValue-rtFactor)/rtFactor);
+			result = mid;
+			if(midValue < rtFactor){
+				left = mid;
+				mid = mid + 0.5*(right-mid);
+			}else{
+				right = mid;
+				mid = left + 0.5*(mid-left);
+			}
+		}
+		return result;
+	}
 
 }
