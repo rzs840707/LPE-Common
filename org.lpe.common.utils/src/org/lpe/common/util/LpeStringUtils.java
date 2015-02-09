@@ -491,6 +491,18 @@ public final class LpeStringUtils {
 	}
 
 	/**
+	 * Returns a generalized query string. More precisely, specific constants
+	 * are replaced by wildcards.
+	 * 
+	 * @param queryString
+	 *            Query string to be generalized
+	 * @return Generalization of {@code queryString}
+	 */
+	public static String getGeneralizedQuery(String queryString) {
+		return SQLGeneralizer.getGeneralizedString(queryString);
+	}
+
+	/**
 	 * Shortens full qualified method names. Thus,
 	 * my.full.package.Class.operation() becomes m.f.p.Class.operation()
 	 * 
