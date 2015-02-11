@@ -506,7 +506,7 @@ public final class LpeSystemUtils {
 				java.util.jar.JarEntry file = (JarEntry) entries.nextElement();
 
 				String destFileName = dest + File.separator + file.getName();
-				if (destFileName.indexOf(dirOfInterest) < 0) {
+				if (destFileName.indexOf(dirOfInterest + File.separator) < 0 && destFileName.indexOf(dirOfInterest + "/") < 0) {
 					continue;
 				}
 
