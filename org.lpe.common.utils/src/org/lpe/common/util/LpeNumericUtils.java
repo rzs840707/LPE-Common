@@ -538,6 +538,80 @@ public final class LpeNumericUtils {
 	}
 
 	/**
+	 * Exports a pair list as CSV.
+	 * 
+	 * @param list
+	 *            pair list to export
+	 * @param file
+	 *            target CSV file
+	 * @param keyColumnName
+	 *            name of the key column
+	 * @param valueColumnName
+	 *            name of the value column
+	 */
+	public static void exportAsCSV(String file, List<? extends Number>... data) {
+
+		boolean first = true;
+		int prevSize = -1;
+		for (Collection<? extends Number> col : data) {
+			if (col == null) {
+				throw new RuntimeException("Null collection");
+			}
+
+			if (first) {
+				first = false;
+				prevSize = col.size();
+				continue;
+			}
+			if (col.size() != prevSize) {
+				throw new RuntimeException("Collections have unequal sizes!");
+			}
+			prevSize = col.size();
+
+		}
+		FileWriter fWriter = null;
+		CSVWriter csvWriter = null;
+		try {
+			fWriter = new FileWriter(file);
+			csvWriter = new CSVWriter(fWriter, ';');
+			String[] line = new String[data.length];
+			for (int i = 0; i < data.length; i++) {
+				line[i] = "Col" + i;
+			}
+			csvWriter.writeNext(line);
+
+			for (int index = 0; index < data[0].size(); index++) {
+				for (int i = 0; i < data.length; i++) {
+					line[i] = data[i].get(index).toString();
+
+				}
+				csvWriter.writeNext(line);
+			}
+
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+
+			if (csvWriter != null) {
+				try {
+					csvWriter.close();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+			if (fWriter != null) {
+				try {
+					fWriter.close();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+
+	}
+
+	/**
 	 * Marks the outliers in the given list of values using the 1.5*IQR method.
 	 * 
 	 * @param values
@@ -841,9 +915,12 @@ public final class LpeNumericUtils {
 	public static <T extends Number, S extends Number> List<NumericPairList<T, S>> dbscanNormalized(
 			NumericPairList<T, S> points, double epsilon, int minNumPoints, double keyRange, double valueRange) {
 		NormalizedDistanceMeasure distanceMeasure = new NormalizedDistanceMeasure(1.0 / keyRange, 1.0 / valueRange);
+		System.out.println("########## STARTED CLUSTERING ###################");
 		DBSCANClusterer<NumericPair<T, S>> clusterer = new DBSCANClusterer<NumericPair<T, S>>(epsilon, minNumPoints,
 				distanceMeasure);
+
 		List<Cluster<NumericPair<T, S>>> clusters = clusterer.cluster(points.getPairs());
+		System.out.println("########## FINISHED CLUSTERING ###################");
 		List<NumericPairList<T, S>> result = new ArrayList<>();
 		for (Cluster<NumericPair<T, S>> c : clusters) {
 			NumericPairList<T, S> pairList = new NumericPairList<>();
@@ -853,6 +930,7 @@ public final class LpeNumericUtils {
 			result.add(pairList);
 
 		}
+		System.out.println("########## RETURNED CLUSTERS ###################");
 		return result;
 	}
 
@@ -877,27 +955,25 @@ public final class LpeNumericUtils {
 		return Math.sqrt(Math.pow((point_1.getKey().doubleValue() - point_2.getKey().doubleValue()) * keyFactor, 2)
 				+ Math.pow((point_1.getValue().doubleValue() - point_2.getValue().doubleValue()) * valueFactor, 2));
 	}
-	
-	public static double getUtilizationForResponseTimeFactorQT(double rtFactor, int numCores){
-	
+
+	public static double getUtilizationForResponseTimeFactorQT(double rtFactor, int numCores) {
+
 		double left = 0.01;
 		double right = 1.0;
 		double mid = 0.5;
 		double epsilon = 1.0;
 		double epsilonThreshold = 0.01;
-		double result =mid;
-		while(epsilon > epsilonThreshold){
-			double midValue = 1.0 / (1 - mid)
-					* LpeNumericUtils.calculateErlangsCFormula(numCores, mid) + numCores
-					* 1;
-			epsilon = Math.abs((midValue-rtFactor)/rtFactor);
+		double result = mid;
+		while (epsilon > epsilonThreshold) {
+			double midValue = 1.0 / (1 - mid) * LpeNumericUtils.calculateErlangsCFormula(numCores, mid) + numCores * 1;
+			epsilon = Math.abs((midValue - rtFactor) / rtFactor);
 			result = mid;
-			if(midValue < rtFactor){
+			if (midValue < rtFactor) {
 				left = mid;
-				mid = mid + 0.5*(right-mid);
-			}else{
+				mid = mid + 0.5 * (right - mid);
+			} else {
 				right = mid;
-				mid = left + 0.5*(mid-left);
+				mid = left + 0.5 * (mid - left);
 			}
 		}
 		return result;
