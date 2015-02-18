@@ -964,11 +964,14 @@ public final class LpeNumericUtils {
 		double epsilon = 1.0;
 		double epsilonThreshold = 0.01;
 		double result = mid;
+		double smallUtilization = 0.01;
+		double refValue = 1.0 / (1.0 - smallUtilization) * LpeNumericUtils.calculateErlangsCFormula(numCores, smallUtilization);
 		while (epsilon > epsilonThreshold) {
-			double midValue = 1.0 / (1 - mid) * LpeNumericUtils.calculateErlangsCFormula(numCores, mid) + numCores * 1;
-			epsilon = Math.abs((midValue - rtFactor) / rtFactor);
+			double value = 1.0 / (1.0 - mid) * LpeNumericUtils.calculateErlangsCFormula(numCores, mid);
+			double proportion = refValue/value;
+			epsilon = Math.abs((proportion - rtFactor));
 			result = mid;
-			if (midValue < rtFactor) {
+			if (proportion < rtFactor) {
 				left = mid;
 				mid = mid + 0.5 * (right - mid);
 			} else {
