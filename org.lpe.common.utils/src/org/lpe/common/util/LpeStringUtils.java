@@ -499,6 +499,10 @@ public final class LpeStringUtils {
 	 * @return Generalization of {@code queryString}
 	 */
 	public static String getGeneralizedQuery(String queryString) {
+		if (queryString == null || queryString.contains("?")) {
+			return queryString;
+		}
+
 		return SQLGeneralizer.getGeneralizedString(queryString);
 	}
 
