@@ -99,6 +99,7 @@ public class ScenarioModifier {
 		String line = null;
 		LinkedList<String> currentTags = new LinkedList<String>();
 		int numGroupUsers = lrConfig.getNumUsers();
+		int allUsersIndex = 0;
 		while ((line = reader.readLine()) != null) {
 			updateTagChange(currentTags, line);
 
@@ -109,7 +110,7 @@ public class ScenarioModifier {
 			} else if (line.trim().startsWith(V_USERS_KEY) && !currentTags.isEmpty()
 					&& currentTags.peek().equals(SCENARIO_PRIVATE_CONFIG_TAG)) {
 				writeBuffer.append(V_USERS_KEY);
-				writeBuffer.append(lrConfig.getNumUsers());
+				allUsersIndex = writeBuffer.length();
 			} else if (currentTags.size() == 2 && currentTags.indexOf(TEST_CHIEF_TAG) == 1 && scriptName == null) {
 				writeBuffer.append(line);
 				scriptName = currentTags.peek();
@@ -122,7 +123,7 @@ public class ScenarioModifier {
 					&& line.contains(SCHEDULING_PATTERN)) {
 				writeBuffer.append(line);
 				writeBuffer.append(NEWLINE);
-				modifySchedule(currentTags, reader, writeBuffer, numGroupUsers);
+				modifySchedule(currentTags, reader, writeBuffer, lrConfig.getNumUsers());
 			} else if (!currentTags.isEmpty() && currentTags.peek().equals(SCHEDULER_CONFIG_TAG)
 					&& line.contains(SCHEDULING_GROUPNAME_PATTERN)) {
 
@@ -144,6 +145,11 @@ public class ScenarioModifier {
 		}
 
 		reader.close();
+
+		// Insert number of vusers (cannot be appended when passing the
+		// vusers-key, since the number may be affected when counting the
+		// groups)
+		writeBuffer.insert(allUsersIndex, lrConfig.getNumUsers());
 
 		// Write buffer to file
 
@@ -199,6 +205,7 @@ public class ScenarioModifier {
 		}
 
 		// generate groups
+		lrConfig.setNumUsers(Math.max(groupNames.size(), lrConfig.getNumUsers()));
 		int numGroupUsers = lrConfig.getNumUsers() / groupNames.size();
 		int carryover = lrConfig.getNumUsers() % groupNames.size();
 		for (String gn : groupNames) {
@@ -433,7 +440,6 @@ public class ScenarioModifier {
 	 */
 	private void insertRampUp(StringBuilder writeBuffer, int numUsers) throws IOException {
 
-
 		writeBuffer.append("              <RampUp>");
 		writeBuffer.append(NEWLINE);
 		writeBuffer.append(NEWLINE);
@@ -449,7 +455,7 @@ public class ScenarioModifier {
 		writeBuffer.append("                <Batch>");
 		writeBuffer.append(NEWLINE);
 		writeBuffer.append(NEWLINE);
-		
+
 		writeBuffer.append("                  <Count>");
 		writeBuffer.append(lrConfig.getRampUpUsersPerInterval());
 		writeBuffer.append("</Count>");
@@ -459,7 +465,6 @@ public class ScenarioModifier {
 		writeBuffer.append("                  <Interval>");
 		writeBuffer.append(lrConfig.getRampUpIntervalLength());
 		writeBuffer.append("</Interval>");
-
 
 		writeBuffer.append(NEWLINE);
 		writeBuffer.append(NEWLINE);
@@ -522,7 +527,7 @@ public class ScenarioModifier {
 		writeBuffer.append("                <Batch>");
 		writeBuffer.append(NEWLINE);
 		writeBuffer.append(NEWLINE);
-		
+
 		writeBuffer.append("                  <Count>");
 		writeBuffer.append(lrConfig.getCoolDownUsersPerInterval());
 		writeBuffer.append("</Count>");
@@ -532,7 +537,6 @@ public class ScenarioModifier {
 		writeBuffer.append("                  <Interval>");
 		writeBuffer.append(lrConfig.getCoolDownIntervalLength());
 		writeBuffer.append("</Interval>");
-		
 
 		writeBuffer.append(NEWLINE);
 		writeBuffer.append(NEWLINE);
