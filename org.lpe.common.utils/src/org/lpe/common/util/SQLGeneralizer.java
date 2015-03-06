@@ -36,7 +36,6 @@ public final class SQLGeneralizer {
 			rootNode.accept(visitor);
 			return new NodeToString().toString(rootNode);
 		} catch (StandardException e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
