@@ -41,7 +41,7 @@ public final class JMeterWrapper {
 	 */
 	private Process jmeterProcess;
 
-	private DynamicPipedInputStream logStream;
+	private final DynamicPipedInputStream logStream;
 
 	/**
 	 * Singleton instance.
@@ -49,9 +49,10 @@ public final class JMeterWrapper {
 	private static JMeterWrapper instance;
 
 	private JMeterWrapper() {
+		super();
+		
 		// create the stream to provide log from JMETER
-		logStream = new DynamicPipedInputStream();
-
+		this.logStream = new DynamicPipedInputStream();
 	}
 
 	private static int getUniqueLogID() {
@@ -91,7 +92,7 @@ public final class JMeterWrapper {
 		ProcessBuilder pb = new ProcessBuilder(cmd);
 		pb.directory(new File(config.getPathToJMeterRootFolder()));
 		// output needs to be redirected
-		pb.redirectOutput(new File(config.getPathToJMeterRootFolder().concat(File.pathSeparator + config.getDefaultOutputFile())));
+		pb.redirectOutput(new File(config.getPathToJMeterRootFolder().concat(File.separator + config.getDefaultOutputFile())));
 		// the error stream must be piped, otherwise noone takes the messages and JMeter waits to infinity
 		// till someone receives the messages!
 		pb.redirectErrorStream(true);
@@ -112,7 +113,11 @@ public final class JMeterWrapper {
 
 			public void run() {
 				try {
-					jmeterProcess.waitFor();
+					int result = jmeterProcess.waitFor();
+					if (result != 0) {
+						throw new RuntimeException("JMeterProcess terminated with non-zero exit code."
+								+ " Please check configuration settings!");
+					}
 
 					// notify the log-thread that the process has ended and wait
 					// for
@@ -143,7 +148,7 @@ public final class JMeterWrapper {
 
 		if (config.getCreateLogFlag()) {
 			int logID = getUniqueLogID();
-			String logFilename = config.getPathToJMeterRootFolder() + File.pathSeparator + config.getLogFilePrefix() + logID;
+			String logFilename = config.getPathToJMeterRootFolder() + File.separator + config.getLogFilePrefix() + logID;
 			logFile = new File(logFilename);
 			if (logFile.exists()) {
 				logFile.delete();
@@ -168,10 +173,10 @@ public final class JMeterWrapper {
 
 		cmd.add("java");
 		cmd.add("-jar");
-		cmd.add("bin" + File.pathSeparator + "ApacheJMeter.jar");
+		cmd.add("bin" + File.separator + "ApacheJMeter.jar");
 		cmd.add("-n"); // JMeter in non-gui mode
 		cmd.add("-t"); // load script fiel path
-		cmd.add("\"" + config.getPathToScript() + "\"");
+		cmd.add(config.getPathToScript());
 
 		if (config.getCreateLogFlag()) {
 			cmd.add("-j");
