@@ -91,7 +91,7 @@ public final class JMeterWrapper {
 		ProcessBuilder pb = new ProcessBuilder(cmd);
 		pb.directory(new File(config.getPathToJMeterRootFolder()));
 		// output needs to be redirected
-		pb.redirectOutput(new File(config.getPathToJMeterRootFolder().concat("\\" + config.getDefaultOutputFile())));
+		pb.redirectOutput(new File(config.getPathToJMeterRootFolder().concat(File.pathSeparator + config.getDefaultOutputFile())));
 		// the error stream must be piped, otherwise noone takes the messages and JMeter waits to infinity
 		// till someone receives the messages!
 		pb.redirectErrorStream(true);
@@ -143,7 +143,7 @@ public final class JMeterWrapper {
 
 		if (config.getCreateLogFlag()) {
 			int logID = getUniqueLogID();
-			String logFilename = config.getPathToJMeterRootFolder() + "\\" + config.getLogFilePrefix() + logID;
+			String logFilename = config.getPathToJMeterRootFolder() + File.pathSeparator + config.getLogFilePrefix() + logID;
 			logFile = new File(logFilename);
 			if (logFile.exists()) {
 				logFile.delete();
@@ -168,7 +168,7 @@ public final class JMeterWrapper {
 
 		cmd.add("java");
 		cmd.add("-jar");
-		cmd.add("bin\\ApacheJMeter.jar");
+		cmd.add("bin" + File.pathSeparator + "ApacheJMeter.jar");
 		cmd.add("-n"); // JMeter in non-gui mode
 		cmd.add("-t"); // load script fiel path
 		cmd.add("\"" + config.getPathToScript() + "\"");
