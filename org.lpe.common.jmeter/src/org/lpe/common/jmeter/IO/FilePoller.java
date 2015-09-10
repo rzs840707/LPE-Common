@@ -17,6 +17,8 @@ package org.lpe.common.jmeter.IO;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * This class is used for polling log-files written by other application and
@@ -26,10 +28,10 @@ import java.io.FileInputStream;
  */
 public class FilePoller implements Runnable {
 
-	private DynamicPipedInputStream out;
-	private File file;
-	private boolean continuePolling;
-	private boolean deleteFileOnExit;
+	private final DynamicPipedInputStream out;
+	private final File file;
+	private volatile boolean continuePolling;
+	private final boolean deleteFileOnExit;
 	private Thread pollThread;
 
 	public static final int POLL_FREQUENCY = 300;
@@ -82,37 +84,27 @@ public class FilePoller implements Runnable {
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		try {
-			int numBytes;
-			FileInputStream fin = new FileInputStream(file);
-			while (continuePolling) {
-				while ((numBytes = fin.available()) > 0) {
-					byte[] buffer = new byte[numBytes];
-					fin.read(buffer);
+		
+		try (
+				FileInputStream fin = new FileInputStream(file);
+		) {
+			while (continuePolling || fin.available() > 0) {
+				while (fin.available() > 0) {
+					byte[] buffer = new byte[fin.available()];
+					fin.read(buffer, 0, buffer.length);
 					out.appendToBuffer(buffer);
 				}
-				while (fin.available() == 0 && continuePolling) {
+				while (continuePolling && fin.available() == 0) {
 					try {
 						Thread.sleep(POLL_FREQUENCY);
-					} catch (InterruptedException e) {
-						if (fin != null) {
-							fin.close();
-						}
-						throw new RuntimeException(e);
-					}
+					} catch (InterruptedException e) {}
 				}
 			}
-			while ((numBytes = fin.available()) > 0) {
-				byte[] buffer = new byte[numBytes];
-				fin.read(buffer);
-				out.appendToBuffer(buffer);
-			}
-			fin.close();
-			if (deleteFileOnExit) {
-				file.delete();
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (IOException e1) {
+			throw new RuntimeException("File operation failed: ",e1);
+		}
+		if (deleteFileOnExit) {
+			file.delete();
 		}
 	}
 }
