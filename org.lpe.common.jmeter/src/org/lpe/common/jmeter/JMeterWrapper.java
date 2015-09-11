@@ -12,9 +12,11 @@
  */
 package org.lpe.common.jmeter;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -24,6 +26,8 @@ import org.lpe.common.jmeter.IO.DynamicPipedInputStream;
 import org.lpe.common.jmeter.IO.FilePoller;
 import org.lpe.common.jmeter.config.JMeterWorkloadConfig;
 import org.lpe.common.util.system.LpeSystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Wrapper class which handles the connection to JMeter console process.
@@ -42,6 +46,8 @@ public final class JMeterWrapper {
 	private Process jmeterProcess;
 
 	private final DynamicPipedInputStream logStream;
+	private static final Logger LOGGER = LoggerFactory.getLogger(JMeterWrapper.class);
+
 
 	/**
 	 * Singleton instance.
@@ -53,7 +59,23 @@ public final class JMeterWrapper {
 		
 		// create the stream to provide log from JMETER
 		this.logStream = new DynamicPipedInputStream();
-	}
+		if (LOGGER.isDebugEnabled()) {
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					try (BufferedReader br = new BufferedReader(new InputStreamReader(logStream));) {
+						String line;
+						while ((line = br.readLine()) != null) {
+							LOGGER.debug("JMeter Log: " + line);
+						}
+					} catch (final IOException e) {
+						throw new RuntimeException("Something went wrong while logging from JMeter", e);
+					}
+				}
+			}).start();
+		}
+	} 
 
 	private static int getUniqueLogID() {
 		return (int) System.currentTimeMillis();
@@ -84,12 +106,12 @@ public final class JMeterWrapper {
 		}
 
 		// create log file
-		File logFile = createLogFile(config);
+		final File logFile = createLogFile(config);
 
-		List<String> cmd = buildCmdLine(config,
+		final List<String> cmd = buildCmdLine(config,
 										logFile);
 
-		ProcessBuilder pb = new ProcessBuilder(cmd);
+		final ProcessBuilder pb = new ProcessBuilder(cmd);
 		pb.directory(new File(config.getPathToJMeterRootFolder()));
 		// output needs to be redirected
 		pb.redirectOutput(new File(config.getPathToJMeterRootFolder().concat(File.separator + config.getDefaultOutputFile())));
@@ -111,9 +133,10 @@ public final class JMeterWrapper {
 		// notifies all other waiting Threads
 		LpeSystemUtils.submitTask(new Runnable() {
 
+			@Override
 			public void run() {
 				try {
-					int result = jmeterProcess.waitFor();
+					final int result = jmeterProcess.waitFor();
 					if (result != 0) {
 						throw new RuntimeException("JMeterProcess terminated with non-zero exit code."
 								+ " Please check configuration settings!");
@@ -125,7 +148,7 @@ public final class JMeterWrapper {
 					if (config.getCreateLogFlag()) {
 						poll.endPolling();
 					}
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					throw new RuntimeException(e);
 				}
 				synchronized (thisWrapper) {
@@ -143,12 +166,12 @@ public final class JMeterWrapper {
 	 * @return the log file, <code>null</code> possible
 	 * @throws IOException on file creation fail
 	 */
-	private File createLogFile(JMeterWorkloadConfig config) throws IOException {
+	private File createLogFile(final JMeterWorkloadConfig config) throws IOException {
 		File logFile = null;
 
 		if (config.getCreateLogFlag()) {
-			int logID = getUniqueLogID();
-			String logFilename = config.getPathToJMeterRootFolder() + File.separator + config.getLogFilePrefix() + logID;
+			final int logID = getUniqueLogID();
+			final String logFilename = config.getPathToJMeterRootFolder() + File.separator + config.getLogFilePrefix() + logID;
 			logFile = new File(logFilename);
 			if (logFile.exists()) {
 				logFile.delete();
@@ -168,8 +191,8 @@ public final class JMeterWrapper {
 	 * @param logFile {@link File} which will get the JMeter output, if the configuration has the
 	 * @return List of the translated configuration into command line arguments
 	 */
-	private List<String> buildCmdLine(final JMeterWorkloadConfig config, File logFile) {
-		List<String> cmd = new ArrayList<String>();
+	private List<String> buildCmdLine(final JMeterWorkloadConfig config, final File logFile) {
+		final List<String> cmd = new ArrayList<String>();
 
 		cmd.add("java");
 		cmd.add("-jar");
@@ -189,8 +212,8 @@ public final class JMeterWrapper {
 		cmd.add("-Jp_thinkTimeMinMS=" + config.getThinkTimeMinimum());
 		cmd.add("-Jp_thinkTimeMaxMS=" + config.getThinkTimeMaximum());
 
-		double rampUpSecondsPerUser = config.getRampUpInterval() / config.getRampUpNumUsersPerInterval();
-		double coolDownSecondsPerUser = config.getCoolDownInterval() / config.getCoolDownNumUsersPerInterval();
+		final double rampUpSecondsPerUser = config.getRampUpInterval() / config.getRampUpNumUsersPerInterval();
+		final double coolDownSecondsPerUser = config.getCoolDownInterval() / config.getCoolDownNumUsersPerInterval();
 		cmd.add("-Jp_rampUpSecondsPerUser=" + rampUpSecondsPerUser);
 		cmd.add("-Jp_rampDownSecondsPerUser=" + coolDownSecondsPerUser);
 
@@ -199,8 +222,8 @@ public final class JMeterWrapper {
 		}
 		
 		// add custom properties
-		Properties additionalProps = config.getAdditionalProperties();
-		for (Entry<Object, Object> property : additionalProps.entrySet()) {
+		final Properties additionalProps = config.getAdditionalProperties();
+		for (final Entry<Object, Object> property : additionalProps.entrySet()) {
 			cmd.add("-J" + property.getKey() + "=" + property.getValue());
 		}
 

@@ -17,7 +17,6 @@ package org.lpe.common.jmeter.IO;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -48,7 +47,7 @@ public class FilePoller implements Runnable {
 	 *            Flag whether the polled file should be deleted after the
 	 *            polling was ended
 	 */
-	public FilePoller(File file, DynamicPipedInputStream out, boolean deleteFileOnExit) {
+	public FilePoller(final File file, final DynamicPipedInputStream out, final boolean deleteFileOnExit) {
 		this.out = out;
 		this.file = file;
 		this.deleteFileOnExit = deleteFileOnExit;
@@ -83,24 +82,24 @@ public class FilePoller implements Runnable {
 	 * 
 	 * @see java.lang.Runnable#run()
 	 */
+	@Override
 	public void run() {
 		
-		try (
-				FileInputStream fin = new FileInputStream(file);
-		) {
+		try (FileInputStream fin = new FileInputStream(file);) {
 			while (continuePolling || fin.available() > 0) {
 				while (fin.available() > 0) {
-					byte[] buffer = new byte[fin.available()];
+					final byte[] buffer = new byte[fin.available()];
 					fin.read(buffer, 0, buffer.length);
 					out.appendToBuffer(buffer);
 				}
 				while (continuePolling && fin.available() == 0) {
 					try {
 						Thread.sleep(POLL_FREQUENCY);
-					} catch (InterruptedException e) {}
+					} catch (final InterruptedException e) {
+					}
 				}
 			}
-		} catch (IOException e1) {
+		} catch (final IOException e1) {
 			throw new RuntimeException("File operation failed: ",e1);
 		}
 		if (deleteFileOnExit) {
