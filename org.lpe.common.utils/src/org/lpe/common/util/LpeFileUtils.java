@@ -31,17 +31,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-
-import org.apache.tools.ant.DirectoryScanner;
 
 /**
  * Utility class for file operations.
@@ -72,9 +75,9 @@ public final class LpeFileUtils {
 	 * @throws IOException
 	 *             is thrown if file cannot be read.
 	 */
-	public static List<String> readLines(String fileName) throws IOException {
-		List<String> result = new ArrayList<String>();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
+	public static List<String> readLines(final String fileName) throws IOException {
+		final List<String> result = new ArrayList<String>();
+		final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
 
 		String line = "";
 
@@ -100,10 +103,10 @@ public final class LpeFileUtils {
 	 * @throws IOException
 	 *             thrown if file cannot be opened
 	 */
-	public static void writeLines(String fileName, List<String> lines) throws IOException {
-		PrintWriter pw = new PrintWriter(new FileOutputStream(fileName));
+	public static void writeLines(final String fileName, final List<String> lines) throws IOException {
+		final PrintWriter pw = new PrintWriter(new FileOutputStream(fileName));
 
-		for (String line : lines) {
+		for (final String line : lines) {
 			pw.println(line);
 		}
 
@@ -120,7 +123,7 @@ public final class LpeFileUtils {
 	 * @throws IOException
 	 *             thrown if file cannot be opened
 	 */
-	public static void printToFile(String content, String fileName) throws IOException {
+	public static void printToFile(final String content, final String fileName) throws IOException {
 		final PrintWriter pw = new PrintWriter(new FileWriter(fileName));
 		pw.println(content);
 		pw.close();
@@ -136,7 +139,7 @@ public final class LpeFileUtils {
 	 * @return the string read from the file
 	 * @see LpeStreamUtils#readFromInputStream(java.io.InputStream)
 	 */
-	public static String readFromFile(String fileName) throws IOException {
+	public static String readFromFile(final String fileName) throws IOException {
 		return LpeStreamUtils.readFromInputStream(new FileInputStream(fileName));
 	}
 
@@ -150,10 +153,10 @@ public final class LpeFileUtils {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	public static void writeObject(String fileName, Object object) throws IOException {
+	public static void writeObject(final String fileName, final Object object) throws IOException {
 		ObjectOutputStream outStream = null;
 		try {
-			BufferedOutputStream bufferedOutStream = new BufferedOutputStream(new FileOutputStream(fileName));
+			final BufferedOutputStream bufferedOutStream = new BufferedOutputStream(new FileOutputStream(fileName));
 			outStream = new ObjectOutputStream(bufferedOutStream);
 			outStream.writeObject(object);
 		} finally {
@@ -174,11 +177,11 @@ public final class LpeFileUtils {
 	 * @throws ClassNotFoundException
 	 *             if class of the serialized object cannot be found
 	 */
-	public static Object readObject(File file) throws IOException, ClassNotFoundException {
+	public static Object readObject(final File file) throws IOException, ClassNotFoundException {
 		ObjectInputStream objectIn = null;
 		Object object = null;
 		try {
-			BufferedInputStream bufferedInStream = new BufferedInputStream(new FileInputStream(file));
+			final BufferedInputStream bufferedInStream = new BufferedInputStream(new FileInputStream(file));
 			objectIn = new ObjectInputStream(bufferedInStream);
 			object = objectIn.readObject();
 		} finally {
@@ -199,17 +202,21 @@ public final class LpeFileUtils {
 	 * @return an array of file names; if there is no such file, it returns an
 	 *         empty array.
 	 */
-	public static String[] getFileNames(String baseDir, String pattern) {
-		DirectoryScanner scanner = new DirectoryScanner();
-		scanner.setIncludes(new String[] { pattern });
-		scanner.setBasedir(baseDir);
-		scanner.setCaseSensitive(false);
-		scanner.scan();
-		final String[] result = scanner.getIncludedFiles();
-		if (result == null) {
-			return new String[] {};
-		} else {
-			return result;
+	public static String[] getFileNames(final String baseDir, final String pattern) {
+		final Path dir = FileSystems.getDefault().getPath(baseDir);
+		final List<String> files = new LinkedList<>();
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, pattern)) {
+		    for (final Path entry: stream) {
+		    	if (entry.toFile().isFile()) {
+		    		files.add(entry.toFile().getName());
+		    	}
+		    }
+		    return files.toArray(new String[]{});
+		} catch (final IOException x) {
+		    throw new RuntimeException(String.format("error reading folder %s: %s",
+		    		dir,
+		    		x.getMessage()),
+		    		x);
 		}
 	}
 
@@ -223,7 +230,7 @@ public final class LpeFileUtils {
 	 * @return a list of file names; if there is no such file, it returns an
 	 *         empty array.
 	 */
-	public static List<String> getFileNamesAsList(String baseDir, String pattern) {
+	public static List<String> getFileNamesAsList(final String baseDir, final String pattern) {
 		return new ArrayList<String>(Arrays.asList(getFileNames(baseDir, pattern)));
 	}
 
@@ -237,17 +244,21 @@ public final class LpeFileUtils {
 	 * @return an array of directory names; if there is no such directory, it
 	 *         returns an empty array.
 	 */
-	public static String[] getDirNames(String baseDir, String pattern) {
-		DirectoryScanner scanner = new DirectoryScanner();
-		scanner.setIncludes(new String[] { pattern });
-		scanner.setBasedir(baseDir);
-		scanner.setCaseSensitive(false);
-		scanner.scan();
-		final String[] result = scanner.getIncludedDirectories();
-		if (result == null) {
-			return new String[] {};
-		} else {
-			return result;
+	public static String[] getDirNames(final String baseDir, final String pattern) {
+		final Path dir = FileSystems.getDefault().getPath(baseDir);
+		final List<String> files = new LinkedList<>();
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, pattern)) {
+		    for (final Path entry: stream) {
+		    	if (entry.toFile().isDirectory()) {
+		    		files.add(entry.toFile().getName());
+		    	}
+		    }
+		    return files.toArray(new String[]{});
+		} catch (final IOException x) {
+		    throw new RuntimeException(String.format("error reading folder %s: %s",
+		    		dir,
+		    		x.getMessage()),
+		    		x);
 		}
 	}
 
@@ -261,7 +272,7 @@ public final class LpeFileUtils {
 	 * @return a list of directory names; if there is no such directory, it
 	 *         returns an empty array.
 	 */
-	public static List<String> getDirNamesAsList(String baseDir, String pattern) {
+	public static List<String> getDirNamesAsList(final String baseDir, final String pattern) {
 		return new ArrayList<String>(Arrays.asList(getDirNames(baseDir, pattern)));
 	}
 
@@ -278,10 +289,10 @@ public final class LpeFileUtils {
 	 *            root folder of the application
 	 * @return the absolute path to the file
 	 */
-	public static String toFullPath(String baseDir, String fileName, String rootFolder) {
+	public static String toFullPath(final String baseDir, final String fileName, final String rootFolder) {
 		String result = LpeStringUtils.concatFileName(baseDir, fileName);
 
-		File file = new File(result);
+		final File file = new File(result);
 		if (!file.isAbsolute()) {
 			result = LpeStringUtils.concatFileName(rootFolder, result);
 		}
@@ -297,7 +308,7 @@ public final class LpeFileUtils {
 	 * 
 	 * @return true if passed fileName is absolute, otherwise false
 	 */
-	public static boolean isAbsolutePath(String fileName) {
+	public static boolean isAbsolutePath(final String fileName) {
 		final File file = new File(fileName);
 		return file.isAbsolute();
 	}
@@ -310,7 +321,7 @@ public final class LpeFileUtils {
 	 * 
 	 * @return true if file exists, otherwise false
 	 */
-	public static boolean fileExists(String fileName) {
+	public static boolean fileExists(final String fileName) {
 		final File file = new File(fileName);
 		return file.exists();
 	}
@@ -325,7 +336,7 @@ public final class LpeFileUtils {
 	 *            file name
 	 * @return the absolute path to the file
 	 */
-	public static String concatFileName(String baseDir, String fileName) {
+	public static String concatFileName(final String baseDir, final String fileName) {
 		return LpeStringUtils.concatFileName(baseDir, fileName);
 	}
 
@@ -337,14 +348,14 @@ public final class LpeFileUtils {
 	 * @throws IOException
 	 *             thrown if dir cannot be removed
 	 */
-	public static void removeDir(String directory) throws IOException {
-		File targetDir = new File(directory);
+	public static void removeDir(final String directory) throws IOException {
+		final File targetDir = new File(directory);
 		if (!targetDir.exists()) {
 			return;
 		}
 
 		if (targetDir.isDirectory()) {
-			for (File child : targetDir.listFiles()) {
+			for (final File child : targetDir.listFiles()) {
 				if (child != null) {
 					removeDir(child.getAbsolutePath());
 				}
@@ -366,14 +377,14 @@ public final class LpeFileUtils {
 	 * @throws IOException
 	 *             if copying fails
 	 */
-	public static String copyFileToDir(String sourceFile, String targetDir) throws IOException {
-		File source = new File(sourceFile);
+	public static String copyFileToDir(final String sourceFile, String targetDir) throws IOException {
+		final File source = new File(sourceFile);
 		if (!targetDir.endsWith("/")) {
 			targetDir += "/";
 		}
-		File target = new File(targetDir + source.getName());
-		FileInputStream fis = new FileInputStream(source);
-		FileOutputStream fos = new FileOutputStream(target);
+		final File target = new File(targetDir + source.getName());
+		final FileInputStream fis = new FileInputStream(source);
+		final FileOutputStream fos = new FileOutputStream(target);
 		copy(fis, fos);
 		fis.close();
 		fos.close();
@@ -387,19 +398,19 @@ public final class LpeFileUtils {
 	 *            directory to search within
 	 * @return a set of full file names
 	 */
-	public static List<String> getAllFiles(String directory) {
-		List<String> resultList = new ArrayList<>();
+	public static List<String> getAllFiles(final String directory) {
+		final List<String> resultList = new ArrayList<>();
 		getAllFiles(new File(directory), resultList);
 		return resultList;
 	}
 
-	private static void getAllFiles(File file, final List<String> resultList) {
+	private static void getAllFiles(final File file, final List<String> resultList) {
 		if (!file.exists()) {
 			return;
 		} else if (file.isFile()) {
 			resultList.add(file.getAbsolutePath());
 		} else if (file.isDirectory()) {
-			for (File child : file.listFiles()) {
+			for (final File child : file.listFiles()) {
 				getAllFiles(child, resultList);
 			}
 		}
@@ -415,10 +426,10 @@ public final class LpeFileUtils {
 	 * @throws IOException
 	 *             if copying fails
 	 */
-	public static void copyDirectory(String source, String destination) throws IOException {
+	public static void copyDirectory(final String source, final String destination) throws IOException {
 
-		File srcDir = new File(source);
-		File destDir = new File(destination);
+		final File srcDir = new File(source);
+		final File destDir = new File(destination);
 
 		if (!srcDir.exists()) {
 			throw new IOException("Failed copying directory! Source directory does not exist.");
@@ -431,16 +442,16 @@ public final class LpeFileUtils {
 				destDir.mkdir();
 			}
 
-			for (File srcFile : srcDir.listFiles()) {
-				File destFile = new File(destDir, srcFile.getName());
+			for (final File srcFile : srcDir.listFiles()) {
+				final File destFile = new File(destDir, srcFile.getName());
 				// recursive copy
 				copyDirectory(srcFile.getAbsolutePath(), destFile.getAbsolutePath());
 			}
 
 		} else {
 
-			InputStream in = new FileInputStream(srcDir);
-			OutputStream out = new FileOutputStream(destDir);
+			final InputStream in = new FileInputStream(srcDir);
+			final OutputStream out = new FileOutputStream(destDir);
 			copy(in, out);
 			in.close();
 			out.close();
@@ -471,11 +482,11 @@ public final class LpeFileUtils {
 	 *            directory to search for jar files
 	 * @return list of all jar files
 	 */
-	public static List<String> findAllJarsInside(String rootDir) {
-		List<String> jarPaths = new ArrayList<String>();
-		File file = new File(rootDir);
+	public static List<String> findAllJarsInside(final String rootDir) {
+		final List<String> jarPaths = new ArrayList<String>();
+		final File file = new File(rootDir);
 		if (file != null && file.isDirectory()) {
-			for (File child : file.listFiles()) {
+			for (final File child : file.listFiles()) {
 				jarPaths.addAll(findAllJarsInside(child.getAbsolutePath()));
 			}
 		} else if (file != null && file.getName().endsWith(JAR_FILE_EXTENSION)) {
@@ -565,8 +576,8 @@ public final class LpeFileUtils {
 	 *            the ZIP file to pack the content into
 	 */
 	public static void zip(final String source, final String target) {
-		File srcFile = new File(source);
-		File targetFile = new File(target);
+		final File srcFile = new File(source);
+		final File targetFile = new File(target);
 		zip(srcFile, targetFile);
 	}
 
@@ -581,8 +592,8 @@ public final class LpeFileUtils {
 	 *             if moving fails
 	 */
 	public static void moveFileTo(final String sourceFile, final String destination) throws IOException {
-		File srcFile = new File(sourceFile);
-		File targetDir = new File(destination);
+		final File srcFile = new File(sourceFile);
+		final File targetDir = new File(destination);
 		if (!targetDir.isDirectory()) {
 			throw new IOException("Cannot move file " + sourceFile + " to directory " + destination + "! "
 					+ destination + " is not a directory.");
@@ -608,8 +619,8 @@ public final class LpeFileUtils {
 	 *             if moving fails
 	 */
 	public static void moveFile(final String sourceFile, final String destinationFile) throws IOException {
-		File srcFile = new File(sourceFile);
-		File targetFile = new File(destinationFile);
+		final File srcFile = new File(sourceFile);
+		final File targetFile = new File(destinationFile);
 		if (targetFile.exists()) {
 			targetFile.delete();
 		}
@@ -734,8 +745,8 @@ public final class LpeFileUtils {
 	 *            directory to create
 	 * @return true if successful
 	 */
-	public static boolean createDir(String targetDir) {
-		File dir = new File(targetDir);
+	public static boolean createDir(final String targetDir) {
+		final File dir = new File(targetDir);
 		if (!dir.exists()) {
 			return dir.mkdirs();
 		} else if (dir.isDirectory()) {
