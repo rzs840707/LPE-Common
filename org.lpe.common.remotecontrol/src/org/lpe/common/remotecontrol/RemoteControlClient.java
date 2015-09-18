@@ -22,7 +22,7 @@ import java.net.HttpURLConnection;
 import javax.ws.rs.core.MediaType;
 
 import org.lpe.common.remotecontrol.data.FileContainer;
-import org.lpe.common.util.web.LpeWebUtils;
+import org.lpe.common.util.LpeHTTPUtils;
 
 import com.sun.jersey.api.client.WebResource;
 
@@ -43,8 +43,8 @@ public class RemoteControlClient {
 	private static final String STREAM_FILE = "streamFile";
 	private static final String SET_FILE_TO_STREAM = "setFileToStream";
 
-	private String url;
-	private WebResource service;
+	private final String url;
+	private final WebResource service;
 
 	/**
 	 * 
@@ -53,9 +53,9 @@ public class RemoteControlClient {
 	 * @param port
 	 *            port where to reach service
 	 */
-	public RemoteControlClient(String host, String port) {
+	public RemoteControlClient(final String host, final String port) {
 		url = "http://" + host + ":" + port;
-		service = LpeWebUtils.getWebClient().resource(url);
+		service = LpeHTTPUtils.getWebClient().resource(url);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class RemoteControlClient {
 	 * @param fileName
 	 *            full qualified file name of shell script to execute
 	 */
-	public void executeShellScript(String fileName) {
+	public void executeShellScript(final String fileName) {
 
 		service.path(REST).path(EXECUTE_SHELL_SCRIPT).type(MediaType.APPLICATION_JSON).post(fileName);
 	}
@@ -85,7 +85,7 @@ public class RemoteControlClient {
 	 *            {@link FileContainer} containing full qualified file name and
 	 *            content to write
 	 */
-	public void writeFile(FileContainer fileContainer) {
+	public void writeFile(final FileContainer fileContainer) {
 
 		service.path(REST).path(WRITE_FILE).type(MediaType.APPLICATION_JSON).post(fileContainer);
 	}
@@ -97,7 +97,7 @@ public class RemoteControlClient {
 	 *            full qualified path of file to return
 	 * @return {@link FileContainer} with content of file
 	 */
-	public FileContainer readFile(String fileName) {
+	public FileContainer readFile(final String fileName) {
 
 		return service.path(REST).path(GET_CONFIG_FILE).type(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON).post(FileContainer.class, fileName);
@@ -108,12 +108,12 @@ public class RemoteControlClient {
 	 * @param filename file to retrieve
 	 * @return inputstream
 	 */
-	public InputStream readFileStreamed(String filename) {
+	public InputStream readFileStreamed(final String filename) {
 		service.path(REST).path(SET_FILE_TO_STREAM).type(MediaType.APPLICATION_JSON).post(filename);		
 		try {
-			HttpURLConnection connection = LpeWebUtils.get(url + "/" + REST + "/" + STREAM_FILE);
+			final HttpURLConnection connection = LpeHTTPUtils.get(url + "/" + REST + "/" + STREAM_FILE);
 			return connection.getInputStream();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new RuntimeException(e.getMessage());
 		}
 		

@@ -66,9 +66,9 @@ public class ScenarioModifier {
 
 	private LGWorkloadConfig lrConfig;
 
-	private LinkedList<String> groupNames = new LinkedList<>();
+	private final LinkedList<String> groupNames = new LinkedList<>();
 
-	private HashMap<String, Integer> groupUserNums = new HashMap<>();
+	private final HashMap<String, Integer> groupUserNums = new HashMap<>();
 
 	/**
 	 * Modifies the scenario file according to the passed workload
@@ -93,11 +93,11 @@ public class ScenarioModifier {
 
 		// Read scenario file and save modified version in buffer
 		String scriptName = null;
-		StringBuilder writeBuffer = new StringBuilder();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
+		final StringBuilder writeBuffer = new StringBuilder();
+		final BufferedReader reader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(lrConfig.getScenarioPath()), "UTF8"));
 		String line = null;
-		LinkedList<String> currentTags = new LinkedList<String>();
+		final LinkedList<String> currentTags = new LinkedList<String>();
 		int numGroupUsers = lrConfig.getNumUsers();
 		int allUsersIndex = 0;
 		while ((line = reader.readLine()) != null) {
@@ -153,7 +153,7 @@ public class ScenarioModifier {
 
 		// Write buffer to file
 
-		BufferedWriter writer = new BufferedWriter(new FileWriter(newScenarioPath, false));
+		final BufferedWriter writer = new BufferedWriter(new FileWriter(newScenarioPath, false));
 		writer.write(writeBuffer.toString());
 		writer.flush();
 		writer.close();
@@ -161,7 +161,7 @@ public class ScenarioModifier {
 		return newScenarioPath;
 	}
 
-	private void updateTagChange(LinkedList<String> currentTags, String line) {
+	private void updateTagChange(final LinkedList<String> currentTags, final String line) {
 		if (line.trim().startsWith(SCENARIO_TAG_OPEN)) {
 			currentTags.push(line.substring(1));
 
@@ -172,10 +172,10 @@ public class ScenarioModifier {
 
 	}
 
-	private void generateWorkloadGroups(LinkedList<String> currentTags, BufferedReader reader, StringBuilder writeBuffer)
+	private void generateWorkloadGroups(final LinkedList<String> currentTags, final BufferedReader reader, final StringBuilder writeBuffer)
 			throws IOException {
 
-		LinkedList<String> scriptNames = new LinkedList<>();
+		final LinkedList<String> scriptNames = new LinkedList<>();
 
 		// skip old workload config and find group and script names
 		String line = null;
@@ -206,9 +206,9 @@ public class ScenarioModifier {
 
 		// generate groups
 		lrConfig.setNumUsers(Math.max(groupNames.size(), lrConfig.getNumUsers()));
-		int numGroupUsers = lrConfig.getNumUsers() / groupNames.size();
+		final int numGroupUsers = lrConfig.getNumUsers() / groupNames.size();
 		int carryover = lrConfig.getNumUsers() % groupNames.size();
-		for (String gn : groupNames) {
+		for (final String gn : groupNames) {
 			int n = numGroupUsers;
 
 			if (carryover > 0) {
@@ -221,8 +221,8 @@ public class ScenarioModifier {
 		}
 	}
 
-	private void generateWorkloadGroup(LinkedList<String> currentTags, BufferedReader reader,
-			StringBuilder writeBuffer, String groupName, String scriptName, int numGroupUser) throws IOException {
+	private void generateWorkloadGroup(final LinkedList<String> currentTags, final BufferedReader reader,
+			final StringBuilder writeBuffer, final String groupName, final String scriptName, final int numGroupUser) throws IOException {
 
 		// generate group
 		writeBuffer.append(NEWLINE);
@@ -286,8 +286,8 @@ public class ScenarioModifier {
 	/**
 	 * Modify the schedule
 	 */
-	private void modifySchedule(LinkedList<String> currentTags, BufferedReader reader, StringBuilder writeBuffer,
-			int numUsers) throws IOException {
+	private void modifySchedule(final LinkedList<String> currentTags, final BufferedReader reader, final StringBuilder writeBuffer,
+			final int numUsers) throws IOException {
 
 		writeBuffer.append(NEWLINE);
 		writeBuffer.append("            <IsDefaultScheduler>true</IsDefaultScheduler>");
@@ -335,7 +335,7 @@ public class ScenarioModifier {
 	/**
 	 * Insert initialization behavior of VUsers
 	 */
-	private void insertInitializationMode(StringBuilder writeBuffer) throws IOException {
+	private void insertInitializationMode(final StringBuilder writeBuffer) throws IOException {
 		switch (lrConfig.getvUserInitMode()) {
 		case simultaneously:
 			insertSimultaneousInitMode(writeBuffer);
@@ -357,7 +357,7 @@ public class ScenarioModifier {
 	 * Initialize given number of VUsers every given interval
 	 * 
 	 */
-	private void insertIntervalInitMode(StringBuilder writeBuffer) {
+	private void insertIntervalInitMode(final StringBuilder writeBuffer) {
 		writeBuffer.append("            <Initialization>");
 		writeBuffer.append(NEWLINE);
 		writeBuffer.append(NEWLINE);
@@ -406,7 +406,7 @@ public class ScenarioModifier {
 	 * Initialize all VUsers simultaneously
 	 * 
 	 */
-	private void insertSimultaneousInitMode(StringBuilder writeBuffer) {
+	private void insertSimultaneousInitMode(final StringBuilder writeBuffer) {
 		writeBuffer.append("            <Initialization>");
 		writeBuffer.append(NEWLINE);
 		writeBuffer.append(NEWLINE);
@@ -438,7 +438,7 @@ public class ScenarioModifier {
 	/**
 	 * Insert the ramp-up behavior
 	 */
-	private void insertRampUp(StringBuilder writeBuffer, int numUsers) throws IOException {
+	private void insertRampUp(final StringBuilder writeBuffer, final int numUsers) throws IOException {
 
 		writeBuffer.append("              <RampUp>");
 		writeBuffer.append(NEWLINE);
@@ -484,7 +484,7 @@ public class ScenarioModifier {
 	/**
 	 * Insert experiment run duration
 	 */
-	private void insertDuration(StringBuilder writeBuffer) throws IOException {
+	private void insertDuration(final StringBuilder writeBuffer) throws IOException {
 		writeBuffer.append("              <Duration>");
 		writeBuffer.append(NEWLINE);
 		writeBuffer.append(NEWLINE);
@@ -510,7 +510,7 @@ public class ScenarioModifier {
 	/**
 	 * Insert cool down behavior
 	 */
-	private void insertRampDownAll(StringBuilder writeBuffer) throws IOException {
+	private void insertRampDownAll(final StringBuilder writeBuffer) throws IOException {
 
 		writeBuffer.append("              <RampDownAll>");
 		writeBuffer.append(NEWLINE);

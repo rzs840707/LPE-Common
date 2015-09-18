@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lpe.common.util.web.LpeWebUtils;
+import org.lpe.common.util.LpeHTTPUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,9 +62,9 @@ public final class ServerLauncher {
 	}
 
 	private void start() {
-		String url = getLocalAddress();
+		final String url = getLocalAddress();
 		uri = url;
-		Map<String, String> initParams = new HashMap<String, String>();
+		final Map<String, String> initParams = new HashMap<String, String>();
 
 		initParams.put("com.sun.jersey.config.property.packages", "org.lpe.common.remotecontrol;"
 				+ "org.lpe.common.remotecontrol.service;" + "org.codehaus.jackson.jaxrs");
@@ -78,11 +78,11 @@ public final class ServerLauncher {
 			LOGGER.info("Started server: {}.", url);
 			waitForShutdown();
 
-		} catch (IllegalArgumentException iae) {
+		} catch (final IllegalArgumentException iae) {
 			LOGGER.warn("Illegal Argument Exception happend in main method of ServerLauncher: {}", iae.getMessage());
-		} catch (IOException ioe) {
+		} catch (final IOException ioe) {
 			LOGGER.warn("IO Exception happend in main method of ServerLauncher: {}", ioe.getMessage());
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			LOGGER.warn("Interrupt received. Stopping server.");
 		} finally {
 			if (server != null) {
@@ -98,7 +98,7 @@ public final class ServerLauncher {
 	 * @param args
 	 *            not used.
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		if (args == null || args.length < 1) {
 			LOGGER.error("Remote Control Service Launcher requires exactly two arguments:");
 			LOGGER.error("1st argument: start / shutdown");
@@ -110,8 +110,8 @@ public final class ServerLauncher {
 		if (args[0].equalsIgnoreCase("start")) {
 			getInstance().start();
 		} else if (args[0].equalsIgnoreCase("shutdown")) {
-			ServerLauncher launcher = getInstance();
-			WebResource server = LpeWebUtils.getWebClient().resource(launcher.getLocalAddress());
+			final ServerLauncher launcher = getInstance();
+			final WebResource server = LpeHTTPUtils.getWebClient().resource(launcher.getLocalAddress());
 			server.path("ShutdownService").path("shutdown").post();
 		} else {
 			LOGGER.error("Invalid value for 1st argument! Valid values are: start / shutdown");
@@ -125,11 +125,11 @@ public final class ServerLauncher {
 	 * @param agentArgs
 	 *            arguments as string
 	 */
-	private static void parseArgs(String [] agentArgs) {
+	private static void parseArgs(final String [] agentArgs) {
 		if (agentArgs == null) {
 			return;
 		}
-		for (String arg : agentArgs) {
+		for (final String arg : agentArgs) {
 			if (arg.startsWith(PORT_KEY)) {
 				port = Integer.parseInt(arg.substring(PORT_KEY.length()));
 			} 

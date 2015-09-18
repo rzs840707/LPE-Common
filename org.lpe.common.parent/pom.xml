@@ -19,6 +19,9 @@
 		<module>../org.lpe.common.loadgenerator</module>
 		<module>../org.lpe.common.jmeter</module>
 		<module>../org.lpe.common.remotecontrol</module>
+		<module>
+			../../../Documents/workspaces/workspace_dynamicspotter/org.lpe.common.utils.web
+		</module>
 	</modules>
 
 	<repositories>

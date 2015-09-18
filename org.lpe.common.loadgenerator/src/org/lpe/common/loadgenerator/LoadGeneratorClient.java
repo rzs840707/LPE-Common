@@ -23,8 +23,8 @@ import javax.ws.rs.core.MediaType;
 import org.lpe.common.loadgenerator.config.LGMeasurementConfig;
 import org.lpe.common.loadgenerator.config.LGWorkloadConfig;
 import org.lpe.common.loadgenerator.data.LGMeasurementData;
+import org.lpe.common.util.LpeHTTPUtils;
 import org.lpe.common.util.LpeStreamUtils;
-import org.lpe.common.util.web.LpeWebUtils;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -47,10 +47,10 @@ public class LoadGeneratorClient {
 
 	private static final long DEFAULT_POLLING_DELAY = 1000; // [ms]
 
-	private String url;
-	private String host;
-	private String port;
-	private WebResource webResource;
+	private final String url;
+	private final String host;
+	private final String port;
+	private final WebResource webResource;
 
 	/**
 	 * 
@@ -59,11 +59,11 @@ public class LoadGeneratorClient {
 	 * @param port
 	 *            port where to reach service
 	 */
-	public LoadGeneratorClient(String host, String port) {
+	public LoadGeneratorClient(final String host, final String port) {
 		this.host = host;
 		this.port = port;
 		url = "http://" + host + ":" + port;
-		webResource = LpeWebUtils.getWebClient().resource(url);
+		webResource = LpeHTTPUtils.getWebClient().resource(url);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class LoadGeneratorClient {
 	 * @return collected measurement data
 	 * 
 	 */
-	public LGMeasurementData getMeasurementData(LGMeasurementConfig lrmConfig) {
+	public LGMeasurementData getMeasurementData(final LGMeasurementConfig lrmConfig) {
 
 		return webResource.path(REST).path(GET_DATA).type(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON).post(LGMeasurementData.class, lrmConfig);
@@ -94,7 +94,7 @@ public class LoadGeneratorClient {
 	 * @param lrConfig
 	 *            configuration describing the workload characteristics
 	 */
-	public void startLoad(LGWorkloadConfig lrConfig) {
+	public void startLoad(final LGWorkloadConfig lrConfig) {
 
 		webResource.path(REST).path(START).type(MediaType.APPLICATION_JSON).post(lrConfig);
 	}
@@ -109,7 +109,7 @@ public class LoadGeneratorClient {
 			isFinished = webResource.path(REST).path(IS_FINISHED).accept(MediaType.APPLICATION_JSON).get(boolean.class);
 			try {
 				Thread.sleep(DEFAULT_POLLING_DELAY);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				throw new RuntimeException(e);
 			}
 		}
@@ -132,9 +132,9 @@ public class LoadGeneratorClient {
 	 *            port of the satellite
 	 * @return true if connection could be established
 	 */
-	public static boolean testConnection(String host, String port) {
-		String path = REST + "/" + TEST_CONNECTION;
-		return LpeWebUtils.testConnection(host, port, path);
+	public static boolean testConnection(final String host, final String port) {
+		final String path = REST + "/" + TEST_CONNECTION;
+		return LpeHTTPUtils.testConnection(host, port, path);
 	}
 
 	/**
@@ -146,8 +146,8 @@ public class LoadGeneratorClient {
 	 * @throws MeasurementException
 	 *             thrown if streaming fails
 	 */
-	public void pipeReportToOutputStream(OutputStream oStream, LGMeasurementConfig lrmConfig) throws IOException {
-		ClientResponse response = webResource.path(REST).path(GET_REPORT).type(MediaType.APPLICATION_JSON)
+	public void pipeReportToOutputStream(final OutputStream oStream, final LGMeasurementConfig lrmConfig) throws IOException {
+		final ClientResponse response = webResource.path(REST).path(GET_REPORT).type(MediaType.APPLICATION_JSON)
 				.accept("application/zip").post(ClientResponse.class, lrmConfig);
 
 		LpeStreamUtils.pipe(response.getEntityInputStream(), oStream);

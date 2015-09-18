@@ -13,73 +13,7 @@
 	<name>LPE Common Utils</name>
 
 	<dependencies>
-		<dependency>
-			<groupId>net.sf.opencsv</groupId>
-			<artifactId>opencsv</artifactId>
-			<version>2.3</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math3</artifactId>
-			<version>3.4.1</version>
-		</dependency>
-			
-		<dependency>
-			<groupId>org.glassfish.grizzly</groupId>
-			<artifactId>grizzly-http-servlet</artifactId>
-			<version>${grizzly.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.glassfish.grizzly</groupId>
-			<artifactId>grizzly-http-server-monitoring</artifactId>
-			<version>${grizzly.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.glassfish.grizzly</groupId>
-			<artifactId>grizzly-framework-monitoring</artifactId>
-			<version>${grizzly.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.glassfish.grizzly</groupId>
-			<artifactId>grizzly-http-monitoring</artifactId>
-			<version>${grizzly.version}</version>
-		</dependency>
-
-
-
-
-		<dependency>
-			<groupId>org.glassfish.grizzly</groupId>
-			<artifactId>grizzly-http</artifactId>
-			<version>${grizzly.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-grizzly2</artifactId>
-			<version>1.17.1</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>grizzly-http</artifactId>
-					<groupId>org.glassfish.grizzly</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>grizzly-framework</artifactId>
-					<groupId>org.glassfish.grizzly</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
+	
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
@@ -114,7 +48,27 @@
 			<artifactId>jackson-jaxrs</artifactId>
 			<version>1.9.13</version>
 		</dependency>
+  
+			
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>2.3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.4.1</version>
+		</dependency>
+			
 
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.foundationdb</groupId>
 			<artifactId>fdb-sql-parser</artifactId>

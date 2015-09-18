@@ -13,6 +13,11 @@
 	<name>Common Configuration</name>
 	<dependencies>
 		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-jaxrs</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+		<dependency>
 			<groupId>org.lpe.common</groupId>
 			<artifactId>org.lpe.common.utils</artifactId>
 			<version>1.0.4-SNAPSHOT</version>
