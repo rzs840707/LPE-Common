@@ -27,7 +27,7 @@ import org.lpe.common.config.ConfigParameterDescription;
  * @author Roozbeh Farahbod
  * 
  */
-public interface IExtension<EA extends IExtensionArtifact> {
+public interface IExtension {
 
 	/**
 	 * Returns the name of the extension which is expected to be unique in the
@@ -42,10 +42,11 @@ public interface IExtension<EA extends IExtensionArtifact> {
 
 	/**
 	 * Creates a new artifact for this extension.
+	 * @param patterns 
 	 * 
 	 * @return a new artifact for this extension.
 	 */
-	EA createExtensionArtifact();
+	<EA extends IExtensionArtifact> EA createExtensionArtifact(String ... patterns);
 
 	/**
 	 * Returns a set of configuration parameter descriptions.

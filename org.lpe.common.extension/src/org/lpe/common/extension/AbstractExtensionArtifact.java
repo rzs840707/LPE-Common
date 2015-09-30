@@ -26,7 +26,7 @@ public abstract class AbstractExtensionArtifact implements IExtensionArtifact {
 	/**
 	 * Extension provider.
 	 */
-	private final IExtension<?> provider;
+	private final IExtension provider;
 
 	/**
 	 * Creates a new extension artifact with the given extension provider.
@@ -34,14 +34,15 @@ public abstract class AbstractExtensionArtifact implements IExtensionArtifact {
 	 * @param provider
 	 *            the provider of this artifact
 	 */
-	public AbstractExtensionArtifact(IExtension<?> provider) {
+	public AbstractExtensionArtifact(final IExtension provider) {
 		this.provider = provider;
 	}
 
 	/**
 	 * @return returns the provider of this extension.
 	 */
-	public IExtension<?> getProvider() {
+	@Override
+	public IExtension getProvider() {
 		return this.provider;
 	}
 

@@ -31,6 +31,6 @@ public interface IExtensionArtifact {
 	 * 
 	 * @return the provider of this extension artifact.
 	 */
-	IExtension<?> getProvider();
+	IExtension getProvider();
 
 }

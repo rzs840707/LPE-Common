@@ -33,7 +33,7 @@ public interface IExtensionRegistry {
 	 * 
 	 * @return Collection of supported extensions
 	 */
-	Collection<? extends IExtension<?>> getExtensions();
+	Collection<? extends IExtension> getExtensions();
 
 	/**
 	 * Returns an extensions object that filters in only those extensions that
@@ -48,7 +48,7 @@ public interface IExtensionRegistry {
 	 * @return an extensions object that filters in only those extensions that
 	 *         support the extension type.
 	 */
-	<E extends IExtension<?>> Extensions<E> getExtensions(Class<E> c);
+	<E extends IExtension> Extensions<E> getExtensions(Class<E> c);
 
 	/**
 	 * Assuming that the extension names are unique for any category of PPD
@@ -63,7 +63,7 @@ public interface IExtensionRegistry {
 	 *            type of the extension artefact to be retrieved
 	 * @return an extension artifact produced by the extension
 	 */
-	<EA extends IExtensionArtifact> EA getExtensionArtifact(Class<? extends IExtension<EA>> c, String name);
+	<EA extends IExtensionArtifact> EA getExtensionArtifact(Class<? extends IExtension> c, String name);
 
 	/**
 	 * Adds a new extension to the registry.
@@ -73,7 +73,7 @@ public interface IExtensionRegistry {
 	 * @param ext
 	 *            an instantiated extension
 	 */
-	void addExtension(IExtension<?> ext);
+	void addExtension(IExtension ext);
 
 	/**
 	 * Removes the extension with the given name from the registry.
@@ -89,6 +89,6 @@ public interface IExtensionRegistry {
 	 *            name of the extension
 	 * @return extension for the given name
 	 */
-	IExtension<?> getExtension(String name);
+	IExtension getExtension(String name);
 
 }

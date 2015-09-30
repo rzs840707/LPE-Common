@@ -61,10 +61,10 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 	private static IExtensionRegistry singleton = null;
 
 	/** Holds a mapping of extension names to extensions. */
-	private Map<String, IExtension<?>> extensions = new HashMap<String, IExtension<?>>();
+	private final Map<String, IExtension> extensions = new HashMap<String, IExtension>();
 
 	@SuppressWarnings("rawtypes")
-	private Map<Class, Extensions> extensionsMap = new HashMap<Class, Extensions>();
+	private final Map<Class, Extensions> extensionsMap = new HashMap<Class, Extensions>();
 
 	private boolean initialized = false;
 	private String tempPluginsDir;
@@ -87,27 +87,28 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 	 * @param ext
 	 *            extension to add
 	 */
-	public void addExtension(IExtension<?> ext) {
+	@Override
+	public void addExtension(final IExtension ext) {
 		extensions.put(ext.getName(), ext);
 	}
 
 	@Override
-	public void removeExtension(String name) {
+	public void removeExtension(final String name) {
 		extensions.remove(name);
 	}
 
 	@Override
-	public Collection<? extends IExtension<?>> getExtensions() {
+	public Collection<? extends IExtension> getExtensions() {
 		return Collections.unmodifiableCollection(extensions.values());
 	}
 
 	@Override
-	public IExtension<?> getExtension(String name) {
+	public IExtension getExtension(final String name) {
 		return extensions.get(name);
 	}
 
 	@Override
-	public <E extends IExtension<?>> Extensions<E> getExtensions(Class<E> c) {
+	public <E extends IExtension> Extensions<E> getExtensions(final Class<E> c) {
 		@SuppressWarnings("unchecked")
 		Extensions<E> exts = extensionsMap.get(c);
 		if (exts == null) {
@@ -148,39 +149,39 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 
 	private void loadExtensions() {
 		LOGGER.info("Loading extensions...");
-		String pluginsDirNames = GlobalConfiguration.getInstance().getProperty(PLUGINS_FOLDER_PROPERTY_KEY);
+		final String pluginsDirNames = GlobalConfiguration.getInstance().getProperty(PLUGINS_FOLDER_PROPERTY_KEY);
 
-		Set<String> pluginsDirsSet = new HashSet<String>();
+		final Set<String> pluginsDirsSet = new HashSet<String>();
 		pluginsDirsSet.add(DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH);
 		if (pluginsDirNames != null) {
-			String[] pluginsDirs = tokenize(pluginsDirNames, DIR_SEPARATOR);
+			final String[] pluginsDirs = tokenize(pluginsDirNames, DIR_SEPARATOR);
 
-			for (String dir : pluginsDirs) {
+			for (final String dir : pluginsDirs) {
 				pluginsDirsSet.add(dir);
 			}
 		}
 
-		Set<URL> extensionsInfoURLs = new HashSet<URL>();
-		ClassLoader classLoader = loadPluginInformationFromSources(pluginsDirsSet, extensionsInfoURLs);
+		final Set<URL> extensionsInfoURLs = new HashSet<URL>();
+		final ClassLoader classLoader = loadPluginInformationFromSources(pluginsDirsSet, extensionsInfoURLs);
 
 		lookForExtensionInfoFiles(classLoader, extensionsInfoURLs);
 
-		Set<String> extensionClasses = gatherExtensionClassFiles(extensionsInfoURLs);
+		final Set<String> extensionClasses = gatherExtensionClassFiles(extensionsInfoURLs);
 
 		loadExtensionClasses(classLoader, extensionClasses);
 
 		if (tempPluginsDir != null && new File(tempPluginsDir).exists()) {
 			try {
 				LpeFileUtils.removeDir(tempPluginsDir);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				LOGGER.warn("Where not able to remove directory {}!", tempPluginsDir);
 			}
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void loadExtensionClasses(ClassLoader classLoader, Set<String> extensionClasses) {
-		for (String extClassName : extensionClasses) {
+	private void loadExtensionClasses(final ClassLoader classLoader, final Set<String> extensionClasses) {
+		for (final String extClassName : extensionClasses) {
 			if (extClassName.trim().isEmpty()) {
 				continue;
 			}
@@ -188,13 +189,13 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 			Class<?> c;
 			try {
 				c = classLoader.loadClass(extClassName);
-				Object o = c.newInstance();
+				final Object o = c.newInstance();
 				if (o instanceof IExtension) {
-					IExtension ext = (IExtension) o;
+					final IExtension ext = (IExtension) o;
 					this.addExtension(ext);
 					LOGGER.debug("Loading extension {}.", ext.getName());
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				LOGGER.warn("Could not load extension {}. Reason: ({}) {}", new Object[] { extClassName,
 						e.getClass().getSimpleName(), e.getMessage() });
 			}
@@ -204,12 +205,12 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 	/**
 	 * gather the list of all extension class files
 	 */
-	private Set<String> gatherExtensionClassFiles(Set<URL> extensionsInfoURLs) {
-		Set<String> extensionClasses = new HashSet<String>();
-		for (URL url : extensionsInfoURLs) {
+	private Set<String> gatherExtensionClassFiles(final Set<URL> extensionsInfoURLs) {
+		final Set<String> extensionClasses = new HashSet<String>();
+		for (final URL url : extensionsInfoURLs) {
 			try {
 				extensionClasses.addAll(LpeStreamUtils.readLines(url));
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
@@ -226,7 +227,7 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 	 *            set of URLs where to add the URLs of found extension.info
 	 *            files
 	 */
-	private void lookForExtensionInfoFiles(ClassLoader classLoader, Set<URL> extensionsInfoURLs) {
+	private void lookForExtensionInfoFiles(final ClassLoader classLoader, final Set<URL> extensionsInfoURLs) {
 		final String extensionFilePath = DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH + '/' + EXTENSIONS_FILE_NAME;
 		Enumeration<URL> eURLs;
 		try {
@@ -235,11 +236,11 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 				extensionsInfoURLs.add(eURLs.nextElement());
 			}
 
-		} catch (IOException e1) {
+		} catch (final IOException e1) {
 			throw new RuntimeException(e1);
 		}
 
-		for (URL url : extensionsInfoURLs) {
+		for (final URL url : extensionsInfoURLs) {
 			LOGGER.debug("Found extensions info at: {}", url);
 		}
 		if (extensionsInfoURLs.size() == 0) {
@@ -251,14 +252,14 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 	 * Gather list of JAR files in plugins folders and gathersextensions.info
 	 * files in those directories.
 	 */
-	private ClassLoader loadPluginInformationFromSources(Set<String> pluginsDirsSet, Set<URL> extensionsInfoURLs) {
-		Set<URL> jarURLs = new HashSet<URL>();
+	private ClassLoader loadPluginInformationFromSources(final Set<String> pluginsDirsSet, final Set<URL> extensionsInfoURLs) {
+		final Set<URL> jarURLs = new HashSet<URL>();
 
-		for (String dir : pluginsDirsSet) {
+		for (final String dir : pluginsDirsSet) {
 			loadExtensionsInfoAndJARs(dir, extensionsInfoURLs, jarURLs);
 		}
 
-		ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[] {}), this.getClass().getClassLoader());
+		final ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[] {}), this.getClass().getClassLoader());
 
 		// unpack all extensions.info's separately and gathers them in the list
 
@@ -266,14 +267,14 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 			tempPluginsDir = LpeSystemUtils.extractFilesFromClasspath("plugins", "lpePlugins", "plugins files",
 					classLoader);
 
-			String[] infoFiles = LpeFileUtils.getFileNames(tempPluginsDir, "*.info");
-			for (String infoFileName : infoFiles) {
+			final String[] infoFiles = LpeFileUtils.getFileNames(tempPluginsDir, "*.info");
+			for (final String infoFileName : infoFiles) {
 				final String fullName = LpeFileUtils.concatFileName(tempPluginsDir, infoFileName);
-				URL url = new URL("file", "", fullName);
+				final URL url = new URL("file", "", fullName);
 				extensionsInfoURLs.add(url);
 			}
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOGGER.error("Could not unpack plugins information in the classpath. Reason:", e);
 		}
 		return classLoader;
@@ -290,7 +291,7 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 	 * @param jarURLs
 	 *            the resulting aggregated JAR URLs
 	 */
-	private void loadExtensionsInfoAndJARs(String pluginsDirName, Set<URL> extensionsInfoURLs, Set<URL> jarURLs) {
+	private void loadExtensionsInfoAndJARs(String pluginsDirName, final Set<URL> extensionsInfoURLs, final Set<URL> jarURLs) {
 		if (!LpeFileUtils.isAbsolutePath(pluginsDirName)) {
 			String appRootDir = GlobalConfiguration.getInstance().getProperty(APP_ROOT_DIR_PROPERTY_KEY);
 			appRootDir = appRootDir.replace("\\", File.separator);
@@ -306,21 +307,21 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 		// 1. Locate JAR files from the plugins folder
 
 		if (pluginsDir.exists()) {
-			String[] names = LpeFileUtils.getFileNames(pluginsDirName, "*.jar");
+			final String[] names = LpeFileUtils.getFileNames(pluginsDirName, "*.jar");
 
 			if (names.length > 0) {
-				for (String str : names) {
+				for (final String str : names) {
 					final String jarName = LpeFileUtils.concatFileName(pluginsDirName, str);
 					try {
-						File jarFile = new File(jarName);
-						URL url = jarFile.toURI().toURL();
+						final File jarFile = new File(jarName);
+						final URL url = jarFile.toURI().toURL();
 						jarURLs.add(url);
-					} catch (MalformedURLException e) {
+					} catch (final MalformedURLException e) {
 						LOGGER.warn("Ignoring JAR file {}", jarName);
 					}
 				}
 			}
-			for (URL url : jarURLs) {
+			for (final URL url : jarURLs) {
 				LOGGER.debug("Found extension JAR file {}", url);
 			}
 		} else {
@@ -332,7 +333,7 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 		if (defExtensionsFile.exists()) {
 			try {
 				extensionsInfoURLs.add(new URL("file", "", defExtensionsFileName));
-			} catch (MalformedURLException e1) {
+			} catch (final MalformedURLException e1) {
 				LOGGER.warn("Could not read '{}'. Reason: (MalformedURLException) {}", defExtensionsFile,
 						e1.getMessage());
 			}
@@ -341,10 +342,10 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 	}
 
 	@Override
-	public <EA extends IExtensionArtifact> EA getExtensionArtifact(Class<? extends IExtension<EA>> c, String name) {
-		Extensions<? extends IExtension<EA>> extensions = getExtensions(c);
+	public <EA extends IExtensionArtifact> EA getExtensionArtifact(final Class<? extends IExtension> c, final String name) {
+		final Extensions<? extends IExtension> extensions = getExtensions(c);
 
-		for (IExtension<EA> ext : extensions) {
+		for (final IExtension ext : extensions) {
 			if (LpeStringUtils.strEqualName(ext.getName(), name)) {
 				return ext.createExtensionArtifact();
 			}
@@ -361,10 +362,10 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 	 * @param separator
 	 * @return
 	 */
-	private static String[] tokenize(String src, String separator) {
-		StringTokenizer tokenizer = new StringTokenizer(src, separator);
+	private static String[] tokenize(final String src, final String separator) {
+		final StringTokenizer tokenizer = new StringTokenizer(src, separator);
 
-		String[] result = new String[tokenizer.countTokens()];
+		final String[] result = new String[tokenizer.countTokens()];
 		int i = 0;
 		while (tokenizer.hasMoreTokens()) {
 			result[i] = tokenizer.nextToken();
