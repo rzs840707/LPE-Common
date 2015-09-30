@@ -33,7 +33,6 @@ import java.util.List;
  * @author Roozbeh Farahbod
  * 
  */
-@SuppressWarnings("rawtypes")
 public class Extensions<E extends IExtension> implements Iterable<E> {
 
 	private final IExtensionRegistry registry;
@@ -47,12 +46,12 @@ public class Extensions<E extends IExtension> implements Iterable<E> {
 	 * @filter a class instance
 	 */
 	@SuppressWarnings("unchecked")
-	protected Extensions(Class<E> filter) {
+	protected Extensions(final Class<E> filter) {
 		registry = ExtensionRegistry.getSingleton();
 
 		// load the relevant extensions
 		extensions = new ArrayList<E>();
-		for (IExtension ext : registry.getExtensions()) {
+		for (final IExtension ext : registry.getExtensions()) {
 			if (filter.isAssignableFrom(ext.getClass())) {
 				extensions.add((E) ext);
 			}
@@ -73,6 +72,7 @@ public class Extensions<E extends IExtension> implements Iterable<E> {
 	/**
 	 * @return returns an iterator over extensions
 	 */
+	@Override
 	public Iterator<E> iterator() {
 		return extensions.iterator();
 	}

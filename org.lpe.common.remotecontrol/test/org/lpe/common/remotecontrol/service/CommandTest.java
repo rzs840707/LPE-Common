@@ -18,11 +18,6 @@
  */
 package org.lpe.common.remotecontrol.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import org.lpe.common.remotecontrol.RemoteControlClient;
 import org.lpe.common.remotecontrol.data.FileContainer;
 
@@ -37,7 +32,7 @@ public class CommandTest {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 
 		rcClient = new RemoteControlClient("deqkal278.qkal.sap.corp", "8090");
 
@@ -54,7 +49,7 @@ public class CommandTest {
 	}
 
 	private static void readFileTest() {
-		FileContainer fContainer = rcClient.readFile("/home/tpcwUser/apache/conf/context.xml");
+		final FileContainer fContainer = rcClient.readFile("/home/tpcwUser/apache/conf/context.xml");
 		/*
 		InputStream in = rcClient.readFileStreamed("/home/tpcwUser/mysql-monitoring-data/mysql-slow.log");
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -75,7 +70,7 @@ public class CommandTest {
 	}
 
 	private static void writeFileTest() {
-		FileContainer fContainer = new FileContainer();
+		final FileContainer fContainer = new FileContainer();
 
 		fContainer.setFileName("/home/tpcwUser/Test.txt");
 		fContainer.setFileContent("Don't forget to smile, it's a beautiful day.");

@@ -179,7 +179,6 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
 	private void loadExtensionClasses(final ClassLoader classLoader, final Set<String> extensionClasses) {
 		for (final String extClassName : extensionClasses) {
 			if (extClassName.trim().isEmpty()) {
