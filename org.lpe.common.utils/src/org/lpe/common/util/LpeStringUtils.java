@@ -60,14 +60,14 @@ public final class LpeStringUtils {
 	 * @return Returns the next word (words delimeted by whitespace or comma) in
 	 *         the src string after the beginWith portion.
 	 */
-	public static String nextWordAfter(String src, String beginWith) {
-		int index = src.indexOf(beginWith);
+	public static String nextWordAfter(final String src, final String beginWith) {
+		final int index = src.indexOf(beginWith);
 		if (index < 0) {
 			return "";
 		}
 
 		final String rest = src.substring(index);
-		StringTokenizer tk = new StringTokenizer(rest, " ,");
+		final StringTokenizer tk = new StringTokenizer(rest, " ,");
 		if (tk.countTokens() >= 2) {
 			tk.nextToken();
 			return tk.nextToken();
@@ -85,7 +85,7 @@ public final class LpeStringUtils {
 	 *            second string
 	 * @return <code>true</code> if the two strings are equal.
 	 */
-	public static boolean strEqualCaseInsensitive(String a, String b) {
+	public static boolean strEqualCaseInsensitive(final String a, final String b) {
 		return a.toLowerCase().equals(b.toLowerCase());
 	}
 
@@ -100,7 +100,7 @@ public final class LpeStringUtils {
 	 *            second string
 	 * @return <code>true</code> if the two names are equal.
 	 */
-	public static boolean strEqualName(String a, String b) {
+	public static boolean strEqualName(final String a, final String b) {
 		return strEqualCaseInsensitive(a.trim(), b.trim());
 	}
 
@@ -114,7 +114,7 @@ public final class LpeStringUtils {
 	 *            class to check the name against
 	 * @return true, if name is the simple name of the passed class
 	 */
-	public static boolean isClassName(String name, Class<?> c) {
+	public static boolean isClassName(final String name, final Class<?> c) {
 		return strEqualName(name, c.getSimpleName());
 	}
 
@@ -130,7 +130,7 @@ public final class LpeStringUtils {
 	 *            desired length of the resulting string
 	 * @return extended string
 	 */
-	public static String extendStr(String src, char filler, int fixedLen) {
+	public static String extendStr(final String src, final char filler, final int fixedLen) {
 		String result = src;
 		while (result.length() < fixedLen) {
 			result = filler + result;
@@ -147,10 +147,10 @@ public final class LpeStringUtils {
 	 *            separator for tokenization
 	 * @return array of string tokens
 	 */
-	public static String[] tokenize(String src, String separator) {
-		StringTokenizer tokenizer = new StringTokenizer(src, separator);
+	public static String[] tokenize(final String src, final String separator) {
+		final StringTokenizer tokenizer = new StringTokenizer(src, separator);
 
-		String[] result = new String[tokenizer.countTokens()];
+		final String[] result = new String[tokenizer.countTokens()];
 		int i = 0;
 		while (tokenizer.hasMoreTokens()) {
 			result[i] = tokenizer.nextToken();
@@ -179,7 +179,7 @@ public final class LpeStringUtils {
 			baseDir = baseDir + File.separator;
 		}
 
-		String concat = baseDir + fileName;
+		final String concat = baseDir + fileName;
 
 		return concat;
 	}
@@ -192,7 +192,7 @@ public final class LpeStringUtils {
 	 * @return <code>true</code> if the given value is either <code>null</code>
 	 *         or empty; <code>false</code> otherwise.
 	 */
-	public static boolean isEmptyOrNullString(String str) {
+	public static boolean isEmptyOrNullString(final String str) {
 		return (str == null || str.isEmpty());
 	}
 
@@ -204,8 +204,8 @@ public final class LpeStringUtils {
 	 * @return Returns a time stamp of the format "yy.MM.dd - HH:mm" for the
 	 *         given date.
 	 */
-	public static String getTimeStamp(Date date) {
-		SimpleDateFormat formatter = new SimpleDateFormat("yy.MM.dd - HH:mm");
+	public static String getTimeStamp(final Date date) {
+		final SimpleDateFormat formatter = new SimpleDateFormat("yy.MM.dd - HH:mm");
 		return formatter.format(date);
 	}
 
@@ -217,8 +217,8 @@ public final class LpeStringUtils {
 	 * @return Returns a time stamp of the format "yy.MM.dd - HH:mm" for the
 	 *         given date.
 	 */
-	public static String getDetailedTimeStamp(Date date) {
-		SimpleDateFormat formatter = new SimpleDateFormat("yy.MM.dd - HH:mm:ss:SSS");
+	public static String getDetailedTimeStamp(final Date date) {
+		final SimpleDateFormat formatter = new SimpleDateFormat("yy.MM.dd - HH:mm:ss:SSS");
 		return formatter.format(date);
 	}
 
@@ -250,8 +250,8 @@ public final class LpeStringUtils {
 	public static String clearMethodName(String methodName) {
 		try {
 			methodName = methodName.trim();
-			int firstBraceIndex = methodName.indexOf('(');
-			int secondBraceIndex = methodName.indexOf(')');
+			final int firstBraceIndex = methodName.indexOf('(');
+			final int secondBraceIndex = methodName.indexOf(')');
 			String methodFirstPart = methodName.substring(0, firstBraceIndex);
 
 			if (methodFirstPart.indexOf(' ') >= 0) {
@@ -259,15 +259,15 @@ public final class LpeStringUtils {
 						methodFirstPart.length());
 			}
 
-			String params = methodName.substring(firstBraceIndex, secondBraceIndex + 1);
+			final String params = methodName.substring(firstBraceIndex, secondBraceIndex + 1);
 			String parameterStringNew = "(";
 			if (params.length() > 2) {
-				String[] paramArray = params.substring(1, params.length() - 1).split(" ");
+				final String[] paramArray = params.substring(1, params.length() - 1).split(" ");
 
-				int i = 0;
+				final int i = 0;
 				for (String par : paramArray) {
 					par = par.trim();
-					int whiteSpaceIndex = par.indexOf(' ');
+					final int whiteSpaceIndex = par.indexOf(' ');
 					if (whiteSpaceIndex > 0) {
 						parameterStringNew += par.substring(0, whiteSpaceIndex);
 					} else {
@@ -281,7 +281,7 @@ public final class LpeStringUtils {
 			}
 			parameterStringNew += ")";
 			return methodFirstPart + parameterStringNew;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new IllegalArgumentException("Invalid method name format!");
 		}
 	}
@@ -296,14 +296,14 @@ public final class LpeStringUtils {
 	public static String getSimpleMethodName(String methodName) {
 		try {
 			methodName = methodName.trim();
-			int firstBraceIndex = methodName.indexOf('(');
+			final int firstBraceIndex = methodName.indexOf('(');
 			String methodFirstPart = null;
 			if (firstBraceIndex >= 0) {
 				methodFirstPart = methodName.substring(0, firstBraceIndex);
 			} else {
 				methodFirstPart = methodName;
 			}
-			int lastDotIndex = methodFirstPart.lastIndexOf('.');
+			final int lastDotIndex = methodFirstPart.lastIndexOf('.');
 			if (lastDotIndex >= 0) {
 				return methodFirstPart.substring(lastDotIndex + 1);
 			} else {
@@ -315,7 +315,7 @@ public final class LpeStringUtils {
 
 			}
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new IllegalArgumentException("Invalid method name format!");
 		}
 	}
@@ -331,22 +331,22 @@ public final class LpeStringUtils {
 	public static String convertMethodSignatureToJVMMethodDescriptor(String originSignature) {
 		try {
 			originSignature = originSignature.trim();
-			String[] strArray = originSignature.split(" ");
-			String returnType = strArray[strArray.length - 2];
-			String methodSignature = strArray[strArray.length - 1];
-			int firstBraceIndex = methodSignature.indexOf('(');
-			int secondBraceIndex = methodSignature.indexOf(')');
-			String parameterString = methodSignature.substring(firstBraceIndex + 1, secondBraceIndex);
+			final String[] strArray = originSignature.split(" ");
+			final String returnType = strArray[strArray.length - 2];
+			final String methodSignature = strArray[strArray.length - 1];
+			final int firstBraceIndex = methodSignature.indexOf('(');
+			final int secondBraceIndex = methodSignature.indexOf(')');
+			final String parameterString = methodSignature.substring(firstBraceIndex + 1, secondBraceIndex);
 			String resultString = "(";
 			if (parameterString.length() > 0) {
-				String[] parameters = parameterString.split(",");
+				final String[] parameters = parameterString.split(",");
 				for (int i = 0; i < parameters.length; i++) {
 					resultString += convertTypeToNativeFormat(parameters[i].trim());
 				}
 			}
 			resultString += ")" + convertTypeToNativeFormat(returnType.trim());
 			return resultString;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new IllegalArgumentException("Invalid method signature format!");
 		}
 	}
@@ -384,7 +384,7 @@ public final class LpeStringUtils {
 		} else if (type.equals("void")) {
 			resultString += "V";
 		} else {
-			String complexTypeString = type.replace('.', '/');
+			final String complexTypeString = type.replace('.', '/');
 			resultString += "L" + complexTypeString + ";";
 		}
 		return resultString;
@@ -397,7 +397,7 @@ public final class LpeStringUtils {
 	 *            full method name from which the class name should be extracted
 	 * @return full class name
 	 */
-	public static String extractClassName(String methodName) {
+	public static String extractClassName(final String methodName) {
 		try {
 			// cut argument list
 			String className = methodName.substring(0, methodName.indexOf('('));
@@ -408,7 +408,7 @@ public final class LpeStringUtils {
 				className = className.substring(className.lastIndexOf(' ') + 1, className.length());
 			}
 			return className;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new IllegalArgumentException("Invalid method name format!");
 		}
 	}
@@ -420,7 +420,7 @@ public final class LpeStringUtils {
 	 *            package name to be converted
 	 * @return a path to a directory
 	 */
-	public static String packageNameToFilePath(String packageName) {
+	public static String packageNameToFilePath(final String packageName) {
 		return packageName.replace('.', '/');
 	}
 
@@ -438,8 +438,8 @@ public final class LpeStringUtils {
 	 *            default value
 	 * @return property for the given key
 	 */
-	public static String getPropertyOrFail(Properties properties, String key, String defaultValue) {
-		String value = properties.getProperty(key);
+	public static String getPropertyOrFail(final Properties properties, final String key, final String defaultValue) {
+		final String value = properties.getProperty(key);
 		if (value != null) {
 			return value;
 		} else if (value == null && defaultValue != null) {
@@ -458,7 +458,7 @@ public final class LpeStringUtils {
 	 *            second string
 	 * @return the Jaro-Winkler distance between {@code s1} and {@code s2}
 	 */
-	public static double getDistance(String s1, String s2) {
+	public static double getDistance(final String s1, final String s2) {
 		return JaroWinklerDistance.getDistance(s1, s2);
 	}
 
@@ -473,38 +473,10 @@ public final class LpeStringUtils {
 	 * @return the Jaro-Winkler distance between {@code s1} and {@code s2}
 	 *         ignoring lower/upper cases.
 	 */
-	public static double getDistanceCaseInsensitive(String s1, String s2) {
+	public static double getDistanceCaseInsensitive(final String s1, final String s2) {
 		return JaroWinklerDistance.getDistance(s1.toLowerCase(), s2.toLowerCase());
 	}
 
-	/**
-	 * Returns if the given statements are equal.
-	 * 
-	 * @param sql1
-	 *            first SQL statement
-	 * @param sql2
-	 *            second SQL statement
-	 * @return if {@code sql1} and {@code sql2} are equal
-	 */
-	public static boolean areEqualSql(String sql1, String sql2) {
-		return SQLSimilarity.areEqual(sql1, sql2);
-	}
-
-	/**
-	 * Returns a generalized query string. More precisely, specific constants
-	 * are replaced by wildcards.
-	 * 
-	 * @param queryString
-	 *            Query string to be generalized
-	 * @return Generalization of {@code queryString}
-	 */
-	public static String getGeneralizedQuery(String queryString) {
-		if (queryString == null || queryString.contains("?")) {
-			return queryString;
-		}
-
-		return SQLGeneralizer.getGeneralizedString(queryString);
-	}
 
 	/**
 	 * Shortens full qualified method names. Thus,
@@ -514,9 +486,9 @@ public final class LpeStringUtils {
 	 *            name to shorten
 	 * @return short method name
 	 */
-	public static String shortenOperationName(String operation) {
-		String mainPart = operation.substring(0, operation.indexOf("("));
-		String[] packages = mainPart.split("\\.");
+	public static String shortenOperationName(final String operation) {
+		final String mainPart = operation.substring(0, operation.indexOf("("));
+		final String[] packages = mainPart.split("\\.");
 		String result = "";
 		for (int i = 0; i < packages.length - 2; i++) {
 			result += packages[i].substring(0, 1);
@@ -525,9 +497,9 @@ public final class LpeStringUtils {
 		result += packages[packages.length - 2] + "." + packages[packages.length - 1];
 		result += "(";
 
-		String[] parameters = operation.substring(operation.indexOf("(") + 1, operation.indexOf(")")).split(",");
+		final String[] parameters = operation.substring(operation.indexOf("(") + 1, operation.indexOf(")")).split(",");
 		boolean first = true;
-		for (String p : parameters) {
+		for (final String p : parameters) {
 			if (!first) {
 				result += ",";
 			}
@@ -554,20 +526,20 @@ public final class LpeStringUtils {
 	 *            pattern to test against (may contain wildcards)
 	 * @return true, if subject, matches target
 	 */
-	public static boolean patternMatches(String subject, String targetPattern) {
+	public static boolean patternMatches(String subject, final String targetPattern) {
 		if (targetPattern.contains("*")) {
-			String[] wCards = targetPattern.split("\\*");
+			final String[] wCards = targetPattern.split("\\*");
 
 			for (int i = 0; i < wCards.length; i++) {
 				if (subject == null) {
 					return false;
 				}
-				String wc = wCards[i];
+				final String wc = wCards[i];
 				if (wc.isEmpty()) {
 					continue;
 				}
 
-				int index = subject.indexOf(wc);
+				final int index = subject.indexOf(wc);
 
 				// wCard not detected in the text.
 				if (index < 0 || (index > 0 && i == 0)) {
@@ -577,7 +549,7 @@ public final class LpeStringUtils {
 					// Move to the next card
 					try {
 						subject = subject.substring(index + wc.length());
-					} catch (IndexOutOfBoundsException e) {
+					} catch (final IndexOutOfBoundsException e) {
 						subject = null;
 					}
 					if (subject != null && subject.isEmpty()) {
@@ -604,13 +576,13 @@ public final class LpeStringUtils {
 	 *            pattern to test against (may contain wildcards)
 	 * @return true, if subject matches prefix of target
 	 */
-	public static boolean patternPrefixMatches(String subject, String targetPattern) {
+	public static boolean patternPrefixMatches(final String subject, final String targetPattern) {
 		if (targetPattern.startsWith(subject)) {
 			return true;
 		}
 
 		if (targetPattern.contains("*")) {
-			String prefixPattern = targetPattern.substring(0, targetPattern.indexOf("*"));
+			final String prefixPattern = targetPattern.substring(0, targetPattern.indexOf("*"));
 			return subject.startsWith(prefixPattern);
 		}
 

@@ -51,6 +51,11 @@
 			<artifactId>org.lpe.common.config</artifactId>
 			<version>1.0.4-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.lpe.common</groupId>
+			<artifactId>org.lpe.common.utils.web</artifactId>
+			<version>1.0.4-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

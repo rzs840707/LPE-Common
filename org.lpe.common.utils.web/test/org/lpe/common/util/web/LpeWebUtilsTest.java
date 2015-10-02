@@ -24,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
-import org.lpe.common.util.LpeHTTPUtils;
 import org.lpe.common.util.system.LpeSystemUtils;
 import org.lpe.common.util.web.dummy.DummyService;
 

@@ -18,7 +18,6 @@ package org.lpe.common.util.web;
 import java.util.Collection;
 
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.lpe.common.util.LpeHTTPUtils;
 import org.lpe.common.util.system.LpeSystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

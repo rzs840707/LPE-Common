@@ -19,9 +19,10 @@
 		<module>../org.lpe.common.loadgenerator</module>
 		<module>../org.lpe.common.jmeter</module>
 		<module>../org.lpe.common.remotecontrol</module>
-		<module>
-			../org.lpe.common.utils.web
-		</module>
+		<module>../org.lpe.common.utils.web</module>
+		<module>../org.lpe.common.utils.csv</module>
+		<module>../org.lpe.common.utils.numeric</module>
+		<module>../org.lpe.common.utils.sql</module>
 	</modules>
 
 	<repositories>

@@ -22,7 +22,7 @@ import java.net.HttpURLConnection;
 import javax.ws.rs.core.MediaType;
 
 import org.lpe.common.remotecontrol.data.FileContainer;
-import org.lpe.common.util.LpeHTTPUtils;
+import org.lpe.common.util.web.LpeHTTPUtils;
 
 import com.sun.jersey.api.client.WebResource;
 

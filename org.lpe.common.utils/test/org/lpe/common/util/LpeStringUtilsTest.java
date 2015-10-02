@@ -18,7 +18,6 @@ package org.lpe.common.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.lpe.common.util.LpeStringUtils.areEqualSql;
 import static org.lpe.common.util.LpeStringUtils.clearMethodName;
 import static org.lpe.common.util.LpeStringUtils.concatFileName;
 import static org.lpe.common.util.LpeStringUtils.convertMethodSignatureToJVMMethodDescriptor;
@@ -65,7 +64,7 @@ public class LpeStringUtilsTest {
 	 */
 	@Test
 	public void testFileSeparators() {
-		String fs = System.getProperty("file.separator");
+		final String fs = System.getProperty("file.separator");
 		assertEquals("C:" + fs + "tmp" + fs + "abc", correctFileSeparator("C:/tmp/abc"));
 		assertEquals("C:" + fs + "tmp" + fs + "abc", correctFileSeparator("C:\\tmp\\abc"));
 	}
@@ -120,7 +119,7 @@ public class LpeStringUtilsTest {
 	 */
 	@Test
 	public void testFileConcatenations() {
-		String fs = System.getProperty("file.separator");
+		final String fs = System.getProperty("file.separator");
 		assertEquals("C:" + fs + "tmp", concatFileName("C:" + fs, "tmp"));
 		assertEquals("C:" + fs + "tmp", concatFileName("C:", "tmp"));
 	}
@@ -142,7 +141,7 @@ public class LpeStringUtilsTest {
 	 */
 	@Test
 	public void testTokenize() {
-		String[] tokens = tokenize("Hello world", " ");
+		final String[] tokens = tokenize("Hello world", " ");
 		assertTrue(tokens.length == 2);
 		assertEquals("Hello", tokens[0]);
 		assertEquals("world", tokens[1]);
@@ -201,7 +200,7 @@ public class LpeStringUtilsTest {
 	 */
 	@Test
 	public void testGetPropertyOrFail() {
-		Properties props = new Properties();
+		final Properties props = new Properties();
 		props.setProperty("one", "prop1");
 
 		assertEquals("prop1", getPropertyOrFail(props, "one", null));
@@ -211,7 +210,7 @@ public class LpeStringUtilsTest {
 
 		try {
 			getPropertyOrFail(props, "two", null);
-		} catch (IllegalArgumentException e) {
+		} catch (final IllegalArgumentException e) {
 			catched = true;
 		}
 
@@ -226,10 +225,10 @@ public class LpeStringUtilsTest {
 	 */
 	@Test
 	public void testStringDistances() {
-		String[] source = new String[] { "ABCD", "MARTHA", "Martha", "MacMahons", "DIXON" };
-		String[] target = new String[] { "abcd", "MARHTA", "MARHTA", "McDonalds", "DICKSONX" };
-		double[] dist = new double[] { 0.0, 0.96, 0.5, 0.7, 0.81 };
-		double[] ciDist = new double[] { 1.0, 0.96, 0.96, 0.7, 0.81 };
+		final String[] source = new String[] { "ABCD", "MARTHA", "Martha", "MacMahons", "DIXON" };
+		final String[] target = new String[] { "abcd", "MARHTA", "MARHTA", "McDonalds", "DICKSONX" };
+		final double[] dist = new double[] { 0.0, 0.96, 0.5, 0.7, 0.81 };
+		final double[] ciDist = new double[] { 1.0, 0.96, 0.96, 0.7, 0.81 };
 
 		assertEquals(source.length, target.length);
 		assertEquals(source.length, dist.length);
@@ -254,10 +253,10 @@ public class LpeStringUtilsTest {
 	@Test
 	public void testStringDistancesGenerically() {
 		for (int n = 10; n < 50; n++) {
-			Random rand = new Random();
-			int length1 = n;
-			int length2 = n + (rand.nextInt(n / 2));
-			double m = rand.nextInt(n);
+			final Random rand = new Random();
+			final int length1 = n;
+			final int length2 = n + (rand.nextInt(n / 2));
+			final double m = rand.nextInt(n);
 			int l; // common prefix
 			if (m == 0) {
 				l = 0;
@@ -279,17 +278,17 @@ public class LpeStringUtilsTest {
 			if (m == 0) {
 				dw = 0;
 			} else {
-				double dj = ((m / length1) + (m / length2) + ((m - t) / m)) / 3;
-				dw = dj + (((double) l) * PREFIX_SCALE * (1.0 - dj));
+				final double dj = ((m / length1) + (m / length2) + ((m - t) / m)) / 3;
+				dw = dj + ((l) * PREFIX_SCALE * (1.0 - dj));
 			}
 
 			// generate random string
-			Random charRand = new Random();
-			char[] chars = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+			final Random charRand = new Random();
+			final char[] chars = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
 					'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
 					'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4',
 					'5', '6', '7', '8', '9', '0' };
-			char[] randChars = new char[length1];
+			final char[] randChars = new char[length1];
 			for (int i = 0; i < length1; i++) {
 				int j = charRand.nextInt(chars.length);
 				while (chars[j] == '$') {
@@ -300,12 +299,12 @@ public class LpeStringUtilsTest {
 				chars[j] = '$';
 			}
 
-			String s1 = new String(randChars);
+			final String s1 = new String(randChars);
 
 			// generate string with distance dw to s1
 
 			// common prefix
-			char[] randChars2 = new char[length2];
+			final char[] randChars2 = new char[length2];
 			for (int i = 0; i < l; i++) {
 				randChars2[i] = randChars[i];
 			}
@@ -320,7 +319,7 @@ public class LpeStringUtilsTest {
 
 			// transitions
 			for (int i = l + 1; i < l + 2 * t; i = i + 2) {
-				char tmp = randChars2[i];
+				final char tmp = randChars2[i];
 				randChars2[i] = randChars2[i + 1];
 				randChars2[i + 1] = tmp;
 			}
@@ -330,7 +329,7 @@ public class LpeStringUtilsTest {
 				randChars2[i] = '$';
 			}
 
-			String s2 = new String(randChars2);
+			final String s2 = new String(randChars2);
 
 			// System.out.println("[GEN]: s1 = <" + s1 + ">, s2 = <" + s2 +
 			// ">");
@@ -339,51 +338,24 @@ public class LpeStringUtilsTest {
 		}
 	}
 
-	/**
-	 * Tests the {@link LpeStringUtils#areEqualSql(String, String)
-	 * areEqualSql(...)}.
-	 */
-	@Test
-	public void testAreEqualSql() {
-		String[] sqlFrom = new String[] { "SELECT a FROM b WHERE a=1", "SELECT a FROM b WHERE a=1",
-				"SELECT a FROM b WHERE a=1", "SELECT a FROM b WHERE a=1", "SELECT a, c FROM b WHERE a=1",
-				"SELECT a FROM b WHERE a=b", "UPDATE t SET a = 'foo' WHERE id = 42",
-				"UPDATE t SET a = 'foo' WHERE id = 42", "UPDATE t SET a = 'foo' WHERE id = 42",
-				"INSERT INTO t (col) VALUES ('foo')", "INSERT INTO t (col) VALUES ('foo')",
-				"INSERT INTO t (col) VALUES ('foo')", "INSERT INTO t (col) VALUES (SELECT a FROM b WHERE c=1)" };
-		String[] sqlTo = new String[] { "SELECT a FROM b WHERE a=1", "SELECT b FROM a WHERE c=1",
-				"SELECT a FROM b WHERE a=5", "SELECT a FROM b WHERE 42=a", "SELECT b FROM a WHERE c=1",
-				"SELECT a FROM b WHERE b=a", "UPDATE t SET a = 'bar' WHERE id = 0",
-				"UPDATE s SET a = 'foo' WHERE id = 42", "UPDATE t SET b = 'foo' WHERE id = 42",
-				"INSERT INTO t (col) VALUES ('bar')", "INSERT INTO s (col) VALUES ('foo')",
-				"INSERT INTO t (c) VALUES ('foo')", "INSERT INTO t (col) VALUES (SELECT a FROM b WHERE a=42)" };
-		boolean[] results = new boolean[] { true, false, true, true, false, true, true, false, false, true, false,
-				false, true };
-
-		for (int i = 0; i < sqlFrom.length; i++) {
-			assertEquals("<" + sqlFrom[i] + "> and <" + sqlTo[i] + "> should be "
-					+ (results[i] ? "equal." : "not equal."), results[i], areEqualSql(sqlFrom[i], sqlTo[i]));
-		}
-	}
-
 	@Test
 	public void testWildcardsMatching() {
-		String subject = "my.test.string";
-		String patternA = "my.*.string";
-		String patternB = "*my.test.string*";
-		String patternC = "my.test.string*";
-		String patternD = "*my.test.string";
-		String patternE = "my.test.string";
-		String patternE_2 = "**test**string";
-		String patternE_3 = "**test**";
-		String patternA_2 = "my.**.string";
-		String patternB_2 = "**my.test.string*";
-		String patternC_2 = "my.test.string**";
-		String patternD_2 = "**my.test.string";
-		String patternE_4 = "my.test.string";
-		String patternE_5 = "**test**string";
-		String patternE_6 = "**test**";
-		String patternE_7 = "*";
+		final String subject = "my.test.string";
+		final String patternA = "my.*.string";
+		final String patternB = "*my.test.string*";
+		final String patternC = "my.test.string*";
+		final String patternD = "*my.test.string";
+		final String patternE = "my.test.string";
+		final String patternE_2 = "**test**string";
+		final String patternE_3 = "**test**";
+		final String patternA_2 = "my.**.string";
+		final String patternB_2 = "**my.test.string*";
+		final String patternC_2 = "my.test.string**";
+		final String patternD_2 = "**my.test.string";
+		final String patternE_4 = "my.test.string";
+		final String patternE_5 = "**test**string";
+		final String patternE_6 = "**test**";
+		final String patternE_7 = "*";
 
 		Assert.assertTrue(LpeStringUtils.patternMatches(subject, patternA));
 		Assert.assertTrue(LpeStringUtils.patternMatches(subject, patternB));
@@ -401,14 +373,14 @@ public class LpeStringUtilsTest {
 		Assert.assertTrue(LpeStringUtils.patternMatches(subject, patternE_6));
 		Assert.assertTrue(LpeStringUtils.patternMatches(subject, patternE_7));
 
-		String patternF = "my.test.string.something";
-		String patternG = "my.test.string*something";
-		String patternH = "my.*x*.string";
-		String patternI = "test*string";
-		String patternJ = "my*test";
-		String patternK = "my.*x*.str";
-		String patternL = "";
-		String patternM = "string";
+		final String patternF = "my.test.string.something";
+		final String patternG = "my.test.string*something";
+		final String patternH = "my.*x*.string";
+		final String patternI = "test*string";
+		final String patternJ = "my*test";
+		final String patternK = "my.*x*.str";
+		final String patternL = "";
+		final String patternM = "string";
 
 		Assert.assertFalse(LpeStringUtils.patternMatches(subject, patternF));
 		Assert.assertFalse(LpeStringUtils.patternMatches(subject, patternG));
@@ -423,22 +395,22 @@ public class LpeStringUtilsTest {
 	
 	@Test
 	public void testWildcardsPrefixMatching() {
-		String subject = "my.test";
-		String patternA = "my.*.string";
-		String patternB = "*my.test.string*";
-		String patternC = "my.test.string*";
-		String patternD = "*my.test.string";
-		String patternE = "my.test.string";
-		String patternE_2 = "**test**string";
-		String patternE_3 = "**test**";
-		String patternA_2 = "my.**.string";
-		String patternB_2 = "**my.test.string*";
-		String patternC_2 = "my.test.string**";
-		String patternD_2 = "**my.test.string";
-		String patternE_4 = "my.test.string";
-		String patternE_5 = "**test**string";
-		String patternE_6 = "**test**";
-		String patternE_7 = "*";
+		final String subject = "my.test";
+		final String patternA = "my.*.string";
+		final String patternB = "*my.test.string*";
+		final String patternC = "my.test.string*";
+		final String patternD = "*my.test.string";
+		final String patternE = "my.test.string";
+		final String patternE_2 = "**test**string";
+		final String patternE_3 = "**test**";
+		final String patternA_2 = "my.**.string";
+		final String patternB_2 = "**my.test.string*";
+		final String patternC_2 = "my.test.string**";
+		final String patternD_2 = "**my.test.string";
+		final String patternE_4 = "my.test.string";
+		final String patternE_5 = "**test**string";
+		final String patternE_6 = "**test**";
+		final String patternE_7 = "*";
 
 		Assert.assertTrue(LpeStringUtils.patternPrefixMatches(subject, patternA));
 		Assert.assertTrue(LpeStringUtils.patternPrefixMatches(subject, patternB));
@@ -456,12 +428,12 @@ public class LpeStringUtilsTest {
 		Assert.assertTrue(LpeStringUtils.patternPrefixMatches(subject, patternE_6));
 		Assert.assertTrue(LpeStringUtils.patternPrefixMatches(subject, patternE_7));
 
-		String patternF = "test.string";
-		String patternH = "my..*x*.string";
-		String patternI = "test*string";
-		String patternJ = "my";
-		String patternL = "";
-		String patternM = "string";
+		final String patternF = "test.string";
+		final String patternH = "my..*x*.string";
+		final String patternI = "test*string";
+		final String patternJ = "my";
+		final String patternL = "";
+		final String patternM = "string";
 
 		Assert.assertFalse(LpeStringUtils.patternPrefixMatches(subject, patternF));
 		Assert.assertFalse(LpeStringUtils.patternPrefixMatches(subject, patternH));

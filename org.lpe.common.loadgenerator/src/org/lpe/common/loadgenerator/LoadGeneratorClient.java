@@ -23,8 +23,8 @@ import javax.ws.rs.core.MediaType;
 import org.lpe.common.loadgenerator.config.LGMeasurementConfig;
 import org.lpe.common.loadgenerator.config.LGWorkloadConfig;
 import org.lpe.common.loadgenerator.data.LGMeasurementData;
-import org.lpe.common.util.LpeHTTPUtils;
 import org.lpe.common.util.LpeStreamUtils;
+import org.lpe.common.util.web.LpeHTTPUtils;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
