@@ -10,11 +10,10 @@
 	</parent>
 
 	<artifactId>org.lpe.common.utils.web</artifactId>
-	<name>LPE Common Utils</name>
+	<name>LPE Common Web Utils</name>
 
 	<dependencies>
-		
-			
+
 		<dependency>
 			<groupId>org.glassfish.grizzly</groupId>
 			<artifactId>grizzly-http-servlet</artifactId>
@@ -39,9 +38,6 @@
 			<artifactId>grizzly-http-monitoring</artifactId>
 			<version>${grizzly.version}</version>
 		</dependency>
-
-
-
 
 		<dependency>
 			<groupId>org.glassfish.grizzly</groupId>

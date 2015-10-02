@@ -22,8 +22,6 @@ import org.lpe.common.config.ConfigParameterDescription;
 /**
  * This is root interface of all LPE extensions.
  * 
- * @param <EA>
- *            Type of the extension artifact
  * @author Roozbeh Farahbod
  * 
  */
@@ -42,11 +40,11 @@ public interface IExtension {
 
 	/**
 	 * Creates a new artifact for this extension.
-	 * @param patterns 
+	 * @param constructorArgs Optional arguments to be passed to the constructor of the extension artifact
 	 * 
 	 * @return a new artifact for this extension.
 	 */
-	<EA extends IExtensionArtifact> EA createExtensionArtifact(String ... patterns);
+	<EA extends IExtensionArtifact> EA createExtensionArtifact(Object ... constructorArgs);
 
 	/**
 	 * Returns a set of configuration parameter descriptions.
@@ -54,4 +52,9 @@ public interface IExtension {
 	 * @return a set of configuration parameter descriptions
 	 */
 	Set<ConfigParameterDescription> getConfigParameters();
+	
+	/**
+	 * @return The class of the extension artifact this extension can generate
+	 */
+	Class<? extends IExtensionArtifact> getExtensionArtifactClass();
 }
