@@ -22,21 +22,35 @@ import org.lpe.common.config.ConfigParameterDescription;
 /**
  * This is root interface of all LPE extensions.
  * 
- * @author Roozbeh Farahbod
+ * @author Roozbeh Farahbod, Steffen Becker
  * 
  */
 public interface IExtension {
 
 	/**
 	 * Returns the name of the extension which is expected to be unique in the
-	 * framework.
+	 * framework. 
 	 * 
 	 * The name is expected to be specific to the extension that is provided,
 	 * for example 'MARS' or 'GP'.
 	 * 
+	 * Commonly this returns the FQClassName of the Extension Artifact created 
+	 * by this extension.
+	 * 
 	 * @return the name of this extension
 	 */
 	String getName();
+	
+	/**
+	 * Get a short label for this extension which can be used for example in UIs.
+	 * @return The display label
+	 */
+	String getDisplayLabel();
+	
+	/** Get a user friendly description of this extension
+	 * @return A description of this extension.
+	 */
+	String getDescription();
 
 	/**
 	 * Creates a new artifact for this extension.

@@ -34,6 +34,7 @@ import org.lpe.common.util.LpeSupportedTypes;
 public class ConfigParameterDescription {
 	public static final String LIST_VALUE_SEPARATOR = ",";
 	public static final String EXT_DESCRIPTION_KEY = "extension.description";
+	public static final String EXT_LABEL_KEY = "extension.label";
 	private String name;
 	private String description;
 	private String defaultValue;
@@ -64,26 +65,10 @@ public class ConfigParameterDescription {
 	 * @param type
 	 *            type of the parameter
 	 */
-	public ConfigParameterDescription(String name, LpeSupportedTypes type) {
+	public ConfigParameterDescription(final String name, final LpeSupportedTypes type) {
 		this.name = name;
 		this.type = type;
 		isASet = false;
-	}
-
-	/**
-	 * Convenience method to create a non-editable extension description with
-	 * the given text.
-	 * 
-	 * @param descriptionText
-	 *            text describing the extension itself
-	 * @return the created extension description
-	 */
-	public static ConfigParameterDescription createExtensionDescription(String descriptionText) {
-		ConfigParameterDescription extensionDescription = new ConfigParameterDescription(EXT_DESCRIPTION_KEY,
-				LpeSupportedTypes.String);
-		extensionDescription.setDefaultValue(descriptionText);
-		extensionDescription.setEditable(false);
-		return extensionDescription;
 	}
 
 	/**
@@ -97,7 +82,7 @@ public class ConfigParameterDescription {
 	 * @param name
 	 *            the name to set
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -112,7 +97,7 @@ public class ConfigParameterDescription {
 	 * @param type
 	 *            the type to set
 	 */
-	public void setType(LpeSupportedTypes type) {
+	public void setType(final LpeSupportedTypes type) {
 		this.type = type;
 	}
 
@@ -134,7 +119,7 @@ public class ConfigParameterDescription {
 	 * @param options
 	 *            the options to set
 	 */
-	public void setOptions(Set<String> options) {
+	public void setOptions(final Set<String> options) {
 		if (rangeAvailable()) {
 			throw new IllegalStateException("Cannot define options if a value range have been defined!");
 		}
@@ -157,7 +142,7 @@ public class ConfigParameterDescription {
 	 * @param fileExtensions
 	 *            the allowed file extensions
 	 */
-	public void setFileExtensions(String[] fileExtensions) {
+	public void setFileExtensions(final String[] fileExtensions) {
 		this.fileExtensions = fileExtensions;
 	}
 
@@ -180,7 +165,7 @@ public class ConfigParameterDescription {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -190,7 +175,7 @@ public class ConfigParameterDescription {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		ConfigParameterDescription other = (ConfigParameterDescription) obj;
+		final ConfigParameterDescription other = (ConfigParameterDescription) obj;
 		if (name == null) {
 			if (other.name != null) {
 				return false;
@@ -212,7 +197,7 @@ public class ConfigParameterDescription {
 	 * @param description
 	 *            the description to set
 	 */
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -227,7 +212,7 @@ public class ConfigParameterDescription {
 	 * @param defaultValue
 	 *            the defaultValue to set
 	 */
-	public void setDefaultValue(String defaultValue) {
+	public void setDefaultValue(final String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 
@@ -248,7 +233,7 @@ public class ConfigParameterDescription {
 	 * @param fileDefaultName
 	 *            the default value for the file
 	 */
-	public void setDefaultFileName(String fileDefaultName) {
+	public void setDefaultFileName(final String fileDefaultName) {
 		this.fileDefaultName = fileDefaultName;
 	}
 
@@ -287,7 +272,7 @@ public class ConfigParameterDescription {
 	 *            upper range boundary
 	 */
 	@JsonIgnore
-	public void setRange(String lowerBoundary, String upperBoundary) {
+	public void setRange(final String lowerBoundary, final String upperBoundary) {
 		if (optionsAvailable()) {
 			throw new IllegalStateException("Cannot define a range if value options have been defined!");
 		}
@@ -315,7 +300,7 @@ public class ConfigParameterDescription {
 	 * @param mandatory
 	 *            the mandatory to set
 	 */
-	public void setMandatory(boolean mandatory) {
+	public void setMandatory(final boolean mandatory) {
 		this.mandatory = mandatory;
 	}
 
@@ -330,7 +315,7 @@ public class ConfigParameterDescription {
 	 * @param editable
 	 *            the editable to set
 	 */
-	public void setEditable(boolean editable) {
+	public void setEditable(final boolean editable) {
 		this.editable = editable;
 	}
 
@@ -356,7 +341,7 @@ public class ConfigParameterDescription {
 	 * @param isASet
 	 *            the isASet to set
 	 */
-	public void setASet(boolean isASet) {
+	public void setASet(final boolean isASet) {
 		this.isASet = isASet;
 	}
 
@@ -371,7 +356,7 @@ public class ConfigParameterDescription {
 	 * @param isADirectory
 	 *            the isADirectory to set
 	 */
-	public void setADirectory(boolean isADirectory) {
+	public void setADirectory(final boolean isADirectory) {
 		this.isADirectory = isADirectory;
 	}
 
@@ -386,7 +371,7 @@ public class ConfigParameterDescription {
 	 * @param isAFile
 	 *            the isAFile to set
 	 */
-	public void setAFile(boolean isAFile) {
+	public void setAFile(final boolean isAFile) {
 		this.isAFile = isAFile;
 	}
 

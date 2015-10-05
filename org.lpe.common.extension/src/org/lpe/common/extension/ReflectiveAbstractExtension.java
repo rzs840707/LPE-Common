@@ -45,4 +45,40 @@ public abstract class ReflectiveAbstractExtension extends AbstractExtension {
 		}
 	}
 
+	private String displayLabelCache = null;
+	
+	/* (non-Javadoc)
+	 * @see org.lpe.common.extension.IExtension#getDisplayLabel()
+	 */
+	@Override
+	public String getDisplayLabel() {
+		if (displayLabelCache == null) {
+			final StringBuilder className = new StringBuilder(getExtensionArtifactClass().getSimpleName());
+			int pos = 1;
+			while (pos < className.length()) {
+				if (pos + 1 < className.length() && Character.isLowerCase(className.charAt(pos)) && Character.isUpperCase(className.charAt(pos+1))) {
+					className.insert(pos + 1, " ");
+					pos += 2;
+				}
+				if (pos + 2 < className.length() && Character.isUpperCase(className.charAt(pos)) && Character.isUpperCase(className.charAt(pos+1)) && Character.isLowerCase(className.charAt(pos+2))) {
+					className.insert(pos + 1, " ");
+					pos += 3;
+				}
+				pos++;
+			}
+			displayLabelCache = className.toString();
+		} 
+		return displayLabelCache;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.lpe.common.extension.IExtension#getDescription()
+	 */
+	@Override
+	public String getDescription() {
+		return "No description provided.";
+	}
+	
+	
+
 }
