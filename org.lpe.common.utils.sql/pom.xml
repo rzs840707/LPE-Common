@@ -4,6 +4,7 @@
     <groupId>org.lpe.common</groupId>
     <artifactId>org.lpe.common.parent</artifactId>
     <version>1.0.4-SNAPSHOT</version>
+	<relativePath>../org.lpe.common.parent</relativePath>
   </parent>
   <artifactId>org.lpe.common.utils.sql</artifactId>
   <dependencies>
