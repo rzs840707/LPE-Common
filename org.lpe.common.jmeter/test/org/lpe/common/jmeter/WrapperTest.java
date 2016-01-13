@@ -31,8 +31,11 @@ public class WrapperTest {
 		
 		System.out.println("starting...");
 		JMeterWorkloadConfig conf = new JMeterWorkloadConfig();
+		
+		/*使用JMeter进行测试和验证，直接将JMeter的地址写在了程序里*/
 		conf.setPathToJMeterBinFolder("C:\\Users\\D061588\\Desktop\\apache-jmeter-2.9\\bin");
 		conf.setPathToScript("C:\\Users\\D061588\\Desktop\\apache-jmeter-2.9\\scripts\\mediastore\\mediastore_usage_profile.jmx");
+		
 		conf.setCreateLogFlag(true);
 		conf.setNumUsers(10);
 		conf.setExperimentDuration(20);
